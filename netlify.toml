@@ -1,0 +1,15 @@
+[build]
+  functions = "functions"
+
+[[redirects]]
+  from = "/cloudinary"
+  to = "https://folia.netlify.app/.netlify/functions/cloudinary"
+
+[[redirects]]
+  from = "/metadata/*"
+  to = "https://folia.netlify.app/.netlify/functions/metadata/:splat"
+
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"

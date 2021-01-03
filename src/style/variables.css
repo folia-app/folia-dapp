@@ -1,0 +1,36 @@
+@custom-media --breakpoint-sm (min-width: 375px);
+@custom-media --breakpoint-md (min-width: 600px);
+@custom-media --breakpoint-lg (min-width: 1024px);
+@custom-media --breakpoint-xl (min-width: 1440px);
+
+:root{
+  --rem:10px;
+  --basefont: 18px;
+
+  --ff-serif:'Times New Roman', serif;
+  --ff-sans: 'Helvetica', 'Arial', sans-serif;
+
+  --black:black;
+  --white:white;
+  --yellow:yellow;
+  --gray:#666;
+  --ltgray:#ccc;
+  --red:red;
+  
+  --h1:2.75em;
+  --h2:1.375em;
+  --h3:1.125em;
+  --h4:1em;
+  --h5:0.9em;
+  --h6:0.75em;
+  
+  --space-1:0.75rem;
+  --space-2:2.4rem;
+  --space-3:3.6rem;
+  --space-4:4.8rem;
+
+  --line-height-1:1;
+  --line-height-2:1.2; 
+
+  --caps-letter-spacing:0.02em;
+}
