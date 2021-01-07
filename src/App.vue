@@ -1,8 +1,5 @@
 <template lang="pug">
   #app.text-base.font-serif.leading-snug
-    div(style="position:fixed;top:0;right:0;z-index:1000")
-      button(v-if="!address", @click="$store.dispatch('connect')") Connect
-      button(v-else, @click="$store.dispatch('disconnect')") {{ address }}
     //- main
     .app__main.relative.z-20(:class="{'app__main--squished': viewNotifs}")
       router-view
