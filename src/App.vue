@@ -1,14 +1,14 @@
 <template lang="pug">
-  #app
+  #app.text-base.font-serif.leading-snug
     div(style="position:fixed;top:0;right:0;z-index:1000")
       button(v-if="!address", @click="$store.dispatch('connect')") Connect
       button(v-else, @click="$store.dispatch('disconnect')") {{ address }}
     //- main
-    .app__main.relative.z2(:class="{'app__main--squished': viewNotifs}")
+    .app__main.relative.z-20(:class="{'app__main--squished': viewNotifs}")
       router-view
       //- scrim
       transition(name="fade")
-        .absolute.col-12.h-100.top-0.left-0.opacity-50.bg-black.z1.cursor-pointer(v-show="viewNotifs", @click="viewNotifs = false")
+        .absolute.w-full.h-full.top-0.left-0.opacity-50.bg-black.z-10.cursor-pointer(v-show="viewNotifs", @click="viewNotifs = false")
     //- notifications
     //- notifications.app__notifications.fixed.z3.top-0.left-0.h-100.col-11.md-col-6.lg-col-5(:class="{'app__notifications--squished': !viewNotifs}")
     //- notifications toggle / counter
@@ -21,6 +21,7 @@
 <script>
 // import Notifications from './components/Notifications.vue'
 // import Status from './components/Status.vue'
+import '@/style/_main.css'
 import { mapState } from 'vuex'
 export default {
   name: 'App',
@@ -60,16 +61,16 @@ export default {
 </script>
 
 <style>
-@import './style/global';
-@import './style/imports';
-@import './style/variables';
+/*@import './style/global';*/
+/*@import './style/imports';*/
+/*@import './style/variables';*/
 @import './style/transitions';
 
 #app {
-  font-family: var(--serif);
+  /*font-family: var(--serif);*/
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  font-size:var(--basefont);
+  /*font-size:var(--basefont);*/
 }
 
 .app__main{

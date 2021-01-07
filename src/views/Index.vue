@@ -1,27 +1,30 @@
 <template lang="pug">
   .index
-    section.index.relative.min-h-100vh.bg-yellow(:class="{'index--squished': $route.meta.isSingle}")
+    section.index.relative.min-h-screen.bg-yellow(:class="{'index--squished': $route.meta.isSingle}")
       transition(name="fade")
-        router-link(to="/", v-show="$route.meta.isSingle").absolute.overlay.bg-black.z2.cursor-pointer.opacity-33.md-opacity-50
-      .flex.flex-wrap.content-start.trans-opacity
+        router-link(to="/", v-show="$route.meta.isSingle").absolute.overlay.bg-black.z-20.cursor-pointer.opacity-25.md_opacity-50
+      .flex.flex-wrap.content-start.transition-opacity.duration-500
         //- header
-        //- header.col-12.bg-yellow
+        //- header.w-full.bg-yellow
           .col-4
             .pb-100
         //- intro card
         //- title-card(:tileMode="workPatches.length > 0")
-        template(v-for="n in 12")
+        template(v-for="n in 5")
           //- thumbs...
-          work-thumb.col-12.md-col-6.lg-col-4(v-for="(doc, index) in works", :doc="doc", :key="doc.id + n")
+          work-thumb.w-full.md_w-1x2.lg_w-1x3(v-for="(doc, index) in works", :doc="doc", :key="doc.id + n")
         //- (repeat for demo)
-        //- patch-thumb.col-12.md-col-6.lg-col-4(v-for="(patch, index) in works", :imgSrc="patch.image", :key="'second' + index", :index="index + 1")
+        //- patch-thumb.w-full.md_w-1x2.lg_w-1x3(v-for="(patch, index) in works", :imgSrc="patch.image", :key="'second' + index", :index="index + 1")
         //- collectors link
-        .block.col-12.md-col-6.lg-col-4.h-100vw.md-h-50vw.lg-h-33vw.flex.items-center.justify-center.bg-black.white
-          span.sans Collectors
+        .block.w-full.md_w-1x2.lg_w-1x3.relative
+          .pb-full
+            .absolute.overlay.flex.items-center.justify-center.bg-black.text-white.font-sans.group
+              span.group-hover_hidden Collectors
+              span.hidden.group-hover_inline Coming Soon
       //- info
       info(v-show="infoVisible && works.length > 0")
     //- viewer
-    section.viewer.bg-white.fixed.top-0.right-0.h-100vh(:class="{'viewer--hidden': !$route.meta.isSingle}")
+    section.viewer.bg-white.fixed.top-0.right-0.h-screen(:class="{'viewer--hidden': !$route.meta.isSingle}")
       transition(name="fade")
         router-view
 </template>

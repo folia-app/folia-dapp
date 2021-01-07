@@ -1,23 +1,26 @@
 <template lang="pug">
-  .work-thumb.relative.bg-yellow.hover-1
-    figure.pb-100.relative.z1.cursor-pointer.bg-cover.bg-white.bg-center(:style="'background-image:url(' + doc.data.icon.url + ')'", :data-dir="rand", :class="{'squish': squish}", @click="squish = !squish")
-    small.absolute.overlay.z0.flex.overflow-hidden
-      .col-12.flex.flex-column(:class="tableClasses")
-        .flex-auto.flex
-          .col-6.flex.items-center.justify-center
+  .work-thumb.relative.bg-yellow.hover_shadow-inner-red.overflow-hidden
+    //- image (.bg-white to prevent shadow poking through...)
+    figure.pb-full.relative.z-10.cursor-pointer.bg-white.transition-transform.duration-500.bg-cover.bg-center(:data-dir="rand", :class="{'squish': squish}", @click="squish = !squish")
+      img.absolute.overlay.z-10.object-cover.object-center(:src="doc.data.icon.url", :alt="doc.data.icon.alt")
+
+    small.absolute.overlay.z-0.flex.overflow-hidden.text-sm
+      .w-full.flex.flex-col(:class="tableClasses")
+        .flex-1.flex
+          .w-1x2.flex.items-center.justify-center
             span {{ doc.data.artist }}
-          .col-6.flex.items-center.justify-center
+          .w-1x2.flex.items-center.justify-center
             span {{ doc.data.year }}
-        .flex-auto.flex
-          .col-6.flex.items-center.justify-center
-            span.sans.h5
+        .flex-1.flex
+          .w-1x2.flex.items-center.justify-center
+            span.font-sans.text-xs
               template(v-if="work") {{ Number(work.printed) + 1 }}/{{ work.editions }}
               template(v-else) –
-          .col-6.flex.items-center.justify-center
-            span.sans.h5 {{ work ? toETH(work.price) : doc.data.price_eth }} ETH
-        .flex-auto.flex(@click.stop)
-          router-link.cursor-pointer(:to="{name: 'Work', params: {id: doc.uid}}").col-6.flex.items-center.justify-center.hover-3 View
-          button.col-6.flex.items-center.justify-center.hover-3.cursor-pointer(@click="buy") Buy
+          .w-1x2.flex.items-center.justify-center
+            span.font-sans.text-xs {{ work ? toETH(work.price) : doc.data.price_eth }} ETH
+        .flex-1.flex(@click.stop)
+          router-link.cursor-pointer(:to="{name: 'Work', params: {id: doc.uid}}").w-1x2.flex.items-center.justify-center.btn-theme-darken View
+          button.w-1x2.flex.items-center.justify-center.btn-theme-darken.cursor-pointer(@click="buy") Buy
 </template>
 
 <script>
@@ -36,10 +39,10 @@ export default {
     ...mapGetters(['toETH']),
     tableClasses () {
       return {
-        'pl-25': this.rand === 0,
-        'pl-25 md-pl0 md-pt-25': this.rand === 1,
-        'pr-25': this.rand === 2,
-        'pr-25 md-pr0 md-pb-25': this.rand === 3
+        'pl-1x4': this.rand === 0,
+        'pl-1x4 md_pl-0 md_pt-1x4': this.rand === 1,
+        'pr-1x4': this.rand === 2,
+        'pr-1x4 md_pr-0 md_pb-1x4': this.rand === 3
       }
     }
   },
@@ -62,8 +65,8 @@ export default {
 @import '../style/variables';
 
 figure{
-  transition:transform 500ms 100ms;
-  transform-origin: top left;
+  /*transition:transform 500ms 100ms;
+  transform-origin: top left;*/
 
   /* mobile, only left / right */
   &[data-dir="0"],

@@ -1,0 +1,17 @@
+@import './variables';
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+html{
+  font-size:10px;
+}
+
+.overlay{
+  @apply w-full h-full top-0 left-0;
+}
+
+.btn-theme-darken{
+  &:hover, &:focus{ @apply bg-black-a03 }
+  &:focus{ @apply outline-none; }
+}
