@@ -1,5 +1,5 @@
 <template lang="pug">
-  article.col-12
+  article.work.col-12
     section.relative.overflow-y-scroll.h-100vh(v-if="doc")
       .absolute.top-0.right-0.p2
         close-btn.cursor-pointer(@click="$router.push('/')", style="width:1.5rem;height:1.5rem;stroke-width:1px")
@@ -17,7 +17,7 @@
             .p0.md-px1
               .sans.h4 {{ Number(work.printed) + 1 }}/{{ work.editions }}
             .p0.md-px1
-              .sans.h4 {{ doc.data.price_eth }} ETH
+              .sans.h4 {{ work ? toETH(work.price) : doc.data.price_eth }} ETH
             .col-3.p0.md-px1
               button.cursor-pointer.col-12.block.btn-style-1.uppercase.h4(@click="buy") Buy
           hr
@@ -36,11 +36,10 @@
 </template>
 
 <script>
-// import { mapGetters, mapActions } from 'vuex'
-
+import { mapGetters } from 'vuex'
 import CloseBtn from '@/components/SVG-X'
 export default {
-  name: 'Patch',
+  name: 'Work',
   components: { CloseBtn },
   data () {
     return {
@@ -49,14 +48,10 @@ export default {
     }
   },
   computed: {
+    ...mapGetters(['toETH']),
     workId () {
       return this.$route.params.id / 1000000
     }
-    // ...mapGetters(['workPatches']),
-    // imgSrc () {
-    //   const patch = this.workPatches[this.id - 1]
-    //   return patch && patch.image
-    // }
   },
   created () {
     this.getDoc()

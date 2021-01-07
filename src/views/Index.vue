@@ -1,22 +1,22 @@
 <template lang="pug">
-  div
+  .index
     section.index.relative.min-h-100vh.bg-yellow(:class="{'index--squished': $route.meta.isSingle}")
       transition(name="fade")
         router-link(to="/", v-show="$route.meta.isSingle").absolute.overlay.bg-black.z2.cursor-pointer.opacity-33.md-opacity-50
       .flex.flex-wrap.content-start.trans-opacity
         //- header
-        header.col-12.bg-yellow
+        //- header.col-12.bg-yellow
           .col-4
             .pb-100
         //- intro card
         //- title-card(:tileMode="workPatches.length > 0")
         template(v-for="n in 12")
           //- thumbs...
-          patch-thumb.col-12.md-col-6.lg-col-4(v-for="(doc, index) in works", :doc="doc", :key="doc.id + n")
+          work-thumb.col-12.md-col-6.lg-col-4(v-for="(doc, index) in works", :doc="doc", :key="doc.id + n")
         //- (repeat for demo)
         //- patch-thumb.col-12.md-col-6.lg-col-4(v-for="(patch, index) in works", :imgSrc="patch.image", :key="'second' + index", :index="index + 1")
         //- collectors link
-        router-link.block.col-12.md-col-6.lg-col-4.h-100vw.md-h-50vw.lg-h-33vw.flex.items-center.justify-center.bg-black.white(to="/users")
+        .block.col-12.md-col-6.lg-col-4.h-100vw.md-h-50vw.lg-h-33vw.flex.items-center.justify-center.bg-black.white
           span.sans Collectors
       //- info
       info(v-show="infoVisible && works.length > 0")
@@ -30,10 +30,10 @@
 import { mapState } from 'vuex'
 // import TitleCard from '@/components/Index__TitleCard'
 import Info from '@/components/Info'
-import PatchThumb from '@/components/PatchThumb'
+import WorkThumb from '@/components/WorkThumb'
 export default {
   name: 'Index',
-  components: { Info, PatchThumb },
+  components: { Info, WorkThumb },
   data () {
     return {
       squish: false,
@@ -52,9 +52,6 @@ export default {
       const titles = ['fire sale', 'bargain<br>basement', 'cash grab', 'editions', 'pog<br>liquidation', 'get rich<br>schemes', 'wares']
       const index = Math.floor(Math.random() * (3 - 0 + 1))
       this.title = titles[index]
-    },
-    closePatchView () {
-
     }
   },
   created () {

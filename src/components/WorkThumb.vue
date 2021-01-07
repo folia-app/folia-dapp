@@ -1,5 +1,5 @@
 <template lang="pug">
-  .patch.relative.bg-yellow.hover-1
+  .work-thumb.relative.bg-yellow.hover-1
     figure.pb-100.relative.z1.cursor-pointer.bg-cover.bg-white.bg-center(:style="'background-image:url(' + doc.data.icon.url + ')'", :data-dir="rand", :class="{'squish': squish}", @click="squish = !squish")
     small.absolute.overlay.z0.flex.overflow-hidden
       .col-12.flex.flex-column(:class="tableClasses")
@@ -16,7 +16,7 @@
           .col-6.flex.items-center.justify-center
             span.sans.h5 {{ work ? toETH(work.price) : doc.data.price_eth }} ETH
         .flex-auto.flex(@click.stop)
-          router-link.cursor-pointer(:to="{name: 'Patch', params: {id: doc.uid}}").col-6.flex.items-center.justify-center.hover-3 View
+          router-link.cursor-pointer(:to="{name: 'Work', params: {id: doc.uid}}").col-6.flex.items-center.justify-center.hover-3 View
           button.col-6.flex.items-center.justify-center.hover-3.cursor-pointer(@click="buy") Buy
 </template>
 

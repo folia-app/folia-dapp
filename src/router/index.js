@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Index from '@/views/Index'
-import Patch from '@/views/Patch'
+import Work from '@/views/Work'
 
 // import Home from '@/views/Home'
 // import Admin from '@/views/Admin'
@@ -19,13 +19,13 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'Patches',
+      name: 'Index',
       component: Index,
       children: [
         {
-          path: '/patch/:id',
-          name: 'Patch',
-          component: Patch,
+          path: '/works/:id',
+          name: 'Work',
+          component: Work,
           props: true,
           meta: { isSingle: true }
         }
