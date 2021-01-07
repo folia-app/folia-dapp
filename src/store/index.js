@@ -6,23 +6,20 @@ import Web3 from 'web3'
 import Web3Modal from 'web3modal'
 import WalletConnectProvider from '@walletconnect/web3-provider'
 
-const networks = {
-  rinkeby: 4,
-  ganache: 5777,
-  mainnet: 1
-}
-
 let web3
-let provider = Web3Modal.cachedProvider || Web3.currentProvider || Web3.givenProvider
+let provider = Web3.currentProvider || Web3.givenProvider
 let foliaControllerContract
+
+// setup web3, contract
 if (provider) {
   web3 = new Web3(provider)
   foliaControllerContract = new web3.eth.Contract(
     FoliaController.abi,
-    FoliaController.networks[networks.rinkeby].address
+    FoliaController.networks[4].address // rinkeby
   )
 }
 
+// provider options
 const providerOptions = {
   /* See Provider Options Section */
   walletconnect: {
@@ -33,6 +30,7 @@ const providerOptions = {
   }
 }
 
+// setup web3 modal
 const web3Modal = new Web3Modal({
   network: 'rinkeby', // optional
   cacheProvider: true, // optional
@@ -45,19 +43,11 @@ export default new Vuex.Store({
   modules: { prismic },
   state: {
     address: null,
-    networkId: null
-    // chainId: null,
-    // web3 stuff
-    // web3Enabled: false,
-    // enabled: false,
-    // waitToPing: true,
-    // unlocked: false,
-    // querying: false,
-    // tryAgain: false,
-    // networkId: null,
-    // correctNetwork: 1,
-    // contractsDeployed: false,
-    // nullAddress: '0x0000000000000000000000000000000000000000'
+    networkId: null,
+    works: []
+  },
+  getters: {
+    toETH: () => (wei) => web3?.utils.fromWei(wei) ?? '-'
   },
   mutations: {
     SIGN_IN (state, address) {
@@ -68,34 +58,48 @@ export default new Vuex.Store({
     },
     SET_NETWORK (state, id) {
       state.networkId = id
+    },
+    SAVE_WORK (state, work) {
+      const i = state.works.findIndex(svd => svd.id === work.id)
+      if (i > -1) state.works[i] = work
+      else state.works.push(work)
     }
   },
   actions: {
     async init ({ dispatch }) {
+      // auto-connect?
       if (web3Modal.cachedProvider) {
         dispatch('connect')
       }
     },
+
+    /* connect wallet */
     async connect ({ commit, dispatch }) {
+      // connect and update provider, web3
       provider = await web3Modal.connect()
       web3 = new Web3(provider)
+      // save account
       const accounts = await web3.eth.getAccounts()
       const address = accounts[0]
       const networkId = await web3.eth.net.getId()
       // const chainId = await web3.eth.chainId(); // not a function??
       commit('SIGN_IN', address)
       commit('SET_NETWORK', networkId)
-      dispatch('subscribeEvents')
+      // listen to events
+      dispatch('listenToProvider')
     },
 
+    /* connect wallet */
     disconnect ({ commit }) {
+      // clear so they can re-select from scratch
       web3Modal.clearCachedProvider()
       // provider.off('accountsChanged')
       // provider.off('disconnect')
       commit('SIGN_OUT')
     },
 
-    subscribeEvents ({ commit, dispatch }) {
+    /* wallet events */
+    listenToProvider ({ commit, dispatch }) {
       if (!provider?.on) return
 
       // account changed (or disconnected)
@@ -114,23 +118,14 @@ export default new Vuex.Store({
       })
     },
 
-    async get () {
-      console.log('get?')
-      const work = await foliaControllerContract.methods
-        .works(1)
-        .call()
-      console.log(work)
-    },
-
-    async buy ({ state, dispatch }, { workId }) {
+    /* buy artwork */
+    async buy ({ state, dispatch }, workId) {
       if (!state.address) return dispatch('connect')
       try {
-        const work = await foliaControllerContract.methods
-          .works(workId)
-          .call()
+        const work = await dispatch('getWork', { id: workId, flush: true })
         // !! unavailable
         if (!work.exists) throw new Error("Work doesn't exist")
-        if (work.paused || work.printed >= work.editions) throw new Error('Work is unavailable')
+        if (work.paused || Number(work.printed) >= Number(work.editions)) throw new Error('Work is unavailable')
         // buy
         await foliaControllerContract.methods
           .buy(state.address, workId)
@@ -138,6 +133,18 @@ export default new Vuex.Store({
       } catch (e) {
         console.error('oops', e)
       }
+    },
+
+    /* read artwork */
+    async getWork ({ state, commit }, { id, flush }) {
+      let work = state.works.find(work => work.id === id)
+      if (!flush && work) return work
+      // get new data
+      if (foliaControllerContract) {
+        work = await foliaControllerContract.methods.works(id).call()
+        commit('SAVE_WORK', { id, ...work })
+      }
+      return work
     }
   }
 })

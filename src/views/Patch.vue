@@ -15,11 +15,11 @@
             .p0.md-px1.left-align
               .sans.h4 No.
             .p0.md-px1
-              .sans.h4 XX/100
+              .sans.h4 {{ Number(work.printed) + 1 }}/{{ work.editions }}
             .p0.md-px1
               .sans.h4 {{ doc.data.price_eth }} ETH
             .col-3.p0.md-px1
-              button.cursor-pointer.col-12.block.btn-style-1.uppercase.h4(@click="$store.dispatch('wallet/buy', { workId })") Buy
+              button.cursor-pointer.col-12.block.btn-style-1.uppercase.h4(@click="buy") Buy
           hr
         section.mt3
           table.mt-1em.col-12.sans.h6.md-h4(border="1", style="table-layout:fixed;white-space:nowrap")
@@ -60,14 +60,18 @@ export default {
   },
   created () {
     this.getDoc()
+    this.getWork()
   },
   methods: {
-    // ...mapActions(['buyWork']),
-    // buy () {
-    //   this.buyWork(this.id)
-    // },
+    async buy () {
+      await this.$store.dispatch('buy', this.workId)
+      this.getWork(true)
+    },
     async getDoc () {
       this.doc = await this.$store.dispatch('prismic/getWork', this.$route.params.id)
+    },
+    async getWork (flush) {
+      this.work = await this.$store.dispatch('getWork', { id: this.workId, flush })
     }
   }
 }

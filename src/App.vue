@@ -50,7 +50,6 @@ export default {
   },
   created () {
     this.$store.dispatch('init')
-    this.$store.dispatch('get')
     this.$store.dispatch('prismic/getWorks')
   },
   mounted () {
@@ -97,5 +96,10 @@ export default {
   .app__main.app__main--squished{
     transform:scale(0.5833,1);
   }
+}
+
+/* web3 modal styling */
+#WEB3_CONNECT_MODAL_ID{
+  font-family: var(--ff-sans);
 }
 </style>

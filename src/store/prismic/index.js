@@ -17,6 +17,7 @@ export default {
       const resp = await prismic(vue.$prismic.Predicates.at('document.type', 'work'))
       commit('setWorks', resp.results)
     },
+
     async getWork ({ state }, uid) {
       const saved = state.works.find(doc => doc.uid === uid)
       return saved || (await prismic(vue.$prismic.Predicates.at('my.work.uid', uid)))?.results[0]
