@@ -75,18 +75,22 @@ export default new Vuex.Store({
 
     /* connect wallet */
     async connect ({ commit, dispatch }) {
-      // connect and update provider, web3
-      provider = await web3Modal.connect()
-      web3 = new Web3(provider)
-      // save account
-      const accounts = await web3.eth.getAccounts()
-      const address = accounts[0]
-      const networkId = await web3.eth.net.getId()
-      // const chainId = await web3.eth.chainId(); // not a function??
-      commit('SIGN_IN', address)
-      commit('SET_NETWORK', networkId)
-      // listen to events
-      dispatch('listenToProvider')
+      try {
+        // connect and update provider, web3
+        provider = await web3Modal.connect()
+        web3 = new Web3(provider)
+        // save account
+        const accounts = await web3.eth.getAccounts()
+        const address = accounts[0]
+        const networkId = await web3.eth.net.getId()
+        // const chainId = await web3.eth.chainId(); // not a function??
+        commit('SIGN_IN', address)
+        commit('SET_NETWORK', networkId)
+        // listen to events
+        dispatch('listenToProvider')
+      } catch (e) {
+        console.error(e)
+      }
     },
 
     /* connect wallet */

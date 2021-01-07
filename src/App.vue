@@ -100,7 +100,8 @@ export default {
 }
 
 /* web3 modal styling */
-#WEB3_CONNECT_MODAL_ID{
+#WEB3_CONNECT_MODAL_ID .web3modal-modal-lightbox{
   font-family: var(--ff-sans);
+  z-index: 1000;
 }
 </style>
