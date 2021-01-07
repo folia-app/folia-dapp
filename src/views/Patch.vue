@@ -67,7 +67,7 @@ export default {
     //   this.buyWork(this.id)
     // },
     async getDoc () {
-      this.doc = await this.$store.dispatch('getWork', this.$route.params.id)
+      this.doc = await this.$store.dispatch('prismic/getWork', this.$route.params.id)
     }
   }
 }
