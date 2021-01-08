@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import prismic from './prismic'
-import { FoliaController } from 'folia-contracts'
+import FoliaController from 'folia-contracts/build/contracts/FoliaController.json'
 import Web3 from 'web3'
 import Web3Modal from 'web3modal'
 import WalletConnectProvider from '@walletconnect/web3-provider'
