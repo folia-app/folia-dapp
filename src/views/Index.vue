@@ -14,7 +14,7 @@
               div
                 button.p-10.focus_outline-none(v-if="!address", @click="$store.dispatch('connect')") Connect
                 button.p-10.focus_outline-none.relative.group(v-else, @click="$store.dispatch('disconnect')")
-                  span.group-hover_opacity-0 {{ address }}
+                  span.group-hover_opacity-0.truncate {{ address.slice(0, 6) + '...' + address.slice(-4) }}
                   span.hidden.group-hover_block.absolute.overlay.text-right.p-10 Disconnect
         //- landing
         .w-full.bg-black.text-white.relative.flex.items-center.justify-center.font-sans.text-sm(style="height:85vh")
