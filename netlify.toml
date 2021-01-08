@@ -6,9 +6,8 @@
   to = "https://folia.netlify.app/.netlify/functions/cloudinary"
 
 [[redirects]]
-  from = "/metadata/*"
+  from = "/v1/metadata/*"
   to = "https://folia.netlify.app/.netlify/functions/metadata/:splat"
-
 
 [[redirects]]
   from = "/*"

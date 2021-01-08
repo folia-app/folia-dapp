@@ -5,6 +5,7 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
+    "postbuild": "yarn lambda:build",
     "lint": "vue-cli-service lint",
     "lambda": "netlify-lambda serve lambda",
     "lambda:build": "netlify-lambda build lambda"
@@ -40,6 +41,7 @@
     "eslint-plugin-standard": "^4.0.0",
     "eslint-plugin-vue": "^6.2.2",
     "lint-staged": "^9.5.0",
+    "netlify-lambda": "^2.0.2",
     "postcss-import": "12",
     "postcss-preset-env": "^6.7.0",
     "vue-cli-plugin-pug": "~2.0.0",

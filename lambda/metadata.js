@@ -1,71 +1,91 @@
-exports.handler = function (event, context, callback) {
-  const tokenId = event.queryStringParameters.tokenId
+import Prismic from 'prismic-javascript'
+require('dotenv').config()
+const apiEndpoint = process.env.VUE_APP_PRISMIC_ENDPOINT
 
-  // this would be your own api with rich data and actual information about the artworks
-  // cosnt storedMetadata = axios('https://mydatabase.com/storageSystem/'+tokenId)
-
-  const metadata = {
-
-    // both opensea and rarebits
-    name: 'Token #' + tokenId,
-    description: 'This is a very basic NFT with token Id #' + tokenId,
-
-    // opensea
-    external_url: process.env.APP_URL,
-    // rarebits
-    home_url: process.env.APP_URL,
-
-    // opensea
-    image: 'https://dummyimage.com/600x400/000/fff/&text=token%20' + tokenId,
-    // rarebits
-    image_url: 'https://dummyimage.com/600x400/000/fff/&text=token%20' + tokenId,
-
-    // opensea
-    attributes: [
-      {
-        trait_type: 'zodiac',
-        value: returnZodiac(tokenId)
-      }
-    ],
-    // rarebits
-    properties: [
-      { key: 'zodiac', value: returnZodiac(tokenId), type: 'string' }
-    ],
-
-    // rarebits
-    tags: ['cool', 'hot', 'mild']
-  }
-  callback(null, {
-    statusCode: 200,
-    body: JSON.stringify(metadata)
+// Initialize the prismic.io api
+function initApi (req) {
+  return Prismic.getApi(apiEndpoint, {
+    // accessToken: accessToken,
+    req: req
   })
 }
-function returnZodiac (tokenId) {
-  const month = ((tokenId - 1) % 12) + 1
-  switch (month) {
-    case (1):
-      return 'Capricorn'
-    case (2):
-      return 'Aquarius'
-    case (3):
-      return 'Pisces'
-    case (4):
-      return 'Aries'
-    case (5):
-      return 'Taurus'
-    case (6):
-      return 'Gemini'
-    case (7):
-      return 'Cancer'
-    case (8):
-      return 'Leo'
-    case (9):
-      return 'Virgo'
-    case (10):
-      return 'Libra'
-    case (11):
-      return 'Scorpio'
-    case (12):
-      return 'Sagittarius'
-  }
+
+// handler
+exports.handler = function (event, context, callback) {
+  const tokenId = event.path.substr(event.path.lastIndexOf('/') + 1) // 1000005
+  const workId = Math.floor(tokenId / 1000000) // 1
+  const docId = (workId * 1000000).toString() // 1000000
+
+  // GO !
+  initApi(event).then(function (api) {
+    api.query(
+      Prismic.Predicates.at('my.work.uid', docId),
+      { pageSize: 1 }
+    ).then(function (response) {
+      const doc = response.results[0]
+
+      if (!doc) {
+        return callback(null, {
+          statusCode: 404,
+          body: JSON.stringify({ message: 'Not Found' })
+        })
+      }
+
+      // this would be your own api with rich data and actual information about the artworks
+      // cosnt storedMetadata = axios('https://mydatabase.com/storageSystem/'+tokenId)
+
+      const metadata = {
+
+        // both opensea and rarebits
+        name: doc.data.title + ' (No. ' + tokenId.split('').pop() + '/' + doc.data.edition + ')',
+        description: doc.data.description[0].text ?? '',
+
+        // opensea
+        external_url: process.env.VUE_APP_CANONICAL_DOMAIN + '/works/' + docId,
+        // rarebits
+        home_url: process.env.VUE_APP_CANONICAL_DOMAIN + '/works/' + docId,
+
+        // opensea
+        image: doc.data.icon.url,
+        // rarebits
+        image_url: doc.data.icon.url,
+
+        // opensea
+        attributes: [
+          {
+            trait_type: 'artist',
+            value: doc.data.artist
+          },
+          {
+            trait_type: 'year',
+            value: doc.data.year
+          }
+        ],
+        // rarebits
+        // properties: [
+        //   { key: 'zodiac', value: returnZodiac(tokenId), type: 'string' }
+        // ],
+
+        // rarebits
+        // tags: ['cool', 'hot', 'mild']
+
+        // open sea
+        animation_url: '',
+        youtube_url: ''
+      }
+
+      return callback(null, {
+        statusCode: 200,
+        body: JSON.stringify(metadata)
+      })
+    })
+
+      .catch(e => {
+        console.error(e)
+        return callback(null, {
+          statusCode: 500,
+          body: JSON.stringify({ error: e })
+        })
+      })
+  })
 }
