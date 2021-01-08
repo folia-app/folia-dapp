@@ -2,10 +2,6 @@
   functions = "functions"
 
 [[redirects]]
-  from = "/cloudinary"
-  to = "https://folia.netlify.app/.netlify/functions/cloudinary"
-
-[[redirects]]
   from = "/v1/metadata/*"
   to = "https://folia.netlify.app/.netlify/functions/metadata/:splat"
 

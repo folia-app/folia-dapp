@@ -1,5 +1,6 @@
 import Prismic from 'prismic-javascript'
 require('dotenv').config()
+require('encoding') // netlify build error / missing package??
 const apiEndpoint = process.env.VUE_APP_PRISMIC_ENDPOINT
 
 // Initialize the prismic.io api
