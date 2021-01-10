@@ -16,8 +16,9 @@ exports.handler = function (event, context, callback) {
   const tokenId = event.path.substr(event.path.lastIndexOf('/') + 1) // 1000005
   const workId = Math.floor(tokenId / 1000000) // 1
   const docId = (workId * 1000000).toString() // 1000000
+  const printNo = tokenId.split('').pop() // 2
 
-  // GO !
+  // FETCH !
   initApi(event).then(function (api) {
     api.query(
       Prismic.Predicates.at('my.work.uid', docId),
@@ -36,9 +37,8 @@ exports.handler = function (event, context, callback) {
       // cosnt storedMetadata = axios('https://mydatabase.com/storageSystem/'+tokenId)
 
       const metadata = {
-
         // both opensea and rarebits
-        name: doc.data.title + ' (No. ' + tokenId.split('').pop() + '/' + doc.data.edition + ')',
+        name: `#{doc.data.artist}, "${doc.data.title}", (${doc.data.year}), No. ${printNo}/${doc.data.edition}`,
         description: doc.data.description[0].text ?? '',
 
         // opensea
@@ -52,16 +52,16 @@ exports.handler = function (event, context, callback) {
         image_url: doc.data.icon.url,
 
         // opensea
-        attributes: [
-          {
-            trait_type: 'artist',
-            value: doc.data.artist
-          },
-          {
-            trait_type: 'year',
-            value: doc.data.year
-          }
-        ],
+        // attributes: [
+        //   {
+        //     trait_type: 'artist',
+        //     value: doc.data.artist
+        //   },
+        //   {
+        //     trait_type: 'year',
+        //     value: doc.data.year
+        //   }
+        // ],
         // rarebits
         // properties: [
         //   { key: 'zodiac', value: returnZodiac(tokenId), type: 'string' }
