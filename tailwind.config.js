@@ -159,7 +159,10 @@ module.exports = {
     },
     fontFamily: {
       sans: [
-        'Helvetica',
+        // 'Violet Sans',
+        'Help Me',
+        'system-ui',
+        '-apple-system',
         'sans-serif'
         // 'system-ui',
         // '-apple-system',

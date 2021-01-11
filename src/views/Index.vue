@@ -9,16 +9,24 @@
       .flex.flex-wrap.content-start.transition-opacity.duration-500
         header.absolute.top-0.left-0.w-full.z-20.text-white
           .absolute.top-0.left-0.w-full
-            .flex.w-full.justify-between
-              h1.p-10 [logo]
+            .flex.w-full.justify-between.items-center
+              .p-10.px-12
+                logo.block.text-white(style="height:3rem", alt="Folia")
               div
                 button.p-10.focus_outline-none(v-if="!address", @click="$store.dispatch('connect')") Connect
                 button.p-10.focus_outline-none.relative.group(v-else, @click="$store.dispatch('disconnect')")
                   span.group-hover_opacity-0.truncate {{ address.slice(0, 6) + '...' + address.slice(-4) }}
                   span.hidden.group-hover_block.absolute.overlay.text-right.p-10 Disconnect
         //- landing
-        .w-full.bg-black.text-white.relative.flex.items-center.justify-center.font-sans.text-sm(style="height:85vh")
-          span.opacity-50 (videos/slideshow)
+        .w-full.bg-black.text-white.relative.flex.items-center.justify-center.font-sans.text-sm(style="height:90vh; cursor:e-resize", @click="next")
+          transition-group(name="slide")
+            .absolute.overlay(v-for="(slide, i) in slides", v-show="current === i", :key="i")
+              video.absolute.overlay.object-cover.object-center(src="https://prismic-io.s3.amazonaws.com/folia-dev/0b70ee18-1a6b-4715-9e3a-7079141cf608_mov_bbb.mp4", :autoplay="current === i", muted, ref="video", @ended="next")
+              .absolute.overlay(:style="{'mix-blend-mode':slide[0], 'background': slide[1]}")
+          ul.absolute.bottom-0.left-0.w-full.flex.items-center.justify-center.pb-6
+            li.p-4.cursor-pointer(v-for="(slide, i) in slides", @click.stop="current = i")
+              .w-4.h-2.border-b.border-white(:class="{'bg-white': current === i}")
+          //- span.opacity-50 (videos/slideshow)
         //- list
         template(v-for="n in 5")
           //- thumbs...
@@ -42,16 +50,19 @@
 <script>
 import { mapState } from 'vuex'
 // import TitleCard from '@/components/Index__TitleCard'
+import Logo from '@/components/Logo'
 import Info from '@/components/Info'
 import WorkThumb from '@/components/WorkThumb'
 export default {
   name: 'Index',
-  components: { Info, WorkThumb },
+  components: { Logo, Info, WorkThumb },
   data () {
     return {
       squish: false,
       infoVisible: true,
-      title: ''
+      title: '',
+      slides: [['saturation', 'rgba(0,255,0,1)'], ['luminosity', 'rgba(0,255,0,1)'], ['color-burn', 'red']],
+      current: 0
     }
   },
   computed: {
@@ -66,6 +77,15 @@ export default {
       const titles = ['fire sale', 'bargain<br>basement', 'cash grab', 'editions', 'pog<br>liquidation', 'get rich<br>schemes', 'wares']
       const index = Math.floor(Math.random() * (3 - 0 + 1))
       this.title = titles[index]
+    },
+    next () {
+      this.current = this.current + 1 === this.slides.length ? 0 : this.current + 1
+    }
+  },
+  watch: {
+    current (to, from) {
+      this.$refs.video[to].play()
+      this.$refs.video[from].pause()
     }
   },
   created () {
@@ -117,5 +137,20 @@ export default {
 @media (--breakpoint-lg) {
   .index.index--squished{transform:scale(0.5, 1);}
   .viewer{width:50%;}
+}
+
+.slide-enter-active,
+.slide-leave-active{
+  transition:transform 500ms;
+}
+.slide-leave-to,
+.slide-enter{
+  transform: scale(0,1);
+}
+.slide-leave-active{
+  transform-origin: top left;
+}
+.slide-enter-active{
+  transform-origin: top right;
 }
 </style>

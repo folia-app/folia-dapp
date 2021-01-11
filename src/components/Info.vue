@@ -2,8 +2,8 @@
   article.info.text-4xl.p-10.md_p-0.bg-white.text-black.flex.flex-col.justify-between
     div
       .md_my-20.info__text
-        section.text-red.underline
-          p.md_w-2x3 Collect limited-edition artworks by contemporary artists</a>
+        section.text-red.underline-off
+          p.md_w-10x12 Collect limited-edition artworks by contemporary artists</a>
         transition(name="fadeinonly")
           section#faq.md_w-3x4.smaller.mt-lh-snug.pt-lh-snug(v-show="more")
             h2.font-sans.font-bold What are these?

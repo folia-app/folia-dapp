@@ -1,5 +1,5 @@
 <template lang="pug">
-  #app.text-base.font-serif.leading-snug
+  #app.text-base.font-sans.leading-snug
     //- main
     .app__main.relative.z-20(:class="{'app__main--squished': viewNotifs}")
       router-view
@@ -51,6 +51,7 @@ export default {
     this.$store.dispatch('prismic/getWorks')
   },
   mounted () {
+    document.getElementById('loading').remove()
     // this.$store.dispatch('wallet/init')
     // this.begin()
   }

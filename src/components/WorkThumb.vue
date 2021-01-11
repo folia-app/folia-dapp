@@ -13,11 +13,11 @@
             span {{ doc.data.year }}
         .flex-1.flex
           .w-1x2.flex.items-center.justify-center
-            span.font-sans.text-xs
+            span
               template(v-if="work") {{ Number(work.printed) + 1 }}/{{ work.editions }}
               template(v-else) –
           .w-1x2.flex.items-center.justify-center
-            span.font-sans.text-xs {{ work ? toETH(work.price) : doc.data.price_eth }} ETH
+            span {{ work ? toETH(work.price) : doc.data.price_eth }} ETH
         .flex-1.flex(@click.stop)
           router-link.cursor-pointer(:to="{name: 'Work', params: {id: doc.uid}}").w-1x2.flex.items-center.justify-center.btn-theme-darken View
           button.w-1x2.flex.items-center.justify-center.btn-theme-darken.cursor-pointer(@click="buy") Buy
