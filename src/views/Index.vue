@@ -85,7 +85,6 @@ export default {
   },
   watch: {
     current (to, from) {
-      console.log(to, from)
       this.$refs.video[to].play()
       this.$refs.video[from].pause()
     }
