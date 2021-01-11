@@ -21,7 +21,7 @@
         .w-full.bg-black.text-white.relative.flex.items-center.justify-center.font-sans.text-sm(style="height:90vh; cursor:e-resize", @click="next")
           transition-group(name="slide")
             .absolute.overlay(v-for="(slide, i) in slides", v-show="current === i", :key="i")
-              video.absolute.overlay.object-cover.object-center(src="https://prismic-io.s3.amazonaws.com/folia-dev/0b70ee18-1a6b-4715-9e3a-7079141cf608_mov_bbb.mp4", :autoplay="current === i", muted, ref="video", @ended="next")
+              video.absolute.overlay.object-cover.object-center(src="https://prismic-io.s3.amazonaws.com/folia-dev/0b70ee18-1a6b-4715-9e3a-7079141cf608_mov_bbb.mp4", :autoplay="current === i", muted, ref="video", @ended="next", playsinline)
               .absolute.overlay(:style="{'mix-blend-mode':slide[0], 'background': slide[1]}")
           ul.absolute.bottom-0.left-0.w-full.flex.items-center.justify-center.pb-6
             li.p-4.cursor-pointer(v-for="(slide, i) in slides", @click.stop="current = i")
