@@ -13,7 +13,7 @@ module.exports = {
       sm: '640px',
       md: '768px',
       lg: '1024px',
-      xl: '1280px'
+      xl: '1440px'
     },
     colors: {
       transparent: 'transparent',
@@ -209,7 +209,9 @@ module.exports = {
       auto: 'auto',
       ...theme('spacing'),
       full: '100%',
-      screen: '100vh'
+      screen: '100vh',
+      '90vh': '90vh',
+      '93vh': '93.5vh'
     }),
     inset: {
       0: '0',

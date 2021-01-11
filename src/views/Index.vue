@@ -18,7 +18,7 @@
                   span.group-hover_opacity-0.truncate {{ address.slice(0, 6) + '...' + address.slice(-4) }}
                   span.hidden.group-hover_block.absolute.overlay.text-right.p-10 Disconnect
         //- landing
-        .w-full.bg-black.text-white.relative.flex.items-center.justify-center.font-sans.text-sm(style="height:90vh; cursor:e-resize", @click="next")
+        .w-full.bg-black.text-white.relative.flex.items-center.justify-center.font-sans.text-sm.h-90vh.md_h-93vh(style="cursor:e-resize", @click="next")
           transition-group(name="slide")
             .absolute.overlay(v-for="(slide, i) in slides", v-show="current === i", :key="i")
               video.absolute.overlay.object-cover.object-center(src="https://prismic-io.s3.amazonaws.com/folia-dev/0b70ee18-1a6b-4715-9e3a-7079141cf608_mov_bbb.mp4", autoplay, muted, @ended="next", ref="video", playsinline)
@@ -30,11 +30,11 @@
         //- list
         template(v-for="n in 5")
           //- thumbs...
-          work-thumb.w-full.md_w-1x2.lg_w-1x3(v-for="(doc, index) in works", :doc="doc", :key="doc.id + n")
+          work-thumb.w-full.md_w-1x2.lg_w-1x3.xl_w-1x4(v-for="(doc, index) in works", :doc="doc", :key="doc.id + n")
         //- (repeat for demo)
         //- patch-thumb.w-full.md_w-1x2.lg_w-1x3(v-for="(patch, index) in works", :imgSrc="patch.image", :key="'second' + index", :index="index + 1")
         //- collectors link
-        .block.w-full.md_w-1x2.lg_w-1x3.relative
+        .relative.block.w-full.md_w-1x2.lg_w-1x3.xl_w-1x4
           .pb-full
             .absolute.overlay.flex.items-center.justify-center.bg-black.text-white.font-sans.group
               span.group-hover_hidden Collectors
