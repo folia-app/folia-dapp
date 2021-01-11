@@ -38,7 +38,7 @@ exports.handler = function (event, context, callback) {
 
       const metadata = {
         // both opensea and rarebits
-        name: `#{doc.data.artist}, "${doc.data.title}", (${doc.data.year}), No. ${printNo}/${doc.data.edition}`,
+        name: `${doc.data.artist}, "${doc.data.title}", ${doc.data.year}, (No. ${printNo}/${doc.data.edition})`,
         description: doc.data.description[0].text ?? '',
 
         // opensea
