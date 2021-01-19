@@ -11,7 +11,8 @@
           .absolute.top-0.left-0.w-full
             .flex.w-full.justify-between.items-center
               .p-10.px-12
-                logo.block.text-white(style="height:3rem", alt="Folia")
+                logo.block.text-white.h-12(aria-label="Folia")
+                //- svg-fleuron.block.text-white(style="height:3rem")
               div
                 button.p-10.focus_outline-none(v-if="!address", @click="$store.dispatch('connect')") Connect
                 button.p-10.focus_outline-none.relative.group(v-else, @click="$store.dispatch('disconnect')")
@@ -51,11 +52,12 @@
 import { mapState } from 'vuex'
 // import TitleCard from '@/components/Index__TitleCard'
 import Logo from '@/components/Logo'
+import svgFleuron from '@/components/SVG-Fleuron'
 import Info from '@/components/Info'
 import WorkThumb from '@/components/WorkThumb'
 export default {
   name: 'Index',
-  components: { Logo, Info, WorkThumb },
+  components: { Logo, Info, WorkThumb, svgFleuron },
   data () {
     return {
       squish: false,

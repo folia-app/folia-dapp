@@ -6,6 +6,7 @@ import PrismicVue from '@prismicio/vue'
 // import { PortisProvider } from 'portis'
 // import Web3 from 'web3'
 import linkResolver from '@/plugins/prismic/link-resolver.js'
+// import '@/plugins/register-vue-components.js'
 // router.afterEach((to, from, next) => {
 //   if (ga) ga('send', 'pageview')
 // })
