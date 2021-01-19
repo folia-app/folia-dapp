@@ -159,8 +159,15 @@ module.exports = {
     },
     fontFamily: {
       sans: [
-        // 'Violet Sans',
+        // === demo local system === :
+        // 'Karrik', // sick but logo...
+        // 'Hershey-Noailles-Times', // too dorky
+        // 'Hershey-Noailles-OldFrench', // nice for serif option, maybe tighter tracking
+        // 'CMU Serif', // too sharp
+        // === loaded woff === :
         'Help Me',
+        // 'Violet Sans',
+        // === fallback === :
         'system-ui',
         '-apple-system',
         'sans-serif'
@@ -184,6 +191,7 @@ module.exports = {
     fontSize: {
       xs: '1.35rem',
       sm: '1.5rem',
+      md: '1.7rem',
       base: '1.8rem',
       // lg: '2.1rem',
       // xl: '2.4rem',

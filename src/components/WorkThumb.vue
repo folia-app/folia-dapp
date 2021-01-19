@@ -4,7 +4,7 @@
     figure.pb-full.relative.z-10.cursor-pointer.bg-white.transition-transform.duration-500.bg-cover.bg-center(:data-dir="rand", :class="{'squish': squish}", @click="squish = !squish")
       img.absolute.overlay.z-10.object-cover.object-center(:src="doc.data.icon.url", :alt="doc.data.icon.alt")
 
-    small.absolute.overlay.z-0.flex.overflow-hidden.text-sm
+    small.absolute.overlay.z-0.flex.overflow-hidden.text-md
       .w-full.flex.flex-col(:class="tableClasses")
         .flex-1.flex
           .w-1x2.flex.items-center.justify-center

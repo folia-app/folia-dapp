@@ -16,3 +16,7 @@ html{
   &:hover, &:focus{ @apply bg-black-a03 }
   &:focus{ @apply outline-none; }
 }
+
+button{
+  font-weight: inherit;
+}
