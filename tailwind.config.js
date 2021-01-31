@@ -193,14 +193,17 @@ module.exports = {
       sm: '1.5rem',
       md: '1.7rem',
       base: '1.8rem',
-      // lg: '2.1rem',
-      // xl: '2.4rem',
-      '4xl': '3.4rem'
+      lg: '2.2rem',
+      xl: '2.4rem',
+      '4xl': '3.4rem',
       // '2xl': '1.5rem',
       // '3xl': '1.875rem',
       // '4xl': '2.25rem',
       // '5xl': '3rem',
       // '6xl': '4rem',
+      60: '6rem',
+      72: '7.2rem',
+      96: '9.6rem'
     },
     fontWeight: {
       hairline: '100',
@@ -330,7 +333,8 @@ module.exports = {
     padding: theme => ({
       ...theme('spacing'),
       full: '100%',
-      '1x4': '25%'
+      '1x4': '25%',
+      '1x5': '22%'
     }),
     placeholderColor: theme => theme('colors'),
     placeholderOpacity: theme => theme('opacity'),
@@ -517,6 +521,8 @@ module.exports = {
     },
     scale: {
       0: '0',
+      10: '.1',
+      25: '.25',
       50: '.5',
       75: '.75',
       90: '.9',
@@ -588,6 +594,7 @@ module.exports = {
       150: '150ms',
       200: '200ms',
       300: '300ms',
+      400: '400ms',
       500: '500ms',
       700: '700ms',
       1000: '1000ms'

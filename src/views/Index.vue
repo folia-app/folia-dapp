@@ -1,6 +1,7 @@
 <template lang="pug">
-  .index
-    section.index.relative.min-h-screen.bg-yellow(:class="{'index--squished': $route.meta.isSingle}")
+  .index.bg-gray-900
+    //- main body
+    section.index.relative.min-h-screen.bg-yellow.transition.duration-500.transform.origin-left(:class="{'scale-x-0 duration-700': videoPlayer >= 0, 'scale-x-10 md_scale-x-25 lg_scale-x-50': $route.meta.isSingle}")
       //- child work (squishes in)
       transition(name="fade")
         router-link(to="/", v-show="$route.meta.isSingle").absolute.overlay.bg-black.z-20.cursor-pointer.opacity-25.md_opacity-50
@@ -19,21 +20,46 @@
                   span.group-hover_opacity-0.truncate {{ address.slice(0, 6) + '...' + address.slice(-4) }}
                   span.hidden.group-hover_block.absolute.overlay.text-right.p-10 Disconnect
         //- landing
-        .w-full.bg-black.text-white.relative.flex.items-center.justify-center.font-sans.text-sm.h-90vh.md_h-93vh(style="cursor:e-resize", @click="next")
+        .w-full.bg-black.text-white.relative.flex.items-center.justify-center.font-sans.text-sm.h-90vh.md_h-93vh-off.md_h-screen(:style="{cursor: slides.length > 1 ? 'e-resize' : 'auto'}", @click="next")
+          //- slides...
           transition-group(name="slide")
-            .absolute.overlay(v-for="(slide, i) in slides", v-show="current === i", :key="i")
-              video.absolute.overlay.object-cover.object-center(src="https://prismic-io.s3.amazonaws.com/folia-dev/0b70ee18-1a6b-4715-9e3a-7079141cf608_mov_bbb.mp4", autoplay, muted, @ended="next", ref="video", playsinline)
-              .absolute.overlay(:style="{'mix-blend-mode':slide[0], 'background': slide[1]}")
-          ul.absolute.bottom-0.left-0.w-full.flex.items-center.justify-center.pb-6
+            figure.absolute.overlay.overflow-hidden.flex.flex-col.justify-between(v-for="(slide, i) in slides", v-show="current === i", :key="i")
+              //- [video]
+              template(v-if="slide.type === 'video'")
+                video.absolute.overlay.object-cover.object-center.transform.scale-150.origin-center(:src="slide.src", muted, ref="video", playsinline, @timeupdate="$event => loopVideoClip($event, slide.clip)", :autoplay="current === i")
+                //- (blur?)
+                .absolute.overlay(:style="{backdropFilter: `blur(${slide.blur}px)`}", v-if="slide.blur")
+                //- play btn
+                .relative.z-10.flex-1.w-full.flex.justify-center.items-center.pt-16.xl_pt-20
+                  button.p-8.focus_outline-none(aria-label="Play", @click="videoPlayer = i")
+                    <svg class="text-60 md_text-72 xl_text-96" style="width:calc(59 / 38 * 1em); height: 1em" viewBox="0 0 59 38" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio>
+                      <path d="M1 1.49251L57.3157 19L0.999998 36.5075L1 1.49251Z" stroke="currentColor" stroke-width="0.66px"/>
+                    </svg>
+
+              //- bottom info
+              .relative.z-10.w-full.pb-12.md_px-12.xl_pb-16.text-md.lg_text-base.xl_text-lg.flex.flex-wrap.items-end.justiy-center.md_justify-between
+                //- title
+                .w-full.md_w-auto.flex.flex-wrap.justify-center
+                  router-link.border.rounded-full.border-white.p-6.md_p-8.px-12.-mb-px.text-center(v-for="txt in slide.title", v-html="txt", to="/works/1000000")
+                //- buy btn
+                button.mx-auto.md_m-0.border.rounded-full.border-white.p-6.md_py-8.px-20.font-bold.hover_bg-white.hover_text-gray-800.focus_outline-none(style="font-size:0.95em") BUY
+          //- dots
+          ul.absolute.bottom-0.left-0.w-full.flex.items-center.justify-center.pb-6(v-if="slides.length > 1")
             li.p-4.cursor-pointer(v-for="(slide, i) in slides", @click.stop="current = i")
               .w-4.h-2.border-b.border-white(:class="{'bg-white': current === i}")
           //- span.opacity-50 (videos/slideshow)
         //- list
-        template(v-for="n in 5")
+        template(v-for="n in 1")
           //- thumbs...
           work-thumb.w-full.md_w-1x2.lg_w-1x3.xl_w-1x4(v-for="(doc, index) in works", :doc="doc", :key="doc.id + n")
-        //- (repeat for demo)
-        //- patch-thumb.w-full.md_w-1x2.lg_w-1x3(v-for="(patch, index) in works", :imgSrc="patch.image", :key="'second' + index", :index="index + 1")
+
+        //- 002...
+        .relative.block.w-full.md_w-1x2.lg_w-1x3.xl_w-1x4
+          .pb-full
+            .absolute.overlay.flex.items-center.justify-center.bg-black.text-white.border-r.border-gray-800.font-sans.group
+              span.group-hover_hidden 002
+              span.hidden.group-hover_inline Coming Soon
+
         //- collectors link
         .relative.block.w-full.md_w-1x2.lg_w-1x3.xl_w-1x4
           .pb-full
@@ -42,10 +68,16 @@
               span.hidden.group-hover_inline Coming Soon
       //- info
       info(v-show="infoVisible && works.length > 0")
+
     //- viewer
-    section.viewer.bg-white.fixed.top-0.right-0.h-screen(:class="{'viewer--hidden': !$route.meta.isSingle}")
+    section.fixed.top-0.right-0.h-screen.viewer.w-11x12.md_w-3x4.lg_w-1x2.transition.duration-500.transform.origin-right.bg-white(:class="{'scale-x-0': !$route.meta.isSingle}")
       transition(name="fade")
         router-view
+
+    //- video player
+    .fixed.overlay.transition.transform.origin-right.flex.p-4.md_p-16.lg_p-24.xl_p-40(:class="{'pointer-events-none scale-x-0 duration-500': videoPlayer < 0, 'duration-500': videoPlayer >= 0}", style="cursor:w-resize", @click="videoPlayer = -1")
+      //- .relative.w-full
+      video.absolute.overlay.object-contain.lg_object-cover.object-center.transition.duration-500(ref="videoPlayer", v-for="(slide, i) in slides", :src="slide.src", playsinline, :class="{'opacity-0': videoPlayer !== i}")
 </template>
 
 <script>
@@ -64,8 +96,25 @@ export default {
       infoVisible: true,
       title: '',
       // slides: [['saturation', 'rgba(0,255,0,1)'], ['luminosity', 'rgba(0,255,0,1)'], ['color-burn', 'red']],
-      slides: [['color-burn', 'cyan'], ['color-burn', 'red'], ['color-burn', 'violet']],
-      current: 0
+      // slides: [['color-burn', 'cyan'], ['color-burn', 'red'], ['color-burn', 'violet']],
+      slides: [
+        {
+          type: 'video',
+          src: 'https://res.cloudinary.com/folia/video/upload/v1612123842/flowers-5-wvr--fast1080plossless1_yghbnb.mp4',
+          // src: 'https://res.cloudinary.com/folia/video/upload/v1612125005/flowers-5-wvr_daxqlf.mp4', // full res
+          clip: [0, 5],
+          blur: 12,
+          title: ['001', 'Petra Cortright + Jamie Whipple', 'flowers', '2021']
+        }
+        // {
+        //   type: 'video',
+        //   src: 'https://res.cloudinary.com/folia/video/upload/v1612123842/flowers-5-wvr--fast1080plossless1_yghbnb.mp4',
+        //   // src: 'https://res.cloudinary.com/folia/video/upload/v1612125005/flowers-5-wvr_daxqlf.mp4', // full res
+        //   clip: [0, 5]
+        // },
+      ],
+      current: 0,
+      videoPlayer: -1
     }
   },
   computed: {
@@ -83,12 +132,29 @@ export default {
     },
     next () {
       this.current = this.current + 1 === this.slides.length ? 0 : this.current + 1
+    },
+    loopVideoClip (e, clip = '') {
+      if (clip[1] && e.target.currentTime >= clip[1]) {
+        e.target.currentTime = clip[0]
+      }
     }
   },
   watch: {
     current (to, from) {
       this.$refs.video[to].play()
       this.$refs.video[from].pause()
+    },
+    videoPlayer (i, was) {
+      const video = this.$refs.videoPlayer[i] || this.$refs.videoPlayer[was]
+      console.log(video)
+      if (video) {
+        if (i > -1) {
+          video.currentTime = 0
+          video.play()
+        } else {
+          video.pause()
+        }
+      }
     }
   },
   created () {
@@ -116,30 +182,30 @@ export default {
   max-height:calc(100vw / 3);
 }
 
-.index{
+/*.index{
   transition:transform 500ms;
   transform-origin:top left;
   &.index--squished{
     transform:scale(0.1, 1);
   }
-}
-.viewer{
+}*/
+/*.viewer{
   width:90%;
   transition:transform 500ms;
   transform-origin:right top;
   &.viewer--hidden{
     transform:scale(0,1);
   }
-}
+}*/
 
 @media (--breakpoint-md) {
-  .index.index--squished{transform:scale(0.25, 1);}
-  .viewer{width:75%;}
+  /*.index.index--squished{transform:scale(0.25, 1);}*/
+  /*.viewer{width:75%;}*/
 }
 
 @media (--breakpoint-lg) {
-  .index.index--squished{transform:scale(0.5, 1);}
-  .viewer{width:50%;}
+  /*.index.index--squished{transform:scale(0.5, 1);}*/
+  /*.viewer{width:50%;}*/
 }
 
 .slide-enter-active,
@@ -155,5 +221,12 @@ export default {
 }
 .slide-enter-active{
   transform-origin: top right;
+}
+
+.index svg{
+  & *{ transition: all 100ms }
+  &:hover *{
+    fill: currentColor;
+  }
 }
 </style>

@@ -1,22 +1,24 @@
 <template lang="pug">
   .work-thumb.relative.bg-yellow.hover_shadow-inner-red.overflow-hidden
     //- image (.bg-white to prevent shadow poking through...)
-    figure.pb-full.relative.z-10.cursor-pointer.bg-white.transition-transform.duration-500.bg-cover.bg-center(:data-dir="rand", :class="{'squish': squish}", @click="squish = !squish")
-      img.absolute.overlay.z-10.object-cover.object-center(:src="doc.data.icon.url", :alt="doc.data.icon.alt")
+    figure.pb-full.relative.z-10.cursor-pointer.bg-white.transition-transform.duration-400.bg-cover.bg-center(:data-dir="rand", :class="{'squish': squish}", @click="squish = !squish")
+      img.absolute.overlay.z-10.object-cover.object-center(:src="doc.data.icon.square.url", :alt="doc.data.icon.alt")
 
     small.absolute.overlay.z-0.flex.overflow-hidden.text-md
       .w-full.flex.flex-col(:class="tableClasses")
-        .flex-1.flex
-          .w-1x2.flex.items-center.justify-center
-            span {{ doc.data.artist }}
-          .w-1x2.flex.items-center.justify-center
+        .flex-1.flex.px-2
+          .w-1x2.flex.justify-center.items-center(v-for="artist in doc.data.artist.split(',')") {{ artist }}
+          //- .w-full.flex.items-center.justify-evenly
+            span
+          //- .w-1x2.flex.items-center.justify-center
             span {{ doc.data.year }}
-        .flex-1.flex
+        .flex-1.flex.px-2
+          .w-1x2.flex.items-center.justify-center {{ doc.data.year }}
           .w-1x2.flex.items-center.justify-center
             span
               template(v-if="work") {{ Number(work.printed) + 1 }}/{{ work.editions }}
               template(v-else) –
-          .w-1x2.flex.items-center.justify-center
+          //- .w-1x2.flex.items-center.justify-center
             span {{ work ? toETH(work.price) : doc.data.price_eth }} ETH
         .flex-1.flex(@click.stop)
           router-link.cursor-pointer(:to="{name: 'Work', params: {id: doc.uid}}").w-1x2.flex.items-center.justify-center.btn-theme-darken View
@@ -30,7 +32,7 @@ export default {
   props: ['doc'],
   data () {
     return {
-      squish: Math.random() >= 0.25,
+      squish: false, // Math.random() >= 0.25,
       rand: Math.floor(Math.random() * (3 - 0 + 1)),
       work: null
     }
@@ -39,10 +41,10 @@ export default {
     ...mapGetters(['toETH']),
     tableClasses () {
       return {
-        'pl-1x4': this.rand === 0,
-        'pl-1x4 md_pl-0 md_pt-1x4': this.rand === 1,
-        'pr-1x4': this.rand === 2,
-        'pr-1x4 md_pr-0 md_pb-1x4': this.rand === 3
+        'pl-1x5': this.rand === 0,
+        'pl-1x5 md_pl-0 md_pt-1x5': this.rand === 1,
+        'pr-1x5': this.rand === 2,
+        'pr-1x5 md_pr-0 md_pb-1x5': this.rand === 3
       }
     }
   },
@@ -73,7 +75,7 @@ figure{
   &[data-dir="1"]{
     transform-origin:left center;
     &.squish{
-      transform:scale(.25,1);
+      transform:scale(.22,1);
     }
   }
 
@@ -81,7 +83,7 @@ figure{
   &[data-dir="3"]{
     transform-origin:right center;
     &.squish{
-      transform:scale(.25,1);
+      transform:scale(.22,1);
     }
   }
 
@@ -89,13 +91,13 @@ figure{
     &[data-dir="1"]{
       transform-origin:top center;
       &.squish{
-        transform:scale(1,.25);
+        transform:scale(1,.22);
       }
     }
     &[data-dir="3"]{
       transform-origin:bottom center;
       &.squish{
-        transform:scale(1,.25);
+        transform:scale(1,.22);
       }
     }
   }
