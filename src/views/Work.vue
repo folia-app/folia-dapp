@@ -12,7 +12,7 @@
 
       .p-10.lg_p-16.left-align.flex-1.md_w-10x12(style="padding-bottom:10rem")
         header.text-lg
-          .div {{ workId }}
+          .div {{ workId(doc.uid) }}
           h1.font-bold {{ doc.data.artist }}
           div {{ doc.data.title }}
           div {{ doc.data.year }}
@@ -45,10 +45,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['toETH']),
-    workId () {
-      return ('00' + Number(this.$route.params.work) / 1000000).slice(-3)
-    }
+    ...mapGetters(['toETH', 'workId'])
   },
   created () {
     this.getDoc()

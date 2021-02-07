@@ -48,7 +48,7 @@
               .absolute.bottom-0.z-10.w-full.pb-12.md_px-12.xl_pb-16.text-md.lg_text-base.xl_text-lg.flex.flex-wrap.items-end.justiy-center.md_justify-between
                 //- title
                 router-link(:to="'/works/' + work.uid").w-full.md_w-auto.flex.flex-wrap.justify-center.group
-                  btn.px-10 {{ $store.getters.workId(work.uid) }}
+                  btn.px-10 {{ workId(work.uid) }}
                   .w-full.md_w-0
                   btn.px-10 {{ work.data.artist.split(',').join(' + ') }}
                   .w-full.md_w-0
@@ -99,7 +99,6 @@
 
 <script>
 import { mapState, mapGetters } from 'vuex'
-// import TitleCard from '@/components/Index__TitleCard'
 import Logo from '@/components/Logo'
 import svgFleuron from '@/components/SVG-Fleuron'
 import Info from '@/components/Info'
@@ -114,32 +113,11 @@ export default {
       squish: false,
       infoVisible: true,
       workPanel: this.$route.name === 'work',
-      // title: '',
-      // slides: [['saturation', 'rgba(0,255,0,1)'], ['luminosity', 'rgba(0,255,0,1)'], ['color-burn', 'red']],
-      // slides: [['color-burn', 'cyan'], ['color-burn', 'red'], ['color-burn', 'violet']],
-      slides: [
-        {
-          type: 'video',
-          // src: 'https://res.cloudinary.com/folia/video/upload/v1612123842/flowers-5-wvr--fast1080plossless1_yghbnb.mp4',
-          src: 'https://gateway.pinata.cloud/ipfs/QmfATQNSR2sbFAQwfgycZyzXqYcAT4TXPSeyyMTjekaUR9',
-          // src: 'https://res.cloudinary.com/folia/video/upload/v1612125005/flowers-5-wvr_daxqlf.mp4', // full res
-          clip: [0, 5],
-          blur: 12,
-          title: ['001', 'Petra Cortright + Jamie Whipple', 'flowers', '2021']
-        }
-        // {
-        //   type: 'video',
-        //   src: 'https://res.cloudinary.com/folia/video/upload/v1612123842/flowers-5-wvr--fast1080plossless1_yghbnb.mp4',
-        //   // src: 'https://res.cloudinary.com/folia/video/upload/v1612125005/flowers-5-wvr_daxqlf.mp4', // full res
-        //   clip: [0, 5]
-        // },
-      ],
-      current: 0,
-      videoPlayer: -1
+      current: 0
     }
   },
   computed: {
-    // ...mapGetters(['workPatches'])
+    ...mapGetters(['workId']),
     ...mapState({
       address: state => state.address,
       works: state => state.prismic.works
@@ -149,23 +127,8 @@ export default {
     }
   },
   methods: {
-    ...mapGetters(['toETH']),
-    // setTitle () {
-    //   const titles = ['fire sale', 'bargain<br>basement', 'cash grab', 'editions', 'pog<br>liquidation', 'get rich<br>schemes', 'wares']
-    //   const index = Math.floor(Math.random() * (3 - 0 + 1))
-    //   this.title = titles[index]
-    // },
     next () {
       this.current = this.current + 1 === this.slides.length ? 0 : this.current + 1
-    },
-    loopVideoClip (e, clip = '') {
-      if (clip[1] && e.target.currentTime >= clip[1]) {
-        e.target.currentTime = clip[0]
-      }
-    },
-    title (work) {
-      const id = '00' + (Number(work.uid) / 1000000)
-      return [id.slice(-3), work.data.artist.split(',').join(' + '), work.data.title, work.data.year]
     }
   },
   watch: {
@@ -173,18 +136,6 @@ export default {
       this.$refs.slidevideo[to].play()
       this.$refs.slidevideo[from].pause()
     },
-    // videoPlayer (i, was) {
-    //   const video = this.$refs.videoPlayer[i] || this.$refs.videoPlayer[was]
-    //   console.log(video)
-    //   if (video) {
-    //     if (i > -1) {
-    //       video.currentTime = 0
-    //       video.play()
-    //     } else {
-    //       video.pause()
-    //     }
-    //   }
-    // }
     viewWork (next, prev) {
       next = next && this.$el.querySelector('video[data-work="' + next + '"]')
       prev = prev && this.$el.querySelector('video[data-work="' + prev + '"]')
@@ -216,7 +167,6 @@ export default {
     if (this.$route.name === 'view') {
       this.$router.replace('/')
     }
-    // this.setTitle()
   }
 }
 </script>
@@ -239,22 +189,6 @@ export default {
 .y-squish-leave{
   max-height:calc(100vw / 3);
 }
-
-/*.index{
-  transition:transform 500ms;
-  transform-origin:top left;
-  &.index--squished{
-    transform:scale(0.1, 1);
-  }
-}*/
-/*.viewer{
-  width:90%;
-  transition:transform 500ms;
-  transform-origin:right top;
-  &.viewer--hidden{
-    transform:scale(0,1);
-  }
-}*/
 
 @media (--breakpoint-md) {
   /*.index.index--squished{transform:scale(0.25, 1);}*/
