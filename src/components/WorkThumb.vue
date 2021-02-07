@@ -2,7 +2,7 @@
   .work-thumb.relative.bg-yellow.hover_shadow-inner-red.overflow-hidden
     //- image (.bg-white to prevent shadow poking through...)
     figure.pb-full.relative.z-10.cursor-pointer.bg-white.transition-transform.duration-400.bg-cover.bg-center(:data-dir="rand", :class="{'squish': squish}", @click="squish = !squish")
-      img.absolute.overlay.z-10.object-cover.object-center(:src="doc.data.icon.square.url", :alt="doc.data.icon.alt")
+      img.absolute.overlay.z-10.object-cover.object-center(:src="doc.data.index_thumbnail.square.url", :alt="doc.data.index_thumbnail.alt")
 
     small.absolute.overlay.z-0.flex.overflow-hidden.text-md
       .w-full.flex.flex-col(:class="tableClasses")
@@ -21,7 +21,7 @@
           //- .w-1x2.flex.items-center.justify-center
             span {{ work ? toETH(work.price) : doc.data.price_eth }} ETH
         .flex-1.flex(@click.stop)
-          router-link.cursor-pointer(:to="{name: 'Work', params: {id: doc.uid}}").w-1x2.flex.items-center.justify-center.btn-theme-darken View
+          router-link.cursor-pointer(:to="{name: 'work', params: {work: doc.uid}}").w-1x2.flex.items-center.justify-center.btn-theme-darken View
           button.w-1x2.flex.items-center.justify-center.btn-theme-darken.cursor-pointer(@click="buy") Buy
 </template>
 

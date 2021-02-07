@@ -11,6 +11,7 @@ html{
 .overlay{
   @apply w-full h-full top-0 left-0;
 }
+.scrollbars-hidden::-webkit-scrollbar{ display: none; }
 
 .btn-theme-darken{
   &:hover, &:focus{ @apply bg-black-a03 }

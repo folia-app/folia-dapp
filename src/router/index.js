@@ -19,17 +19,22 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'Index',
+      name: 'index',
       component: Index,
       children: [
         {
-          path: '/works/:id',
-          name: 'Work',
+          path: '/works/:work',
+          name: 'work',
           component: Work,
           props: true,
           meta: { isSingle: true }
         }
       ]
+    },
+    {
+      path: '/works/:work/view',
+      name: 'view',
+      component: Index
     }
     // {
     //   path: '/badmin',

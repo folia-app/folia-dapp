@@ -1,52 +1,43 @@
 <template lang="pug">
   article.work.w-full
-    section.relative.overflow-y-scroll.h-screen(v-if="doc")
+    section.relative.overflow-y-scroll.h-screen.flex.flex-col.scrollbars-hidden(v-if="doc")
 
-      figure.relative.md_w-2x3.md-w-66vmin
-        .relative.pb-full
-          img.absolute.overlay.object-contain.object-left(:src="doc.data.icon.url")
+      figure.relative.w-10x12
+        img.block.max-w-100(:src="doc.data.icon.url")
+        //- play btn?
+        router-link.absolute.overlay.flex.items-center.justify-center(v-if="doc.data.video.url", :to="{name: 'view', params: {work: doc.uid}}")
+          <svg class="text-5xl lg_text-6xl xl_text-60 block" style="width:calc(59 / 38 * 1em); height: 1em" viewBox="0 0 59 38" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio>
+            <path d="M1 1.49251L57.3157 19L0.999998 36.5075L1 1.49251Z" stroke="white" stroke-width="1px" fill="none" />
+          </svg>
 
-      .p-10.md-p-16.left-align(style="padding-bottom:10rem")
+      .p-10.lg_p-16.left-align.flex-1.md_w-10x12(style="padding-bottom:10rem")
         header
+          .div {{ workId }}
           h1.font-bold {{ doc.data.artist }}
           div {{ doc.data.title }}
           div {{ doc.data.year }}
-          hr.mt-16
-          .flex.justify-between.items-center.center.py-3
-            .p-0.md_px-3.left-align
-              .font-sans No.
-            .p-0.md_px-3
-              .font-sans(v-if="work") {{ Number(work.printed) + 1 }}/{{ work.editions }}
-            .p-0.md_px-3
-              .font-sans {{ work ? toETH(work.price) : doc.data.price_eth }} ETH
-            .w-1x4.p-0.md_px-3
-              button.cursor-pointer.w-full.block.border.p-3.bg-gray-100(@click="buy") Buy
-          hr
+          rich-text.mt-20(style="max-width:32em", :field="doc.data.description")
 
-        //- section.mt3
-          table.mt-1em.w-full.font-sans.h6.md-h4(border="1", style="table-layout:fixed;white-space:nowrap")
-            thead
-              td.center No.
-              td.center Created
-              td Owner
-              td ETH
-            tr(v-for="(n, index) in 20")
-              td.center {{index + 1}}
-              td.center 2018.06.10
-              td.overflow-hidden(title="0xa9b4e8c355e1122ed2d4222252c2e47e48162e40", style="text-overflow:ellipsis") 0xa9b4e8c355e1122ed2d4222252c2e47e48162e40
-              td.right-align 0.<span v-if="index < 9">0</span>{{index + 1}}
+      footer.sticky.bottom-0.left-0.p-8.lg_p-12.xl_py-16.flex.flex-wrap.whitespace-no-wrap
+        btn.bg-white.w-1x2.md_w-1x4.border-gray-500 No.
+        btn.bg-white.w-1x2.md_w-1x4.border-gray-500 {{ Number(work.printed) + 1 }}/{{ work.editions }}
+        btn.bg-white.w-1x2.md_w-1x4.border-gray-500 {{ work ? toETH(work.price) : doc.data.price_eth }} ETH
+        button.w-1x2.md_w-1x4
+          btn.bg-white.border-gray-500.hover_bg-black.hover_text-white.focus_bg-black.focus_text-white
+            span.transform.scale-95 BUY
 
-        //- close btn
-        button.absolute.top-0.right-0.p-10.focus_outline-none(@click="$router.push('/')", aria-lable="Close")
-          svg-x.cursor-pointer(style="width:1.5rem;height:1.5rem;stroke-width:1px")
+    //- close btn
+    button.absolute.top-0.right-0.p-10.focus_outline-none(@click="$router.push('/')", aria-lable="Close")
+      svg-x.cursor-pointer(style="width:1.8rem;height:1.8rem;stroke-width:1px")
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
+import RichText from '@/components/RichText'
 import svgX from '@/components/SVG-X'
+import Btn from '@/components/Btn'
 export default {
   name: 'Work',
-  components: { svgX },
   data () {
     return {
       doc: undefined,
@@ -56,7 +47,7 @@ export default {
   computed: {
     ...mapGetters(['toETH']),
     workId () {
-      return this.$route.params.id / 1000000
+      return ('00' + Number(this.$route.params.work) / 1000000).slice(-3)
     }
   },
   created () {
@@ -69,12 +60,13 @@ export default {
       this.getWork(true)
     },
     async getDoc () {
-      this.doc = await this.$store.dispatch('prismic/getWork', this.$route.params.id)
+      this.doc = await this.$store.dispatch('prismic/getWork', this.$route.params.work)
     },
     async getWork (flush) {
       this.work = await this.$store.dispatch('getWork', { id: this.workId, flush })
     }
-  }
+  },
+  components: { RichText, svgX, Btn }
 }
 </script>
 

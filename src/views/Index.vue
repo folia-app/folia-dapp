@@ -1,7 +1,7 @@
 <template lang="pug">
   .index.bg-gray-900
     //- main body
-    section.index.relative.min-h-screen.bg-yellow.transition.duration-500.transform.origin-left(:class="{'scale-x-0 duration-700': videoPlayer >= 0, 'scale-x-10 md_scale-x-25 lg_scale-x-50': $route.meta.isSingle}")
+    section.index.relative.min-h-screen.bg-yellow.transition.duration-500.transform.origin-left(:class="{'scale-x-0 duration-700': viewWork, 'scale-x-10 md_scale-x-25 lg_scale-x-50': $route.meta.isSingle}")
       //- child work (squishes in)
       transition(name="fade")
         router-link(to="/", v-show="$route.meta.isSingle").absolute.overlay.bg-black.z-20.cursor-pointer.opacity-25.md_opacity-50
@@ -20,29 +20,31 @@
                   span.group-hover_opacity-0.truncate {{ address.slice(0, 6) + '...' + address.slice(-4) }}
                   span.hidden.group-hover_block.absolute.overlay.text-right.p-10 Disconnect
         //- landing
-        .w-full.bg-black.text-white.relative.flex.items-center.justify-center.font-sans.text-sm.h-90vh.md_h-93vh-off.md_h-screen(:style="{cursor: slides.length > 1 ? 'e-resize' : 'auto'}", @click="next")
+        .w-full.bg-black.text-white.relative.flex.items-center.justify-center.font-sans.text-sm.h-90vh.md_h-93vh-off.md_h-screen(:style="{cursor: works.length > 1 ? 'e-resize' : 'auto'}", @click="next")
           //- slides...
-          transition-group(name="slide")
-            figure.absolute.overlay.overflow-hidden.flex.flex-col.justify-between(v-for="(slide, i) in slides", v-show="current === i", :key="i")
+          transition-group(:name="works.length > 1 ? 'slide' : 'none'")
+            figure.absolute.overlay.overflow-hidden.flex.flex-col.justify-between(v-for="(work, i) in works", v-show="current === i", :key="i")
               //- [video]
-              template(v-if="slide.type === 'video'")
-                video.absolute.overlay.object-cover.object-center.transform.scale-150.origin-center(:src="slide.src", muted, ref="video", playsinline, @timeupdate="$event => loopVideoClip($event, slide.clip)", :autoplay="current === i")
+              template(v-if="work.data.video.url")
+                img.absolute.overlay.object-cover.object-center(v-if="work.data.icon.url", :src="work.data.icon.url", :alt="work.data.icon.alt")
+                video.absolute.overlay.object-cover.object-center.transform.scale-150.origin-center(:src="work.data.video.url", muted, ref="video", playsinline, @timeupdate="$event => loopVideoClip($event, [0, 5])", :autoplay="current === i")
                 //- (blur?)
-                .absolute.overlay(:style="{backdropFilter: `blur(${slide.blur}px)`}", v-if="slide.blur")
+                .absolute.overlay(:style="{backdropFilter: `blur(12px)`}")
                 //- play btn
                 .relative.z-10.flex-1.w-full.flex.justify-center.items-center.pt-16.xl_pt-20
-                  button.p-8.focus_outline-none(aria-label="Play", @click="videoPlayer = i")
+                  button.p-8.focus_outline-none(aria-label="Play", @click="$router.push({name: 'view', params: {work: work.uid}})")
                     <svg class="text-60 md_text-72 xl_text-96" style="width:calc(59 / 38 * 1em); height: 1em" viewBox="0 0 59 38" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio>
-                      <path d="M1 1.49251L57.3157 19L0.999998 36.5075L1 1.49251Z" stroke="currentColor" stroke-width="0.66px"/>
+                      <path d="M1 1.49251L57.3157 19L0.999998 36.5075L1 1.49251Z" stroke-off="currentColor" stroke-width-off="0.66px" fill="rgba(0,0,0,0.15)" />
                     </svg>
 
               //- bottom info
               .relative.z-10.w-full.pb-12.md_px-12.xl_pb-16.text-md.lg_text-base.xl_text-lg.flex.flex-wrap.items-end.justiy-center.md_justify-between
                 //- title
                 .w-full.md_w-auto.flex.flex-wrap.justify-center
-                  router-link.border.rounded-full.border-white.p-6.md_p-8.px-12.-mb-px.text-center(v-for="txt in slide.title", v-html="txt", to="/works/1000000")
+                  router-link.border.rounded-full.border-white.p-6.md_p-8.px-12.-mb-px.text-center(v-for="txt in title(work)", v-html="txt", :to="{name: 'work', params: {work: work.uid}}")
                 //- buy btn
                 button.mx-auto.md_m-0.border.rounded-full.border-white.p-6.md_py-8.px-20.font-bold.hover_bg-white.hover_text-gray-800.focus_outline-none(style="font-size:0.95em") BUY
+
           //- dots
           ul.absolute.bottom-0.left-0.w-full.flex.items-center.justify-center.pb-6(v-if="slides.length > 1")
             li.p-4.cursor-pointer(v-for="(slide, i) in slides", @click.stop="current = i")
@@ -75,9 +77,9 @@
         router-view
 
     //- video player
-    .fixed.overlay.transition.transform.origin-right.flex.p-4.md_p-16.lg_p-24.xl_p-40(:class="{'pointer-events-none scale-x-0 duration-500': videoPlayer < 0, 'duration-500': videoPlayer >= 0}", style="cursor:w-resize", @click="videoPlayer = -1")
+    .fixed.overlay.transition.transform.origin-right(:class="{'pointer-events-none scale-x-0 duration-500': !viewWork, 'duration-500': viewWork}", style="cursor:w-resize", @click="$router.go(-1)")
       //- .relative.w-full
-      video.absolute.overlay.object-contain.lg_object-cover.object-center.transition.duration-500(ref="videoPlayer", v-for="(slide, i) in slides", :src="slide.src", playsinline, :class="{'opacity-0': videoPlayer !== i}")
+      video.absolute.overlay.object-cover.object-center.transition.duration-500(v-for="(work, i) in works", :src="work.data.video.url", playsinline, :class="{'opacity-0': viewWork !== work.uid}", :data-work="work.uid")
 </template>
 
 <script>
@@ -94,13 +96,14 @@ export default {
     return {
       squish: false,
       infoVisible: true,
-      title: '',
+      // title: '',
       // slides: [['saturation', 'rgba(0,255,0,1)'], ['luminosity', 'rgba(0,255,0,1)'], ['color-burn', 'red']],
       // slides: [['color-burn', 'cyan'], ['color-burn', 'red'], ['color-burn', 'violet']],
       slides: [
         {
           type: 'video',
-          src: 'https://res.cloudinary.com/folia/video/upload/v1612123842/flowers-5-wvr--fast1080plossless1_yghbnb.mp4',
+          // src: 'https://res.cloudinary.com/folia/video/upload/v1612123842/flowers-5-wvr--fast1080plossless1_yghbnb.mp4',
+          src: 'https://gateway.pinata.cloud/ipfs/QmfATQNSR2sbFAQwfgycZyzXqYcAT4TXPSeyyMTjekaUR9',
           // src: 'https://res.cloudinary.com/folia/video/upload/v1612125005/flowers-5-wvr_daxqlf.mp4', // full res
           clip: [0, 5],
           blur: 12,
@@ -122,14 +125,17 @@ export default {
     ...mapState({
       address: state => state.address,
       works: state => state.prismic.works
-    })
+    }),
+    viewWork () {
+      return this.$route.name === 'view' ? this.$route.params.work : null
+    }
   },
   methods: {
-    setTitle () {
-      const titles = ['fire sale', 'bargain<br>basement', 'cash grab', 'editions', 'pog<br>liquidation', 'get rich<br>schemes', 'wares']
-      const index = Math.floor(Math.random() * (3 - 0 + 1))
-      this.title = titles[index]
-    },
+    // setTitle () {
+    //   const titles = ['fire sale', 'bargain<br>basement', 'cash grab', 'editions', 'pog<br>liquidation', 'get rich<br>schemes', 'wares']
+    //   const index = Math.floor(Math.random() * (3 - 0 + 1))
+    //   this.title = titles[index]
+    // },
     next () {
       this.current = this.current + 1 === this.slides.length ? 0 : this.current + 1
     },
@@ -137,6 +143,10 @@ export default {
       if (clip[1] && e.target.currentTime >= clip[1]) {
         e.target.currentTime = clip[0]
       }
+    },
+    title (work) {
+      const id = '00' + (Number(work.uid) / 1000000)
+      return [id.slice(-3), work.data.artist.split(',').join(' + '), work.data.title, work.data.year]
     }
   },
   watch: {
@@ -144,21 +154,38 @@ export default {
       this.$refs.video[to].play()
       this.$refs.video[from].pause()
     },
-    videoPlayer (i, was) {
-      const video = this.$refs.videoPlayer[i] || this.$refs.videoPlayer[was]
-      console.log(video)
-      if (video) {
-        if (i > -1) {
-          video.currentTime = 0
-          video.play()
-        } else {
-          video.pause()
-        }
+    // videoPlayer (i, was) {
+    //   const video = this.$refs.videoPlayer[i] || this.$refs.videoPlayer[was]
+    //   console.log(video)
+    //   if (video) {
+    //     if (i > -1) {
+    //       video.currentTime = 0
+    //       video.play()
+    //     } else {
+    //       video.pause()
+    //     }
+    //   }
+    // }
+    viewWork (next, prev) {
+      console.log(next, prev)
+      next = next && this.$el.querySelector('video[data-work="' + next + '"]')
+      prev = prev && this.$el.querySelector('video[data-work="' + prev + '"]')
+      console.log(next)
+      if (next) {
+        next.currentTime = 0
+        next.play()
+      }
+      if (prev) {
+        prev.pause()
       }
     }
   },
   created () {
-    this.setTitle()
+    // prevent load on view (for now...)
+    if (this.$route.name === 'view') {
+      this.$router.replace('/')
+    }
+    // this.setTitle()
   }
 }
 </script>

@@ -6,12 +6,12 @@ exports.handler = async function (event, context) {
     if (event.body === password) {
       return {
         statusCode: 200,
-        body: JSON.stringify({ status: 200 })
+        body: JSON.stringify({ status: 200, msg: 'success' })
       }
     } else {
       return {
-        statusCode: 400,
-        body: JSON.stringify({ status: 401, pwd: password, ev: event })
+        statusCode: 401,
+        body: JSON.stringify({ status: 401, msg: 'incorrect password' })
       }
     }
   } catch (e) {
