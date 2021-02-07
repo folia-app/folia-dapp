@@ -32,17 +32,18 @@ Vue.use(PrismicVue, {
 })
 
 const pwd = async cb => {
-  const p = sessionStorage.getItem('p') || window.prompt('password')
-  const checkPwd = (p) => fetch('/.netlify/functions/pwd', { method: 'POST', body: p })
+  return cb()
+  // const p = sessionStorage.getItem('p') || window.prompt('password')
+  // const checkPwd = (p) => fetch('/.netlify/functions/pwd', { method: 'POST', body: p })
 
-  if ((await checkPwd(p)).status === 200) {
-    sessionStorage.setItem('p', p)
-    cb()
-  } else {
-    // ask again
-    sessionStorage.removeItem('p')
-    pwd(cb)
-  }
+  // if ((await checkPwd(p)).status === 200) {
+  //   sessionStorage.setItem('p', p)
+  //   cb()
+  // } else {
+  //   // ask again
+  //   sessionStorage.removeItem('p')
+  //   pwd(cb)
+  // }
 }
 
 pwd(() => {
