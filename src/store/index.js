@@ -47,7 +47,8 @@ export default new Vuex.Store({
     works: []
   },
   getters: {
-    toETH: () => (wei) => web3?.utils.fromWei(wei) ?? '-'
+    toETH: () => (wei) => web3?.utils.fromWei(wei) ?? '-',
+    workId: () => (txt) => ('00' + Number(txt) / 1000000).slice(-3) // 001
   },
   mutations: {
     SIGN_IN (state, address) {
@@ -144,7 +145,7 @@ export default new Vuex.Store({
       let work = state.works.find(work => work.id === id)
       if (!flush && work) return work
       // get new data
-      if (foliaControllerContract) {
+      if (foliaControllerContract && id) {
         work = await foliaControllerContract.methods.works(id).call()
         commit('SAVE_WORK', { id, ...work })
       }

@@ -23,6 +23,8 @@ module.exports = {
       black: '#000',
       'black-a03': 'rgba(0,0,0,0.03)',
       'black-a15': 'rgba(0,0,0,0.15)',
+      'black-a30': 'rgba(0,0,0,0.30)',
+      paper: 'rgb(248,248,248)',
 
       yellow: 'yellow',
       red: 'red',
@@ -285,6 +287,10 @@ module.exports = {
     }),
     minHeight: {
       0: '0',
+      '25vw': '25vw',
+      '33vw': '33vw',
+      '50vw': '50vw',
+      '100vw': '100vw',
       full: '100%',
       screen: '100vh'
     },
@@ -648,7 +654,7 @@ module.exports = {
     appearance: ['responsive'],
     backgroundAttachment: ['responsive'],
     backgroundClip: ['responsive'],
-    backgroundColor: ['responsive', 'hover', 'focus'],
+    backgroundColor: ['responsive', 'hover', 'focus', 'group-hover'],
     backgroundImage: ['responsive'],
     gradientColorStops: ['responsive', 'hover', 'focus'],
     backgroundOpacity: ['responsive', 'hover', 'focus'],
