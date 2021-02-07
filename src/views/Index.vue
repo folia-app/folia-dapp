@@ -1,82 +1,89 @@
 <template lang="pug">
   .index.bg-gray-900
-    //- main body
-    section.index.relative.min-h-screen.bg-yellow.transition.duration-500.transform.origin-left(:class="{'scale-x-0 duration-700': viewWork, 'scale-x-10 md_scale-x-25 lg_scale-x-50': $route.meta.isSingle}")
-      //- child work (squishes in)
+
+    .relative.transform.transition-transform.origin-left.duration-500(:class="{'scale-x-0': viewWork}")
+      //- (work viewer side panel)
+      section.sticky.z-20.top-0.right-0.w-full.h-0
+        .absolute.top-0.right-0.w-11x12.md_w-3x4.lg_w-1x2.transition.duration-500.transform.origin-right.bg-white.min-h-screen(:class="{'scale-x-0': !workPanel}")
+          transition(name="fade")
+            work-view(v-if="workPanel", :key='$route.params.work')
+      //- close viewer
       transition(name="fade")
-        router-link(to="/", v-show="$route.meta.isSingle").absolute.overlay.bg-black.z-20.cursor-pointer.opacity-25.md_opacity-50
+        button(v-show="$route.meta.isSingle", @click="$router.push('/')").absolute.overlay.bg-black.z-10.cursor-pointer.opacity-25.md_opacity-50
 
-      //- main
-      .flex.flex-wrap.content-start.transition-opacity.duration-500
-        header.absolute.top-0.left-0.w-full.z-20.text-white
-          .absolute.top-0.left-0.w-full
-            .flex.w-full.justify-between.items-center
-              .p-10.px-12
-                logo.block.text-white.h-12(aria-label="Folia")
-                //- svg-fleuron.block.text-white(style="height:3rem")
-              div
-                button.p-10.focus_outline-none(v-if="!address", @click="$store.dispatch('connect')") Connect
-                button.p-10.focus_outline-none.relative.group(v-else, @click="$store.dispatch('disconnect')")
-                  span.group-hover_opacity-0.truncate {{ address.slice(0, 6) + '...' + address.slice(-4) }}
-                  span.hidden.group-hover_block.absolute.overlay.text-right.p-10 Disconnect
-        //- landing
-        .w-full.bg-black.text-white.relative.flex.items-center.justify-center.font-sans.text-sm.h-90vh.md_h-93vh-off.md_h-screen(:style="{cursor: works.length > 1 ? 'e-resize' : 'auto'}", @click="next")
-          //- slides...
-          transition-group(:name="works.length > 1 ? 'slide' : 'none'")
-            figure.absolute.overlay.overflow-hidden.flex.flex-col.justify-between(v-for="(work, i) in works", v-show="current === i", :key="i")
-              //- [video]
-              template(v-if="work.data.video.url")
-                img.absolute.overlay.object-cover.object-center(v-if="work.data.icon.url", :src="work.data.icon.url", :alt="work.data.icon.alt")
-                video.absolute.overlay.object-cover.object-center.transform.scale-150.origin-center(:src="work.data.video.url", muted, ref="video", playsinline, @timeupdate="$event => loopVideoClip($event, [0, 5])", :autoplay="current === i")
-                //- (blur?)
-                .absolute.overlay(:style="{backdropFilter: `blur(12px)`}")
-                //- play btn
-                .relative.z-10.flex-1.w-full.flex.justify-center.items-center.pt-16.xl_pt-20
-                  button.p-8.focus_outline-none(aria-label="Play", @click="$router.push({name: 'view', params: {work: work.uid}})")
-                    <svg class="text-60 md_text-72 xl_text-96" style="width:calc(59 / 38 * 1em); height: 1em" viewBox="0 0 59 38" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio>
-                      <path d="M1 1.49251L57.3157 19L0.999998 36.5075L1 1.49251Z" stroke-off="currentColor" stroke-width-off="0.66px" fill="rgba(0,0,0,0.15)" />
-                    </svg>
+      //- main body
+      section.index.relative.min-h-screen.bg-yellow.transition.duration-500.transform.origin-left(:class="{'scale-x-10 md_scale-x-25 lg_scale-x-50': workPanel}")
 
-              //- bottom info
-              .relative.z-10.w-full.pb-12.md_px-12.xl_pb-16.text-md.lg_text-base.xl_text-lg.flex.flex-wrap.items-end.justiy-center.md_justify-between
-                //- title
-                .w-full.md_w-auto.flex.flex-wrap.justify-center
-                  router-link.bg-black-a15.rounded-full.p-6.md_py-8.px-12.-mb-px.text-center(v-for="txt in title(work)", v-html="txt", :to="{name: 'work', params: {work: work.uid}}")
-                //- buy btn
-                button.mx-auto.md_m-0.bg-black-a15.rounded-full.p-6.md_py-8.px-20.font-bold.focus_outline-none(style="font-size:0.95em")
-                  | BUY
-                  //- | {{ work.data.price_eth }} ETH
+        //- main
+        .flex.flex-wrap.content-start.transition-opacity.duration-500
+          header.absolute.top-0.left-0.w-full.z-20.text-white
+            .absolute.top-0.left-0.w-full
+              .flex.w-full.justify-between.items-center
+                .p-10.px-12
+                  logo.block.text-white.h-12(aria-label="Folia")
+                  //- svg-fleuron.block.text-white(style="height:3rem")
+                div
+                  button.p-10.focus_outline-none(v-if="!address", @click="$store.dispatch('connect')") Connect
+                  button.p-10.focus_outline-none.relative.group(v-else, @click="$store.dispatch('disconnect')")
+                    span.group-hover_opacity-0.truncate {{ address.slice(0, 6) + '...' + address.slice(-4) }}
+                    span.hidden.group-hover_block.absolute.overlay.text-right.p-10 Disconnect
+          //- landing
+          .w-full.bg-black.text-white.relative.flex.items-center.justify-center.font-sans.text-sm.h-90vh.md_h-93vh-off.md_h-screen(:style="{cursor: works.length > 1 ? 'e-resize' : 'auto'}", @click="next")
+            //- slides...
+            transition-group(:name="works.length > 1 ? 'slide' : 'none'")
+              figure.absolute.overlay.overflow-hidden.flex.flex-col.justify-between(v-for="(work, i) in works", v-show="current === i", :key="i")
+                //- [video]
+                template(v-if="work.data.video.url")
+                  img.absolute.overlay.object-cover.object-center(v-if="work.data.icon.url", :src="work.data.icon.url", :alt="work.data.icon.alt")
+                  video.absolute.overlay.object-cover.object-center.transform.scale-150.origin-center(:src="work.data.video.url", muted, ref="video", playsinline, @timeupdate="$event => loopVideoClip($event, [0, 5])", :autoplay="current === i")
+                  //- (blur?)
+                  .absolute.overlay(:style="{backdropFilter: `blur(12px)`}")
+                  //- play btn
+                  .relative.z-10.flex-1.w-full.flex.justify-center.items-center.pt-16.xl_pt-20
+                    button.p-8.focus_outline-none(aria-label="Play", @click="$router.push({name: 'view', params: {work: work.uid}})")
+                      <svg class="text-60 md_text-72 xl_text-96" style="width:calc(59 / 38 * 1em); height: 1em" viewBox="0 0 59 38" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio>
+                        <path d="M1 1.49251L57.3157 19L0.999998 36.5075L1 1.49251Z" stroke-off="currentColor" stroke-width-off="0.66px" fill="rgba(0,0,0,0.15)" />
+                      </svg>
 
-          //- dots
-          ul.absolute.bottom-0.left-0.w-full.flex.items-center.justify-center.pb-6(v-if="slides.length > 1")
-            li.p-4.cursor-pointer(v-for="(slide, i) in slides", @click.stop="current = i")
-              .w-4.h-2.border-b.border-white(:class="{'bg-white': current === i}")
-          //- span.opacity-50 (videos/slideshow)
-        //- list
-        template(v-for="n in 1")
-          //- thumbs...
-          work-thumb.w-full.md_w-1x2.lg_w-1x3.xl_w-1x4(v-for="(doc, index) in works", :doc="doc", :key="doc.id + n")
+                //- bottom info
+                .relative.z-10.w-full.pb-12.md_px-12.xl_pb-16.text-md.lg_text-base.xl_text-lg.flex.flex-wrap.items-end.justiy-center.md_justify-between
+                  //- title
+                  .w-full.md_w-auto.flex.flex-wrap.justify-center
+                    router-link.bg-black-a15.rounded-full.p-6.md_py-8.px-12.-mb-px.text-center(v-for="txt in title(work)", v-html="txt", :to="{name: 'work', params: {work: work.uid}}")
+                  //- buy btn
+                  button.mx-auto.md_m-0.bg-black-a15.rounded-full.p-6.md_py-8.px-20.font-bold.focus_outline-none(style="font-size:0.95em")
+                    | BUY
+                    //- | {{ work.data.price_eth }} ETH
 
-        //- 002...
-        .relative.block.w-full.md_w-1x2.lg_w-1x3.xl_w-1x4
-          .pb-full
-            .absolute.overlay.flex.items-center.justify-center.bg-black.text-white.border-r.border-gray-800.font-sans.group
-              span.group-hover_hidden 002
-              span.hidden.group-hover_inline Coming Soon
+            //- dots
+            //- ul.absolute.bottom-0.left-0.w-full.flex.items-center.justify-center.pb-6(v-if="slides.length > 1")
+              li.p-4.cursor-pointer(v-for="(slide, i) in slides", @click.stop="current = i")
+                .w-4.h-2.border-b.border-white(:class="{'bg-white': current === i}")
+            //- span.opacity-50 (videos/slideshow)
 
-        //- collectors link
-        .relative.block.w-full.md_w-1x2.lg_w-1x3.xl_w-1x4
-          .pb-full
-            .absolute.overlay.flex.items-center.justify-center.bg-black.text-white.font-sans.group
-              span.group-hover_hidden Collectors
-              span.hidden.group-hover_inline Coming Soon
-      //- info
-      info(v-show="infoVisible && works.length > 0")
+          //- list
+          template(v-for="n in 1")
+            //- thumbs...
+            //- work-thumb.w-full.md_w-1x2.lg_w-1x3(v-for="(doc, index) in works", :doc="doc", :key="doc.id + n")
+            router-link.w-full.md_w-1x2.lg_w-1x3.bg-yellow.hover_shadow-inner-red(v-for="work in works", :to="{name: 'work', params: {work: work.uid}}")
+              .pb-full.relative
+                .absolute.overlay.flex.items-center.justify-center {{ ('00' + (Number(work.uid) / 1000000)).slice(-3) }}
 
-    //- viewer
-    section.fixed.top-0.right-0.h-screen.viewer.w-11x12.md_w-3x4.lg_w-1x2.transition.duration-500.transform.origin-right.bg-white(:class="{'scale-x-0': !$route.meta.isSingle}")
-      transition(name="fade")
-        router-view
+          //- 002...
+          .relative.block.w-full.md_w-1x2.lg_w-1x3
+            .pb-full
+              .absolute.overlay.flex.items-center.justify-center.bg-black.text-white.border-b.md_border-b-0.md_border-r.border-gray-800.font-sans.group
+                span.group-hover_hidden 002
+                span.hidden.group-hover_inline Coming Soon
+
+          //- collectors link
+          .relative.block.w-full.md_w-1x2.lg_w-1x3
+            .pb-full
+              .absolute.overlay.flex.items-center.justify-center.bg-black.text-white.font-sans.group
+                span.group-hover_hidden Collectors
+                span.hidden.group-hover_inline Coming Soon
+        //- info
+        info(v-show="infoVisible && works.length > 0")
 
     //- video player
     .fixed.overlay.transition.transform.origin-right(:class="{'pointer-events-none scale-x-0 duration-500': !viewWork, 'duration-500': viewWork}", style="cursor:w-resize", @click="$router.go(-1)")
@@ -90,14 +97,16 @@ import { mapState, mapGetters } from 'vuex'
 import Logo from '@/components/Logo'
 import svgFleuron from '@/components/SVG-Fleuron'
 import Info from '@/components/Info'
-import WorkThumb from '@/components/WorkThumb'
+// import WorkThumb from '@/components/WorkThumb'
+import WorkView from '@/views/Work'
 export default {
   name: 'Index',
-  components: { Logo, Info, WorkThumb, svgFleuron },
+  components: { WorkView, Logo, Info, svgFleuron },
   data () {
     return {
       squish: false,
       infoVisible: true,
+      workPanel: this.$route.name === 'work',
       // title: '',
       // slides: [['saturation', 'rgba(0,255,0,1)'], ['luminosity', 'rgba(0,255,0,1)'], ['color-burn', 'red']],
       // slides: [['color-burn', 'cyan'], ['color-burn', 'red'], ['color-burn', 'violet']],
@@ -180,6 +189,14 @@ export default {
       }
       if (prev) {
         prev.pause()
+      }
+    },
+    '$route' (to, from) {
+      if (to.name === 'work') {
+        this.workPanel = true
+      }
+      if (to.name === 'index') {
+        this.workPanel = false
       }
     }
   },
