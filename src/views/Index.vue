@@ -41,9 +41,11 @@
               .relative.z-10.w-full.pb-12.md_px-12.xl_pb-16.text-md.lg_text-base.xl_text-lg.flex.flex-wrap.items-end.justiy-center.md_justify-between
                 //- title
                 .w-full.md_w-auto.flex.flex-wrap.justify-center
-                  router-link.border.rounded-full.border-white.p-6.md_p-8.px-12.-mb-px.text-center(v-for="txt in title(work)", v-html="txt", :to="{name: 'work', params: {work: work.uid}}")
+                  router-link.bg-black-a15.rounded-full.p-6.md_py-8.px-12.-mb-px.text-center(v-for="txt in title(work)", v-html="txt", :to="{name: 'work', params: {work: work.uid}}")
                 //- buy btn
-                button.mx-auto.md_m-0.border.rounded-full.border-white.p-6.md_py-8.px-20.font-bold.hover_bg-white.hover_text-gray-800.focus_outline-none(style="font-size:0.95em") BUY
+                button.mx-auto.md_m-0.bg-black-a15.rounded-full.p-6.md_py-8.px-20.font-bold.focus_outline-none(style="font-size:0.95em")
+                  | BUY
+                  //- | {{ work.data.price_eth }} ETH
 
           //- dots
           ul.absolute.bottom-0.left-0.w-full.flex.items-center.justify-center.pb-6(v-if="slides.length > 1")
@@ -83,7 +85,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 // import TitleCard from '@/components/Index__TitleCard'
 import Logo from '@/components/Logo'
 import svgFleuron from '@/components/SVG-Fleuron'
@@ -131,6 +133,7 @@ export default {
     }
   },
   methods: {
+    ...mapGetters(['toETH']),
     // setTitle () {
     //   const titles = ['fire sale', 'bargain<br>basement', 'cash grab', 'editions', 'pog<br>liquidation', 'get rich<br>schemes', 'wares']
     //   const index = Math.floor(Math.random() * (3 - 0 + 1))
