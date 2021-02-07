@@ -1,6 +1,6 @@
 module.exports = {
   lintOnSave: false,
-  // runtimeCompiler: true,
+  runtimeCompiler: true, // needed for some reason even though I'm not using prismic components...
 
   devServer: {
     proxy: {
