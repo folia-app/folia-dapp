@@ -55,7 +55,7 @@
                   btn.px-10 {{ work.data.title }}
                   btn.px-10 {{ work.data.year }}
                 //- buy btn
-                button.mx-auto.md_m-0
+                button.mx-auto.md_m-0.focus_outline-none(@click="buy(work.uid)")
                   btn.px-20
                     | BUY
                   //- | {{ work.data.price_eth }} ETH
@@ -129,6 +129,9 @@ export default {
   methods: {
     next () {
       this.current = this.current + 1 === this.works.length ? 0 : this.current + 1
+    },
+    buy (uid) {
+      this.$store.dispatch('buy', this.workId(uid))
     }
   },
   watch: {
