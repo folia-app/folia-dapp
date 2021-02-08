@@ -4,16 +4,17 @@
       header.p-8.lg_p-12.lg_pb-16.flex.items-center
         .flex-1
           .flex.mb-10
-            svg-fleuron.block.mr-2(style="width:0.98em;height:0.98em;margin-bottom:2px")
+            svg-fleuron.block.mr-2(style="width:0.96em;height:0.96em")
             div.leading-none {{ workId(doc.uid, true) }}
           //- div.leading-none {{ workId(doc.uid, true) }} — #[h1.inline {{ doc.data.artist }}] — {{ doc.data.title }} — {{ doc.data.year }}
           h1.font-bold {{ doc.data.artist }}
           div {{ doc.data.title }}, {{ doc.data.year }}
           div {{ work ? work.printed + '/' + work.editions : doc.data.edition }}
 
-        button.w-auto
+        button.block.group.relative.focus_outline-none(@click="buy", :disabled="!work")
           btn.bg-gray-900.px-12(theme="none")
-            span.transform.scale-95 {{ weiToETH(work.price) }} ETH
+            span.absolute.overlay.flex.items-center.justify-center.opacity-0.group-hover_opacity-100 BUY
+            span.group-hover_opacity-0 {{ work ? weiToETH(work.price) : doc.data.price_eth }} ETH
 
             //- rich-text.mt-20(style="max-width:32em", :field="doc.data.description")
         //- .sticky.top-0.left-0.w-full
@@ -94,15 +95,7 @@ export default {
       this.doc = await this.$store.dispatch('prismic/getWork', this.$route.params.work)
     },
     async fetchWork (flush) {
-      console.log(this.workId(this.$route.params.work))
       this.work = await this.$store.dispatch('getWork', { id: this.workId(this.$route.params.work), flush })
-    },
-    onScroll (e) {
-      requestAnimationFrame(() => {
-        // const y = e.target.scrollTop
-        // this.imgScale = Math.min(1, Math.max(1 - y * 0.0001, 0.95))
-        // this.imgOpacity = Math.min(1, Math.max(1 - y * 0.003, 0.05))
-      })
     }
   },
   components: { RichText, svgX, Btn, svgFleuron }
