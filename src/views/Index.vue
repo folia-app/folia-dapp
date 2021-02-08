@@ -5,7 +5,7 @@
     .relative.transform.transition-transform.origin-left.duration-700(:class="{'scale-x-0': viewWork}")
       //- (WORK PANEL)
       .sticky.z-20.top-0.right-0.w-full.h-0
-        .absolute.top-0.right-0.w-full.md_w-3x4.lg_w-full.transition.duration-500.transform.origin-right.bg-black.min-h-screen(:class="{'scale-x-0': !workPanel}")
+        .absolute.top-0.right-0.w-full.sm_w-3x4.lg_w-1x2.transition.duration-500.transform.origin-right.bg-black.min-h-screen(:class="{'scale-x-0': !workPanel}")
           transition(name="fade")
             work-view(v-if="workPanel", :key='$route.params.work')
       //- close workpanel
@@ -13,7 +13,7 @@
         button(v-show="workPanel", @click="$router.push('/')").absolute.overlay.bg-black.z-10.cursor-pointer.opacity-25.md_opacity-50
 
       //- MAIN
-      main.index.relative.min-h-screen.transition.duration-500.transform.origin-left.flex.flex-wrap(:class="{'scale-x-0 md_scale-x-25 lg_scale-x-0': workPanel}")
+      main.index.relative.min-h-screen.transition.duration-500.transform.origin-left.flex.flex-wrap(:class="{'scale-x-0 sm_scale-x-25 lg_scale-x-50': workPanel}")
         header.absolute.top-0.left-0.w-full.z-20.text-white
           .absolute.top-0.left-0.w-full
             .flex.w-full.justify-between.items-center
