@@ -92,7 +92,7 @@
         info.w-full.min-h-100vw.md_min-h-50vw.lg_min-h-33vw(v-show="infoVisible && works.length > 0")
 
     //- video player
-    .fixed.overlay.transition.transform.duration-700.origin-right.py-16.md_p-20.xl_p-24.flex.bg-gray-200(ref="player", :class="{'pointer-events-none scale-x-0': !viewWork}", style="cursor:w-resize", @click="$router.go(-1)")
+    .fixed.overlay.transition.transform.duration-700.origin-right.py-5.md_p-10.lg_p-20.xl_p-24.flex.bg-gray-200(ref="player", :class="{'pointer-events-none scale-x-0': !viewWork}", style="cursor:w-resize", @click="$router.go(-1)")
       .relative.w-full
         video.absolute.overlay.object-contain.object-center.transition-opacity.duration-700.pointer-events-none(v-for="(work, i) in works", :src="work.data.video.url", playsinline, :data-work="work.uid", @contextmenu.prevent, :class="{'opacity-0': viewWork !== work.uid}")
 </template>
