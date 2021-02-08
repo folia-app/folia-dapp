@@ -18,6 +18,8 @@ html{
   &:focus{ @apply outline-none; }
 }
 
+.children-mt-em > * + *{ margin-top: 1.2em; }
+
 button{
   font-weight: inherit;
 }

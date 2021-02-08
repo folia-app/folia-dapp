@@ -1,11 +1,11 @@
 <template lang="pug">
-  .index.bg-gray-900
+  .index
 
     //- BODY - squishes for video player
     .relative.transform.transition-transform.origin-left.duration-700(:class="{'scale-x-0': viewWork}")
       //- (WORK PANEL)
       .sticky.z-20.top-0.right-0.w-full.h-0
-        .absolute.top-0.right-0.w-11x12.md_w-3x4.lg_w-1x2.transition.duration-500.transform.origin-right.bg-white.min-h-screen(:class="{'scale-x-0': !workPanel}")
+        .absolute.top-0.right-0.w-full.md_w-3x4.lg_w-full.transition.duration-500.transform.origin-right.bg-black.min-h-screen(:class="{'scale-x-0': !workPanel}")
           transition(name="fade")
             work-view(v-if="workPanel", :key='$route.params.work')
       //- close workpanel
@@ -13,7 +13,7 @@
         button(v-show="workPanel", @click="$router.push('/')").absolute.overlay.bg-black.z-10.cursor-pointer.opacity-25.md_opacity-50
 
       //- MAIN
-      main.index.relative.min-h-screen.transition.duration-500.transform.origin-left.flex.flex-wrap(:class="{'scale-x-10 md_scale-x-25 lg_scale-x-50': workPanel}")
+      main.index.relative.min-h-screen.transition.duration-500.transform.origin-left.flex.flex-wrap(:class="{'scale-x-0 md_scale-x-25 lg_scale-x-0': workPanel}")
         header.absolute.top-0.left-0.w-full.z-20.text-white
           .absolute.top-0.left-0.w-full
             .flex.w-full.justify-between.items-center
@@ -47,8 +47,8 @@
               //- bottom info
               .absolute.bottom-0.z-10.w-full.pb-12.md_px-12.xl_pb-16.text-md.lg_text-base.xl_text-lg.flex.flex-wrap.items-end.justiy-center.md_justify-between
                 //- title
-                router-link(:to="'/works/' + work.uid").w-full.md_w-auto.flex.flex-wrap.justify-center.group
-                  btn.px-10 {{ workId(work.uid) }}
+                router-link(:to="'/works/' + work.uid").w-full.md_w-auto.flex.flex-wrap.justify-center.group-off
+                  btn.px-10 {{ workId(work.uid, true) }}
                   .w-full.md_w-0
                   btn.px-10 {{ work.data.artist.split(',').join(' + ') }}
                   .w-full.md_w-0
@@ -92,7 +92,7 @@
         info.w-full.min-h-100vw.md_min-h-50vw.lg_min-h-33vw(v-show="infoVisible && works.length > 0")
 
     //- video player
-    .fixed.overlay.transition.transform.duration-700.origin-right.py-16.md_p-20.xl_p-24.flex.bg-gray-900(ref="player", :class="{'pointer-events-none scale-x-0': !viewWork}", style="cursor:w-resize", @click="$router.go(-1)")
+    .fixed.overlay.transition.transform.duration-700.origin-right.py-16.md_p-20.xl_p-24.flex.bg-gray-200(ref="player", :class="{'pointer-events-none scale-x-0': !viewWork}", style="cursor:w-resize", @click="$router.go(-1)")
       .relative.w-full
         video.absolute.overlay.object-contain.object-center.transition-opacity.duration-700.pointer-events-none(v-for="(work, i) in works", :src="work.data.video.url", playsinline, :data-work="work.uid", @contextmenu.prevent, :class="{'opacity-0': viewWork !== work.uid}")
 </template>

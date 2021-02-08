@@ -19,7 +19,7 @@
               template(v-if="work") {{ Number(work.printed) + 1 }}/{{ work.editions }}
               template(v-else) –
           //- .w-1x2.flex.items-center.justify-center
-            span {{ work ? toETH(work.price) : doc.data.price_eth }} ETH
+            span {{ work ? weiToETH(work.price) : doc.data.price_eth }} ETH
         .flex-1.flex(@click.stop)
           router-link.cursor-pointer(:to="{name: 'work', params: {work: doc.uid}}").w-1x2.flex.items-center.justify-center.btn-theme-darken View
           button.w-1x2.flex.items-center.justify-center.btn-theme-darken.cursor-pointer(@click="buy") Buy
@@ -38,7 +38,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['toETH']),
+    ...mapGetters(['weiToETH']),
     tableClasses () {
       return {
         'pl-1x5': this.rand === 0,
