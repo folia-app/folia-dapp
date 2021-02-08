@@ -11,7 +11,7 @@
           div {{ doc.data.title }}, {{ doc.data.year }}
           div {{ work ? work.printed + '/' + work.editions : doc.data.edition }}
 
-        button.block.group.relative.focus_outline-none(@click="buy", :disabled="!work")
+        button.block.group.relative.focus_outline-none(@click="buy")
           btn.bg-gray-900.px-12(theme="none")
             span.absolute.overlay.flex.items-center.justify-center.opacity-0.group-hover_opacity-100 BUY
             span.group-hover_opacity-0 {{ work ? weiToETH(work.price) : doc.data.price_eth }} ETH
