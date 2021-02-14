@@ -9,7 +9,7 @@
 
         transition(name="fadeinonly")
           section#faq.md_w-3x4(v-show="more")
-            p.mt-lh-snug Folia is a platform for exhibiting and collecting #[a.border-b-2.border-current.border-dotted.hover_border-solid(href="https://opensea.io/blog/guides/non-fungible-tokens/" target="_blank") NFTs]. Proudly presented by #[a(href="https://bin.am", target="_blank") Bin Studio].
+            p.mt-lh-snugff.text-gray-800 Folia is a platform for exhibiting and collecting #[a.border-b-2.border-current.border-dotted.hover_border-solid(href="https://opensea.io/blog/guides/non-fungible-tokens/" target="_blank") NFTs]. Proudly presented by #[a(href="https://bin.am", target="_blank") Bin Studio].
             //-
               h2.font-sans.font-bold What are these?
               p Each &ldquo;patch&rdquo; here is a &ldquo;Non-Fungible Token&rdquo; (NFT) on the Ethereum blockchain.
