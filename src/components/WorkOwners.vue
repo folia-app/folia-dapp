@@ -35,6 +35,7 @@ export default {
       }
     }
   },
+  // TODO update owners list when work updates... (new mints)
   created () {
     this.getOwners()
   },

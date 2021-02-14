@@ -4,12 +4,12 @@
       .text-red.text-4xl.leading-normal
         section.underline-off
           h2.md_w-10x12.text-red
-            | Collect limited-edition #[a.border-b-2.border-current.border-dotted.hover_border-solid(href="https://opensea.io/blog/guides/non-fungible-tokens/" target="_blank") digital artworks] by leading artists#[span(v-show="more") . ]
-            | #[button.ml-3.inline-block.text-black.py-px.rounded-full.px-3.bg-gray-100.text-xs.hover_bg-gray-200(@click="more = true", v-show="!more", style="font-size:0.4em") •••]
+            | Folia is a platform for exhibiting and collecting #[a.border-b-2.border-current.border-dotted.hover_border-solid(href="https://opensea.io/blog/guides/non-fungible-tokens/" target="_blank") NFTs]
+            | #[button.ml-3.inline-block.text-black.py-px.rounded-full.px-3.bg-gray-100.text-xs.hover_bg-gray-200.focus_outline-none(@click="more = true", v-show="!more", style="font-size:0.4em") •••]
 
         transition(name="fadeinonly")
           section#faq.md_w-3x4(v-show="more")
-            p.mt-lh-snugff.text-gray-800 Folia is a platform for exhibiting and collecting #[a.border-b-2.border-current.border-dotted.hover_border-solid(href="https://opensea.io/blog/guides/non-fungible-tokens/" target="_blank") NFTs]. Proudly presented by #[a(href="https://bin.am", target="_blank") Bin Studio].
+            p.mt-lh-snugff.text-gray-800.text-sm.mt-6 proudly presented by #[a(href="https://bin.am", target="_blank") Bin Studio]
             //-
               h2.font-sans.font-bold What are these?
               p Each &ldquo;patch&rdquo; here is a &ldquo;Non-Fungible Token&rdquo; (NFT) on the Ethereum blockchain.
