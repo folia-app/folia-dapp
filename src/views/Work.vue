@@ -31,12 +31,12 @@
             <path d="M1 1.49251L57.3157 19L0.999998 36.5075L1 1.49251Z" fill="rgba(255,255,255,0.9)" />
           </svg>
 
-      section.text-lg.p-8.lg_p-12.lg_w-10x12(style="padding-bottom:25vh")
+      section.text-lg.p-8.lg_p-12(style="padding-bottom:25vh")
         nav.flex.justify-start.mb-8.lg_mb-12
           button.focus_outline-none(@click="view = 'info'")
-            btn.bg-gray-900.px-12(theme="none") Info
+            btn.px-12(theme="drkgray", :active="view === 'info'") Info
           button.focus_outline-none(@click="view = 'owners'")
-            btn.bg-gray-900.px-12(theme="none") Collectors
+            btn.px-12(theme="drkgray", :active="view === 'owners'") Collectors
 
         work-owners(v-if="work", v-show="view === 'owners'", :work="work")
         //- .mb-12.flex.flex-wrap.whitespace-no-wrap.text-white.text-base(v-if="work")
@@ -48,7 +48,7 @@
           button.w-full.md_w-1x3
             btn.bg-gray-900(theme="none")
               span.transform.scale-95 BUY
-        .children-mt-em(style="max-width:32em;", v-show="view === 'info'")
+        .children-mt-em.lg_w-10x12(style="max-width:32em;", v-show="view != 'owners'")
           p(v-for="n in 3") Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
         //- rich-text.mt-20(style="max-width:32em", :field="doc.data.description")
 
