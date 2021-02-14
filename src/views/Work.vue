@@ -9,7 +9,7 @@
           //- div.leading-none {{ workId(doc.uid, true) }} — #[h1.inline {{ doc.data.artist }}] — {{ doc.data.title }} — {{ doc.data.year }}
           h1.font-bold {{ doc.data.artist }}
           div {{ doc.data.title }}, {{ doc.data.year }}
-          div {{ work ? work.printed + '/' + work.editions : doc.data.edition }}
+          div {{ work ? work.printed + '/' + work.editions : 'ed. of ' + doc.data.edition }}
 
         button.block.group.relative.focus_outline-none(@click="buy")
           btn.bg-gray-900.px-12(theme="none")
