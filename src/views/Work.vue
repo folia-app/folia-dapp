@@ -32,6 +32,13 @@
           </svg>
 
       section.text-lg.p-8.lg_p-12.lg_w-10x12(style="padding-bottom:25vh")
+        nav.flex.justify-start.mb-8.lg_mb-12
+          button.focus_outline-none(@click="view = 'info'")
+            btn.bg-gray-900.px-12(theme="none") Info
+          button.focus_outline-none(@click="view = 'owners'")
+            btn.bg-gray-900.px-12(theme="none") Collectors
+
+        work-owners(v-if="work", v-show="view === 'owners'", :work="work")
         //- .mb-12.flex.flex-wrap.whitespace-no-wrap.text-white.text-base(v-if="work")
           //- btn.bg-white.w-1x2.md_w-1x4.border-gray-500 No.
           btn.w-1x2.md_w-1x3.bg-gray-900(theme="none")
@@ -41,8 +48,7 @@
           button.w-full.md_w-1x3
             btn.bg-gray-900(theme="none")
               span.transform.scale-95 BUY
-
-        .children-mt-em(style="max-width:32em;")
+        .children-mt-em(style="max-width:32em;", v-show="view === 'info'")
           p(v-for="n in 3") Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
         //- rich-text.mt-20(style="max-width:32em", :field="doc.data.description")
 
@@ -68,6 +74,7 @@ import RichText from '@/components/RichText'
 import svgX from '@/components/SVG-X'
 import Btn from '@/components/Btn'
 import svgFleuron from '@/components/SVG-Fleuron'
+import WorkOwners from '@/components/WorkOwners'
 export default {
   name: 'Work',
   data () {
@@ -75,7 +82,8 @@ export default {
       doc: undefined,
       work: undefined,
       imgScale: 1,
-      imgOpacity: 1
+      imgOpacity: 1,
+      view: 'info'
     }
   },
   computed: {
@@ -98,7 +106,7 @@ export default {
       this.work = await this.$store.dispatch('getWork', { id: this.workId(this.$route.params.work), flush })
     }
   },
-  components: { RichText, svgX, Btn, svgFleuron }
+  components: { RichText, svgX, Btn, svgFleuron, WorkOwners }
 }
 </script>
 

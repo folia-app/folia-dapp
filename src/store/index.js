@@ -1,7 +1,9 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import prismic from './prismic'
-import FoliaController from 'folia-contracts/build/contracts/FoliaController.json'
+import { Folia, FoliaController } from 'folia-contracts'
+// import FoliaController from 'folia-contracts/build/contracts/FoliaController.json'
+// import FoliaContract from 'folia-contracts/build/contracts/FoliaContract.json'
 import Web3 from 'web3'
 import Web3Modal from 'web3modal'
 import WalletConnectProvider from '@walletconnect/web3-provider'
@@ -9,6 +11,7 @@ import WalletConnectProvider from '@walletconnect/web3-provider'
 let web3
 let provider = Web3.currentProvider || Web3.givenProvider
 let foliaControllerContract
+let foliaContract
 
 // setup web3, contract
 if (provider) {
@@ -16,6 +19,10 @@ if (provider) {
   foliaControllerContract = new web3.eth.Contract(
     FoliaController.abi,
     FoliaController.networks[4].address // rinkeby
+  )
+  foliaContract = new web3.eth.Contract(
+    Folia.abi,
+    Folia.networks[4].address // rinkeby
   )
 }
 
@@ -44,7 +51,8 @@ export default new Vuex.Store({
   state: {
     address: null,
     networkId: null,
-    works: []
+    works: [],
+    tokens: []
   },
   getters: {
     weiToETH: () => (wei) => web3?.utils.fromWei(wei) ?? '-',
@@ -52,7 +60,8 @@ export default new Vuex.Store({
       const id = Number(uid) / 1000000
       return prefix ? ('00' + id).slice(-3) // 001
         : id // 1 - for contract communication
-    }
+    },
+    addrShort: () => (addr) => addr.slice(0, 6) + '...' + addr.slice(-4)
   },
   mutations: {
     SIGN_IN (state, address) {
@@ -68,6 +77,9 @@ export default new Vuex.Store({
       const i = state.works.findIndex(svd => svd.id === work.id)
       if (i > -1) state.works[i] = work
       else state.works.push(work)
+    },
+    SAVE_TOKEN (state, token) {
+      state.tokens.push(token) // [tokenId, ownerAddr]
     }
   },
   actions: {
@@ -151,9 +163,28 @@ export default new Vuex.Store({
       // get new data
       if (foliaControllerContract && id) {
         work = await foliaControllerContract.methods.works(id).call()
-        commit('SAVE_WORK', { id, ...work })
+        work = { id, ...work } // add id
+        commit('SAVE_WORK', work)
       }
       return work
+    },
+
+    /* get owner by token id */
+    async getNFTOwnerByTokenId ({ state, commit }, tokenId) {
+      try {
+        const token = state.tokens.find(token => token[0] === tokenId) || []
+        let owner = token && token[1]
+        if (owner) return owner
+        // get new data
+        if (foliaContract) {
+          owner = await foliaContract.methods.ownerOf(tokenId).call()
+          commit('SAVE_TOKEN', [tokenId, owner])
+          return owner
+        }
+        return null
+      } catch (e) {
+        console.error('get owner error', e)
+      }
     }
   }
 })
