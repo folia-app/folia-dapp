@@ -4,7 +4,7 @@
     .app__main.relative.z-20(:class="{'app__main--squished': viewNotifs}")
       router-view
       //- scrim
-      transition(name="fade")
+      //- transition(name="fade")
         .absolute.w-full.h-full.top-0.left-0.opacity-50.bg-black.z-10.cursor-pointer(v-show="viewNotifs", @click="viewNotifs = false")
     //- notifications
     //- notifications.app__notifications.fixed.z3.top-0.left-0.h-100.col-11.md-col-6.lg-col-5(:class="{'app__notifications--squished': !viewNotifs}")

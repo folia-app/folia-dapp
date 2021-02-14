@@ -38,7 +38,7 @@ module.exports = {
       'lh-snug': '1.375em'
     },
     fontSize: {
-      xs: '1.35rem',
+      xs: '1.4rem',
       sm: '1.5rem',
       md: '1.7rem',
       base: '1.8rem',

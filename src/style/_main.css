@@ -18,6 +18,16 @@ html{
   &:focus{ @apply outline-none; }
 }
 
+.border-dotted{
+  border-style: dotted;
+}
+@media (hover:hover) {
+  .hover_border-solid:hover{
+    border-style: solid;
+  }  
+}
+
+
 .children-mt-em > * + *{ margin-top: 1.2em; }
 
 button{

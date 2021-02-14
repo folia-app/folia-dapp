@@ -17,8 +17,10 @@
         header.absolute.top-0.left-0.w-full.z-20.text-white
           .absolute.top-0.left-0.w-full
             .flex.w-full.justify-between.items-center
+              //- logo
               .p-10.px-12
-                logo.block.text-white.h-12(aria-label="Folia")
+                button.focus_outline-none(@click="onLogoClick", aria-label="About Folia")
+                  logo.block.text-white.h-12.cursor-poiner(aria-label="Folia")
                 //- svg-fleuron.block.text-white(style="height:3rem")
               div
                 button.p-10.focus_outline-none(v-if="!address", @click="$store.dispatch('connect')") Connect
@@ -132,6 +134,9 @@ export default {
     },
     buy (uid) {
       this.$store.dispatch('buy', this.workId(uid))
+    },
+    onLogoClick () {
+      document.getElementById('info').scrollIntoView({ behavior: 'smooth' })
     }
   },
   watch: {
