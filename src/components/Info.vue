@@ -16,7 +16,8 @@
               h2.font-sans.font-bold.mt-lh-snug.pt-lh-snug NFT??
               p Any Ethereum app (such as this one) can define its own token to use as currency, in place of <span class="sans">ETH</span>. These tokens conventionally have decimal values, making them <i>fungible</i>. But <i>non-fungible</i> tokens cannot be divided&mdash;and like a coin, can only have a one&nbsp;owner. Making them collectible.
             //- p.mt-1em ...
-    footer.flex.justify-between
+
+    footer.flex.items-end.justify-between
       .flex.flex-wrap.w-3x4.text-xs.p-10
         a(href="mailto:info@folia.app", target="_blank", rel="noopener")
           btn.px-10(theme="ltgray") info@folia.app
@@ -28,12 +29,16 @@
           btn.px-10(theme="ltgray") discord
         a(href="https://folia.substack.com", target="_blank", rel="noopener")
           btn.px-10(theme="ltgray") substack
+
+      svg-fleuron.text-black.h-12.m-12
+
     //- nav.info__nav.font-sans.text-right.md_m-8
       button.info__more-btn.cursor-pointer.focus_outline-none(@click="toggleMore", :class="{'info__more-btn--open': more}") {{more ? 'CLOSE' : 'INFO'}}
 </template>
 
 <script>
 import Btn from '@/components/Btn'
+import svgFleuron from '@/components/SVG-Fleuron'
 export default {
   name: 'Info',
   data () {
@@ -48,7 +53,7 @@ export default {
       // this.$nextTick(() => window.scroll(0, 0))
     }
   },
-  components: { Btn }
+  components: { Btn, svgFleuron }
 }
 </script>
 
