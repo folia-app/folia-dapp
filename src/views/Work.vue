@@ -2,7 +2,7 @@
   article.work.w-full.text-white
     .relative.overflow-y-scroll.h-screen.scrollbars-hidden(v-if="doc")
       header.p-8.lg_p-12.lg_pb-16.flex.items-center
-        .flex-1
+        .flex-1.text-lg
           .flex.mb-10
             svg-fleuron.block.mr-2(style="width:0.96em;height:0.96em")
             div.leading-none {{ workId(doc.uid, true) }}
