@@ -39,7 +39,7 @@ const providerOptions = {
 
 // setup web3 modal
 const web3Modal = new Web3Modal({
-  network: 'rinkeby', // optional
+  // network: 'rinkeby', // optional
   cacheProvider: true, // optional
   providerOptions // required
 })
@@ -52,7 +52,10 @@ export default new Vuex.Store({
     address: null,
     networkId: null,
     works: [],
-    tokens: []
+    tokens: [],
+    metadatas: [],
+
+    foliaContract
   },
   getters: {
     weiToETH: () => (wei) => web3?.utils.fromWei(wei) ?? '-',
@@ -80,6 +83,9 @@ export default new Vuex.Store({
     },
     SAVE_TOKEN (state, token) {
       state.tokens.push(token) // [tokenId, ownerAddr]
+    },
+    SAVE_METADATA (state, metadata) {
+      state.metadatas.push(metadata)
     }
   },
   actions: {
@@ -110,7 +116,7 @@ export default new Vuex.Store({
       }
     },
 
-    /* connect wallet */
+    /* disconnect wallet */
     disconnect ({ commit }) {
       // clear so they can re-select from scratch
       web3Modal.clearCachedProvider()
@@ -132,7 +138,13 @@ export default new Vuex.Store({
         commit('SIGN_IN', accounts[0])
       })
 
-      // random disconnection? doesn't fire on account disconnect
+      // changed network
+      provider.on('chainChanged', chainId => {
+        // console.log('changed network?', chainId);
+        window.location.reload()
+      })
+
+      // random disconnection? (doesn't fire on account disconnect)
       provider.on('disconnect', error => {
         console.error(error)
         dispatch('disconnect')
@@ -162,11 +174,41 @@ export default new Vuex.Store({
       if (!flush && work) return work
       // get new data
       if (foliaControllerContract && id) {
-        work = await foliaControllerContract.methods.works(id).call()
-        work = { id, ...work } // add id
-        commit('SAVE_WORK', work)
+        try {
+          work = await foliaControllerContract.methods.works(id).call()
+          work = { id, ...work } // add id
+          commit('SAVE_WORK', work)
+        } catch (e) {
+          console.error('Error: getWork', e)
+        }
       }
       return work
+    },
+
+    /* get metadata of work (if released) */
+    async getMetadata ({ state, commit }, { token, work }) {
+      try {
+        token = token || Number(work) * 1000000
+        work = work || Math.floor(Number(token) / 1000000)
+        // return saved ?
+        const saved = state.metadatas.find(metadata => metadata._token === token)
+        const now = new Date().getTime()
+        const release = saved && saved.release && new Date(saved.release).getTime()
+        const hasSinceReleased = release && release > 0 && now >= release
+        if (saved && !hasSinceReleased) {
+          return saved
+        }
+        // fetch new
+        let metadata = await fetch('/.netlify/functions/metadata/' + token).then(resp => resp.json())
+        if (metadata && metadata.name) {
+          metadata = { _work: work, _token: token, ...metadata }
+          commit('SAVE_METADATA', metadata)
+          return metadata
+        }
+        return null
+      } catch (e) {
+        console.error(e)
+      }
     },
 
     /* get owner by token id */

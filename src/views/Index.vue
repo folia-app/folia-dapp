@@ -31,15 +31,22 @@
         .w-full.bg-black.text-white.relative.flex.items-center.justify-center.font-sans.text-sm.h-90vh.md_h-93vh-off.md_h-screen(:style="{cursor: works.length > 1 ? 'e-resize' : 'auto'}", @click="next")
           //- slides...
           transition-group(:name="works.length > 1 ? 'slide' : 'none'")
-            figure.absolute.overlay.overflow-hidden.flex.flex-col.justify-between(v-for="(work, i) in works", v-show="current === i", :key="i")
+            figure.absolute.overlay(v-for="(work, i) in works", v-show="current === i", :key="work.uid")
+              landing-slide-work(:work="work")
+            //- figure.absolute.overlay.overflow-hidden.flex.flex-col.justify-between(v-for="(work, i) in works", v-show="current === i", :key="i")
               //- [video]
               template(v-if="work.data.video_teaser.url")
-                img.absolute.overlay.object-cover.object-center(v-if="work.data.icon.url", :src="work.data.icon.url", :alt="work.data.icon.alt")
+                //- img.absolute.overlay.object-cover.object-center(v-if="work.data.icon.url", :src="work.data.icon.url", :alt="work.data.icon.alt")
                 video.absolute.overlay.object-cover.object-center.transform.scale-150.origin-center(:src="work.data.video_teaser.url", muted, ref="slidevideo", playsinline, :autoplay="current === i", loop)
                 //- (blur?)
-                .absolute.overlay(:style="{backdropFilter: `blur(12px)`}")
+                //- .absolute.overlay(:style="{backdropFilter: `blur(12px)`}")
+
+                //- counter
+                .absolute.overlay.flex.items-center.justify-center
+                  btn.px-12.text-lg(theme="darken")
+                    countdown(:until="work.data.release_time")
                 //- play btn
-                .absolute.z-10.overlay.flex.items-center.justify-center
+                .absolute.z-10.overlay.flex.items-center.justify-center(v-show="false")
                   //- .relative.z-10.flex-1.w-full.flex.justify-center.items-center.pt-16.xl_pt-20
                   button.block.p-40.focus_outline-none(aria-label="Play", @click="$router.push({name: 'view', params: {work: work.uid}})")
                     <svg class="text-60 md_text-72 xl_text-96" style="width:calc(59 / 38 * 1em); height: 1em" viewBox="0 0 59 38" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio>
@@ -96,7 +103,8 @@
     //- video player
     .fixed.overlay.transition.transform.duration-700.origin-right.py-5.md_p-10.lg_p-12.xl_p-24.flex.bg-gray-200(ref="player", :class="{'pointer-events-none scale-x-0': !viewWork}", style="cursor:w-resize", @click="$router.go(-1)")
       .relative.w-full
-        video.absolute.overlay.object-contain.object-center.transition-opacity.duration-700.pointer-events-none(v-for="(work, i) in works", :src="work.data.video.url", playsinline, :data-work="work.uid", @contextmenu.prevent, :class="{'opacity-0': viewWork !== work.uid}")
+        //- video element should be present so you can play from other views... (no child route)
+        video.absolute.overlay.object-contain.object-center.transition-opacity.duration-700.pointer-events-none(v-for="(metadata, i) in metadatas", v-if="metadata.animation_url", :src="metadata.animation_url", playsinline, :data-work="metadata._work", @contextmenu.prevent, :class="{'opacity-0': viewWork !== metadata._work}", preload="metadata")
 </template>
 
 <script>
@@ -107,9 +115,10 @@ import Info from '@/components/Info'
 // import WorkThumb from '@/components/WorkThumb'
 import Btn from '@/components/Btn'
 import WorkView from '@/views/Work'
+import LandingSlideWork from '@/components/LandingSlideWork'
 export default {
   name: 'Index',
-  components: { WorkView, Logo, Info, svgFleuron, Btn },
+  components: { WorkView, Logo, Info, svgFleuron, Btn, LandingSlideWork },
   data () {
     return {
       squish: false,
@@ -122,7 +131,8 @@ export default {
     ...mapGetters(['workId']),
     ...mapState({
       address: state => state.address,
-      works: state => state.prismic.works
+      works: state => state.prismic.works,
+      metadatas: state => state.metadatas
     }),
     viewWork () {
       return this.$route.name === 'view' ? this.$route.params.work : null
@@ -131,9 +141,6 @@ export default {
   methods: {
     next () {
       this.current = this.current + 1 === this.works.length ? 0 : this.current + 1
-    },
-    buy (uid) {
-      this.$store.dispatch('buy', this.workId(uid))
     },
     onLogoClick () {
       document.getElementById('info').scrollIntoView({ behavior: 'smooth' })
@@ -149,6 +156,7 @@ export default {
       prev = prev && this.$el.querySelector('video[data-work="' + prev + '"]')
       if (next) {
         next.currentTime = 0
+        // next.load()
         // this.$refs.player.requestFullscreen()
         setTimeout(() => {
           // next.style.opacity = '1'
@@ -221,12 +229,5 @@ export default {
 }
 .slide-enter-active{
   transform-origin: top right;
-}
-
-.index button{
-  & svg *{ transition: all 100ms }
-  &:hover svg *{
-    fill: currentColor;
-  }
 }
 </style>

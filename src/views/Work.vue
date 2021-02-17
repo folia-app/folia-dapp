@@ -10,11 +10,12 @@
           h1.font-bold {{ doc.data.artist }}
           div {{ doc.data.title }}, {{ doc.data.year }}
           div {{ work ? work.printed + '/' + work.editions : 'ed. of ' + doc.data.edition }}
+          div {{ work ? weiToETH(work.price) : doc.data.price_eth }} ETH
 
-        button.block.group.relative.focus_outline-none(@click="buy")
-          btn.bg-gray-900.px-12(theme="none")
-            span.absolute.overlay.flex.items-center.justify-center.opacity-0.group-hover_opacity-100 BUY
-            span.group-hover_opacity-0 {{ work ? weiToETH(work.price) : doc.data.price_eth }} ETH
+        button.block.group.relative.focus_outline-none(v-if="canBuy", @click="buy", :disabled="!isReleased")
+          btn.px-16(theme="drkgray", :disabled="!isReleased") BUY
+            //- span.absolute.overlay.flex.items-center.justify-center.opacity-0.group-hover_opacity-100 BUY
+            //- span.group-hover_opacity-0 {{ work ? weiToETH(work.price) : doc.data.price_eth }} ETH
 
             //- rich-text.mt-20(style="max-width:32em", :field="doc.data.description")
         //- .sticky.top-0.left-0.w-full
@@ -24,9 +25,11 @@
             img.absolute.overlay.object-contain.object-center(:src="doc.data.icon.url")
 
       figure.relative.w-full.sm_w-10x12
-        img.w-full.block(:src="doc.data.icon.url")
+        //- img.w-full.block(:src="doc.data.icon.url")
+        video.w-full.block(:src="doc.data.teaser_video.url", loop, playsinline, muted, preload="metadata")
         //- play btn?
-        router-link.absolute.overlay.flex.items-center.justify-center(v-if="doc.data.video.url", :to="{name: 'view', params: {work: doc.uid}}")
+        countdown-play-btn-overlay.text-sm(:work="doc", :counter="false", size="small", @released="isReleased = true")
+        //- router-link.absolute.overlay.flex.items-center.justify-center(:to="{name: 'view', params: {work: doc.uid}}")
           <svg class="text-5xl lg_text-6xl xl_text-60 block" style="width:calc(59 / 38 * 1em); height: 1em" viewBox="0 0 59 38" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio>
             <path d="M1 1.49251L57.3157 19L0.999998 36.5075L1 1.49251Z" fill="rgba(255,255,255,0.9)" />
           </svg>
@@ -39,18 +42,8 @@
             btn.px-12(theme="drkgray", :active="view === 'owners'") Collectors
 
         work-owners(v-if="work", v-show="view === 'owners'", :work="work")
-        //- .mb-12.flex.flex-wrap.whitespace-no-wrap.text-white.text-base(v-if="work")
-          //- btn.bg-white.w-1x2.md_w-1x4.border-gray-500 No.
-          btn.w-1x2.md_w-1x3.bg-gray-900(theme="none")
-            | {{ work.printed }}/{{ work.editions }}
-          btn.w-1x2.md_w-1x3.bg-gray-900(theme="none")
-            | {{ weiToETH(work.price) }} ETH
-          button.w-full.md_w-1x3
-            btn.bg-gray-900(theme="none")
-              span.transform.scale-95 BUY
-        .children-mt-em.lg_w-10x12(style="max-width:32em;", v-show="view != 'owners'")
-          p(v-for="n in 3") Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-        //- rich-text.mt-20(style="max-width:32em", :field="doc.data.description")
+
+        rich-text.children-mt-em.lg_w-10x12(style="max-width:32em;", v-show="view != 'owners'", :field="doc.data.description")
 
       //- footer.sticky.bottom-0.left-0.w-full.p-8.lg_pb-10.lg_px-12.flex.flex-wrap.whitespace-no-wrap(v-if="work")
         .flex.w-full.flex-wrap.whitespace-no-wrap.text-white.text-lg
@@ -75,6 +68,7 @@ import svgX from '@/components/SVG-X'
 import Btn from '@/components/Btn'
 import svgFleuron from '@/components/SVG-Fleuron'
 import WorkOwners from '@/components/WorkOwners'
+import CountdownPlayBtnOverlay from '@/components/CountdownPlayBtnOverlay'
 export default {
   name: 'Work',
   data () {
@@ -83,11 +77,15 @@ export default {
       work: undefined,
       imgScale: 1,
       imgOpacity: 1,
-      view: 'info'
+      view: 'info',
+      isReleased: false
     }
   },
   computed: {
-    ...mapGetters(['weiToETH', 'workId'])
+    ...mapGetters(['weiToETH', 'workId']),
+    canBuy () {
+      return this.work && (Number(this.work.printed) < Number(this.work.editions))
+    }
   },
   created () {
     this.fetchDoc()
@@ -95,18 +93,17 @@ export default {
   },
   methods: {
     async buy () {
-      const id = this.workId(this.$route.params.work)
-      await this.$store.dispatch('buy', id)
+      await this.$store.dispatch('buy', this.$route.params.work)
       this.fetchWork(true)
     },
     async fetchDoc () {
       this.doc = await this.$store.dispatch('prismic/getWork', this.$route.params.work)
     },
     async fetchWork (flush) {
-      this.work = await this.$store.dispatch('getWork', { id: this.workId(this.$route.params.work), flush })
+      this.work = await this.$store.dispatch('getWork', { id: this.$route.params.work, flush })
     }
   },
-  components: { RichText, svgX, Btn, svgFleuron, WorkOwners }
+  components: { RichText, svgX, Btn, svgFleuron, WorkOwners, CountdownPlayBtnOverlay }
 }
 </script>
 

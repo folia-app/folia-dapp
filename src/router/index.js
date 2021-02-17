@@ -1,7 +1,8 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Index from '@/views/Index'
-import Work from '@/views/Work'
+// import Work from '@/views/Work'
+// import ViewWork from '@/views/ViewWork'
 
 // import Home from '@/views/Home'
 // import Admin from '@/views/Admin'
@@ -23,18 +24,18 @@ export default new Router({
       component: Index,
       children: [
         {
-          path: '/works/:work',
-          name: 'work',
-          component: Work,
-          props: true,
-          meta: { isSingle: true }
+          path: '/works/:work/view',
+          name: 'view'
+          // component: ViewWork
+        },
+        {
+          path: '/works/:work/:token?',
+          name: 'work'
+          // component: Work,
+          // props: true,
+          // meta: { isSingle: true }
         }
       ]
-    },
-    {
-      path: '/works/:work/view',
-      name: 'view',
-      component: Index
     }
     // {
     //   path: '/badmin',

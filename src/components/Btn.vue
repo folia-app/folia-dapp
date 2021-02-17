@@ -1,5 +1,5 @@
 <template lang="pug">
-  .rounded-full.text-center.cursor-pointer(:class="clss")
+  .rounded-full.text-center(:class="clss")
     slot
 </template>
 
@@ -9,7 +9,8 @@ export default {
   props: {
     theme: { type: String, default: 'darken' },
     size: { type: String, default: 'medium' },
-    active: { type: Boolean, default: false }
+    active: { type: Boolean, default: false },
+    disabled: { type: Boolean, default: false }
   },
   computed: {
     clss () {
@@ -21,7 +22,10 @@ export default {
         'bg-white focus_bg-white text-black': this.theme === 'drkgray' && this.active,
         // sizing
         'p-5 md_py-6 xl_py-8': this.size === 'medium',
-        'p-4 md_py-5 xl_py-6': this.size === 'small'
+        'p-4 md_py-5 xl_py-6': this.size === 'small',
+        // cursor
+        'cursor-not-allowed': this.disabled,
+        'cursor-pointer': !this.disabled
       }
     }
   }
