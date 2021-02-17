@@ -22,8 +22,8 @@ exports.handler = async function (event, context) {
     // get token from path
     const tokenId = event.path.substr(event.path.lastIndexOf('/') + 1) // 1000005
     const workId = Math.floor(tokenId / 1000000) // 1
-    const docId = workId // * 1000000 // 1000000
-    const printNo = tokenId - docId // 2000016 - 2000000 = 16
+    const docId = workId
+    const printNo = tokenId - (workId * 1000000) // 2000016 - 2000000 = 16
 
     // api was used recently ?
     if (!api) {
@@ -49,7 +49,15 @@ exports.handler = async function (event, context) {
     if (release && release - now > 0 && !ignoreRelease) {
       return {
         statusCode: 200,
-        body: JSON.stringify({ message: 'Not Yet Released', release: doc.data.release_time })
+        body: JSON.stringify({
+          message: 'Not Yet Released',
+          release: doc.data.release_time,
+          // blank data to overwrite old opensea.io data?
+          name: '',
+          image: '',
+          image_url: '',
+          animation_url: ''
+        })
       }
     }
 
