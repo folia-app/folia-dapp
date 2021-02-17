@@ -157,14 +157,17 @@ export default new Vuex.Store({
       try {
         const work = await dispatch('getWork', { id: workId, flush: true })
         // !! unavailable
-        if (!work.exists) throw new Error("Work doesn't exist")
-        if (work.paused || Number(work.printed) >= Number(work.editions)) throw new Error('Work is unavailable')
+        if (!work.exists) throw new Error(`Work ${workId} doesn't exist`)
+        if (Number(work.printed) >= Number(work.editions)) throw new Error(`Work ${1} is sold out`)
+        if (work.paused) throw new Error(`Work ${workId} is locked. Please wait for release or try again shortly.`)
         // buy
         await foliaControllerContract.methods
           .buy(state.address, workId)
           .send({ from: state.address, value: work.price })
       } catch (e) {
-        console.error('oops', e)
+        console.error('@buy:', e)
+        // TODO - more elegant UX error ?
+        alert(e.message)
       }
     },
 
@@ -179,7 +182,7 @@ export default new Vuex.Store({
           work = { id, ...work } // add id
           commit('SAVE_WORK', work)
         } catch (e) {
-          console.error('Error: getWork', e)
+          console.error('@getWork', e)
         }
       }
       return work
