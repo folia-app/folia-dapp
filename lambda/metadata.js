@@ -1,12 +1,14 @@
 import Prismic from 'prismic-javascript'
 require('dotenv').config()
 require('encoding') // netlify build error / missing package??
-const apiEndpoint = process.env.VUE_APP_PRISMIC_ENDPOINT
+const apiEndpoint = process.env.METADATA_PRISMIC_ENDPOINT
+const accessToken = process.env.METADATA_PRISMIC_TOKEN
+const ignoreRelease = process.env.VUE_APP_DEV_IGNORE_RELEASES === 'true'
 
 // Initialize the prismic.io api
 function initApi (req) {
   return Prismic.getApi(apiEndpoint, {
-    // accessToken: accessToken,
+    accessToken: accessToken,
     req: req
   })
 }
@@ -15,11 +17,13 @@ let api
 
 // handler
 exports.handler = async function (event, context) {
+  // console.log(context)
   try {
+    // get token from path
     const tokenId = event.path.substr(event.path.lastIndexOf('/') + 1) // 1000005
     const workId = Math.floor(tokenId / 1000000) // 1
-    const docId = (workId * 1000000).toString() // 1000000
-    const printNo = tokenId - 1000000 // 16
+    const docId = workId // * 1000000 // 1000000
+    const printNo = tokenId - docId // 2000016 - 2000000 = 16
 
     // api was used recently ?
     if (!api) {
@@ -27,7 +31,7 @@ exports.handler = async function (event, context) {
     }
 
     // fetch !
-    const resp = await api.query(Prismic.Predicates.at('my.work.uid', docId), { pageSize: 1 })
+    const resp = await api.query(Prismic.Predicates.at('my.work.uid', docId.toString()), { pageSize: 1 })
     // doc
     const doc = resp.results[0]
 
@@ -36,6 +40,16 @@ exports.handler = async function (event, context) {
       return {
         statusCode: 404,
         body: JSON.stringify({ message: 'Not Found' })
+      }
+    }
+
+    // !! not released yet
+    const now = new Date().getTime()
+    const release = doc.data.release_time && new Date(doc.data.release_time).getTime()
+    if (release && release - now > 0 && !ignoreRelease) {
+      return {
+        statusCode: 200,
+        body: JSON.stringify({ message: 'Not Yet Released', release: doc.data.release_time })
       }
     }
 
@@ -48,14 +62,14 @@ exports.handler = async function (event, context) {
       description: doc.data.description[0].text ?? '',
 
       // opensea
-      external_url: process.env.VUE_APP_CANONICAL_DOMAIN + '/works/' + docId,
+      external_url: process.env.VUE_APP_CANONICAL_DOMAIN + '/works/' + docId + '/' + tokenId,
       // rarebits
-      home_url: process.env.VUE_APP_CANONICAL_DOMAIN + '/works/' + docId,
+      home_url: process.env.VUE_APP_CANONICAL_DOMAIN + '/works/' + docId + '/' + tokenId,
 
       // opensea
-      image: doc.data.icon.url,
+      image: doc.data.image.url,
       // rarebits
-      image_url: doc.data.icon.url,
+      image_url: doc.data.image.url,
 
       // opensea
       // attributes: [
@@ -77,7 +91,7 @@ exports.handler = async function (event, context) {
       // tags: ['cool', 'hot', 'mild']
 
       // open sea
-      animation_url: 'https://prismic-io.s3.amazonaws.com/folia-dev/0b70ee18-1a6b-4715-9e3a-7079141cf608_mov_bbb.mp4',
+      animation_url: doc.data.animation_url.url, // 'https://prismic-io.s3.amazonaws.com/folia-dev/0b70ee18-1a6b-4715-9e3a-7079141cf608_mov_bbb.mp4',
       youtube_url: ''
     }
 
