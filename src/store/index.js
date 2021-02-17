@@ -14,6 +14,7 @@ let foliaControllerContract
 let foliaContract
 
 // setup web3, contract
+// TODO - NETWORK DETECTION !!!
 if (provider) {
   web3 = new Web3(provider)
   foliaControllerContract = new web3.eth.Contract(

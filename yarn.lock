@@ -5297,7 +5297,7 @@ flush-write-stream@^1.0.0:
 
 "folia-contracts@github:folia-app/folia-contracts":
   version "1.0.0"
-  resolved "https://codeload.github.com/folia-app/folia-contracts/tar.gz/bfe78954f7619f279afcce734735b2d815951002"
+  resolved "https://codeload.github.com/folia-app/folia-contracts/tar.gz/f28a31c83224e6399553e1a5d47abc06ee09a788"
 
 follow-redirects@^1.0.0:
   version "1.13.1"
