@@ -1,7 +1,7 @@
 <template lang="pug">
   ul.work-owners
     li.flex(v-for="token in tokensSorted")
-      a(:href="`${openSea}/assets/${contractAddr}/${token[0]}`", target="_blank", rel="noopener noreferrer")
+      a(:href="`${openSea}/assets/${$store.getters.contractAddr}/${token[0]}`", target="_blank", rel="noopener noreferrer")
         btn.px-8(theme="drkgray", style="min-width:4em") {{ token[0].toString().slice(-3) }}
       a.truncate(:href="`${openSea}/accounts/${token[1]}`", target="_blank", rel="noopener noreferrer")
         btn.px-8.truncate(theme="drkgray")

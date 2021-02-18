@@ -8,24 +8,15 @@ import Web3 from 'web3'
 import Web3Modal from 'web3modal'
 import WalletConnectProvider from '@walletconnect/web3-provider'
 
+const networks = {
+  mainnet: { id: 1, infura: 'https://mainnet.infura.io/v3/1363143c08464562ba87cc807ac77020' },
+  rinkeby: { id: 4, infura: 'https://rinkeby.infura.io/v3/1363143c08464562ba87cc807ac77020' }
+}
+
 let web3
-let provider = Web3.currentProvider || Web3.givenProvider
+let provider = window.ethereum || Web3.currentProvider || Web3.givenProvider
 let foliaControllerContract
 let foliaContract
-
-// setup web3, contract
-// TODO - NETWORK DETECTION !!!
-if (provider) {
-  web3 = new Web3(provider)
-  foliaControllerContract = new web3.eth.Contract(
-    FoliaController.abi,
-    FoliaController.networks[4].address // rinkeby
-  )
-  foliaContract = new web3.eth.Contract(
-    Folia.abi,
-    Folia.networks[4].address // rinkeby
-  )
-}
 
 // provider options
 const providerOptions = {
@@ -52,11 +43,12 @@ export default new Vuex.Store({
   state: {
     address: null,
     networkId: null,
+
+    foliaContract,
+
     works: [],
     tokens: [],
-    metadatas: [],
-
-    foliaContract
+    metadatas: []
   },
   getters: {
     weiToETH: () => (wei) => web3?.utils.fromWei(wei) ?? '-',
@@ -65,7 +57,8 @@ export default new Vuex.Store({
       return prefix ? ('00' + id).slice(-3) // 001
         : id // 1 - for contract communication
     },
-    addrShort: () => (addr) => addr.slice(0, 6) + '...' + addr.slice(-4)
+    addrShort: () => (addr) => addr.slice(0, 6) + '...' + addr.slice(-4),
+    contractAddr: (state) => state.foliaContract?._address
   },
   mutations: {
     SIGN_IN (state, address) {
@@ -87,13 +80,39 @@ export default new Vuex.Store({
     },
     SAVE_METADATA (state, metadata) {
       state.metadatas.push(metadata)
+    },
+    SET_CONTRACT (state, contract) {
+      state.foliaContract = contract
     }
   },
   actions: {
-    async init ({ dispatch }) {
-      // auto-connect?
-      if (web3Modal.cachedProvider) {
-        dispatch('connect')
+    /* setup web3, contracts */
+    async init ({ state, commit, dispatch }) {
+      try {
+        // auto-connect?
+        if (web3Modal.cachedProvider) {
+          await dispatch('connect')
+        }
+
+        // setup web3
+        if (!web3) {
+          if (provider) {
+            web3 = new Web3(provider)
+          } else {
+            web3 = new Web3(new Web3.providers.HttpProvider(networks.mainnet.infura))
+          }
+        }
+
+        // setup contracts
+        const network = state.networkId || await web3.eth.net.getId() || networks.mainnet.id
+        console.log('network:', network)
+        setContracts(network)
+        commit('SET_CONTRACT', foliaContract)
+
+        // listen to provider events
+        dispatch('listenToProvider')
+      } catch (e) {
+        console.error('@init', e)
       }
     },
 
@@ -110,10 +129,10 @@ export default new Vuex.Store({
         // const chainId = await web3.eth.chainId(); // not a function??
         commit('SIGN_IN', address)
         commit('SET_NETWORK', networkId)
-        // listen to events
-        dispatch('listenToProvider')
       } catch (e) {
-        console.error(e)
+        console.error('@connect', e)
+        // clear in case
+        web3Modal.clearCachedProvider()
       }
     },
 
@@ -141,13 +160,14 @@ export default new Vuex.Store({
 
       // changed network
       provider.on('chainChanged', chainId => {
-        // console.log('changed network?', chainId);
+        console.log('network changed', chainId)
+        // reload page so data is correct...
         window.location.reload()
       })
 
       // random disconnection? (doesn't fire on account disconnect)
       provider.on('disconnect', error => {
-        console.error(error)
+        console.error('disconnected?', error)
         dispatch('disconnect')
       })
     },
@@ -234,3 +254,16 @@ export default new Vuex.Store({
     }
   }
 })
+
+const setContracts = (network) => {
+  if (!web3) return new Error('web3 not defined')
+  foliaControllerContract = new web3.eth.Contract(
+    FoliaController.abi,
+    FoliaController.networks[network].address
+  )
+
+  foliaContract = new web3.eth.Contract(
+    Folia.abi,
+    Folia.networks[network].address
+  )
+}

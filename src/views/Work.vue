@@ -31,11 +31,13 @@
             img.absolute.overlay.object-contain.object-center(:src="doc.data.icon.url")
 
       figure.relative.w-full.sm_w-10x12.lg_pr-16
-        //- img.w-full.block(:src="doc.data.icon.url")
-        template(v-if="!isReleased")
-          video.w-full.block(:src="doc.data.teaser_video.url", loop, playsinline, muted, preload="metadata")
-        template(v-else)
-          img.w-full(:src="metadata.image")
+        //- (metadata image)
+        template(v-if="isReleased && metadata && metadata.image")
+          img.w-full(:src="metadata.image", @load="imgLoaded = true")
+        //- (teaser)
+        template(v-if="!imgLoaded")
+          video.w-full.block(:src="doc.data.teaser_video.url", loop, playsinline, muted, autoplay)
+
         //- play btn?
         countdown-play-btn-overlay.text-sm.text-black-a30ff(:doc="doc", :counter="false", size="small", @released="isReleased = true")
         //- router-link.absolute.overlay.flex.items-center.justify-center(:to="{name: 'view', params: {work: doc.uid}}")
@@ -43,14 +45,14 @@
             <path d="M1 1.49251L57.3157 19L0.999998 36.5075L1 1.49251Z" fill="rgba(255,255,255,0.9)" />
           </svg>
 
-      section.text-lg.p-8.lg_p-12(style="padding-bottom:25vh")
-        nav.flex.justify-start.mb-8.lg_mb-12.-ml-2
+      section.text-lg.p-10.lg_p-12(style="padding-bottom:25vh")
+        nav.flex.justify-start.mb-10.lg_mb-12.-ml-2
           button.focus_outline-none(@click="view = 'info'")
-            btn.px-12(theme="drkgray", :active="view === 'info'") Info
+            btn.px-8.md_px-12(theme="drkgray", :active="view === 'info'") Info
           button.focus_outline-none(@click="view = 'owners'")
-            btn.px-12(theme="drkgray", :active="view === 'owners'") Collectors
+            btn.px-8.md_px-12(theme="drkgray", :active="view === 'owners'") Collectors
           button.focus_outline-none(@click="view = 'details'")
-            btn.px-12(theme="drkgray", :active="view === 'details'") Details
+            btn.px-8.md_px-12(theme="drkgray", :active="view === 'details'") Details
 
         work-owners(v-if="work", v-show="view === 'owners'", :work="work")
 
@@ -89,16 +91,21 @@ export default {
   name: 'Work',
   data () {
     return {
-      doc: undefined,
-      work: undefined,
       view: 'info',
-      isReleased: false
+      isReleased: false,
+      imgLoaded: false
     }
   },
   computed: {
     ...mapGetters(['weiToETH', 'workId']),
     id () {
       return this.$route.params.work
+    },
+    doc () {
+      return this.$store.state.prismic.works.find(doc => doc.uid === this.id)
+    },
+    work () {
+      return this.$store.state.works.find(work => work.id === this.id)
     },
     metadata () {
       return this.$store.state.metadatas.find(metadata => metadata._work === this.id)
@@ -123,11 +130,11 @@ export default {
       await this.$store.dispatch('buy', this.id)
       this.fetchWork(true)
     },
-    async fetchDoc () {
-      this.doc = await this.$store.dispatch('prismic/getWork', this.id)
+    fetchDoc () {
+      this.$store.dispatch('prismic/getWork', this.id)
     },
-    async fetchWork (flush) {
-      this.work = await this.$store.dispatch('getWork', { id: this.id, flush })
+    fetchWork (flush) {
+      this.$store.dispatch('getWork', { id: this.id, flush })
     }
   },
   components: { RichText, svgX, Btn, svgFleuron, WorkOwners, CountdownPlayBtnOverlay }

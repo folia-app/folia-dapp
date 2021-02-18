@@ -1,7 +1,7 @@
 <template lang="pug">
   #app.text-base.font-sans.leading-snug
     //- main
-    .app__main.relative.z-20(:class="{'app__main--squished': viewNotifs}")
+    .app__main.relative.z-20
       router-view
       //- scrim
       //- transition(name="fade")
@@ -19,39 +19,14 @@
 // import Notifications from './components/Notifications.vue'
 // import Status from './components/Status.vue'
 import '@/style/_main.css'
-import { mapState } from 'vuex'
 export default {
   name: 'App',
-  // components: { Status, Notifications },
-  data () {
-    return {
-      viewNotifs: false
-    }
-  },
-  methods: {
-    // ...mapActions(['begin', 'reset'])
-  },
-  computed: {
-    ...mapState(['address'])
-    // ...mapState(['account', 'locked', 'error']),
-    // ...mapGetters(['notifications'])
-  },
-  watch: {
-    account () {
-      console.log('account changed')
-      // this.reset()
-    },
-    locked () {
-      console.log('locked changed')
-      // this.reset()
-    }
-  },
   created () {
     this.$store.dispatch('init')
     this.$store.dispatch('prismic/getWorks')
   },
   mounted () {
-    document.getElementById('loading').remove()
+    return document.getElementById('loading')?.remove()
     // this.$store.dispatch('wallet/init')
     // this.begin()
   }

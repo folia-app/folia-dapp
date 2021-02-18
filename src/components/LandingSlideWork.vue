@@ -20,6 +20,7 @@
         btn.px-10 {{ doc.data.year }}
 
       //- buy btn
+      .mx-auto.md_m-0
       button.mx-auto.md_m-0.focus_outline-none(@click="$store.dispatch('buy', doc.uid)", :disabled="!isReleased || isSoldOut")
         btn.px-16(:disabled="!isReleased || isSoldOut", :class="{'px-20': !isSoldOut}") {{ isSoldOut ? 'SOLD OUT' : 'BUY' }}
 
@@ -44,7 +45,7 @@ export default {
       return this.$store.state.works.find(work => work.id === this.doc.uid)
     },
     isSoldOut () {
-      return this.work && this.work.printed >= this.work.editions
+      return this.work && Number(this.work.editions) ? this.work.printed >= this.work.editions : false
     }
   },
   methods: {

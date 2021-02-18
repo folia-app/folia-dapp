@@ -38,15 +38,18 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import Btn from '@/components/Btn'
 import svgFleuron from '@/components/SVG-Fleuron'
 export default {
   name: 'Info',
   data () {
     return {
-      more: false,
-      contractAddr: '0xDCe09254dD3592381b6A5b7a848B29890b656e01'
+      more: false
     }
+  },
+  computed: {
+    ...mapGetters(['contractAddr'])
   },
   methods: {
     toggleMore () {
