@@ -44,17 +44,22 @@
           </svg>
 
       section.text-lg.p-8.lg_p-12(style="padding-bottom:25vh")
-        nav.flex.justify-start.mb-8.lg_mb-12
+        nav.flex.justify-start.mb-8.lg_mb-12.-ml-2
           button.focus_outline-none(@click="view = 'info'")
             btn.px-12(theme="drkgray", :active="view === 'info'") Info
           button.focus_outline-none(@click="view = 'owners'")
             btn.px-12(theme="drkgray", :active="view === 'owners'") Collectors
-          a(v-if="workAssetURL", :href="workAssetURL", target="_blank", rel="noopener noreferrer")
-            btn.px-12(theme="drkgray") File
+          button.focus_outline-none(@click="view = 'details'")
+            btn.px-12(theme="drkgray", :active="view === 'details'") Details
 
         work-owners(v-if="work", v-show="view === 'owners'", :work="work")
 
-        rich-text.children-mt-em.lg_w-10x12(style="max-width:32em;", v-show="view != 'owners'", :field="doc.data.description")
+        rich-text.children-mt-em.lg_w-10x12(style="max-width:32em;", v-show="view === 'info'", :field="doc.data.description")
+
+        div(v-show="view === 'details'")
+          rich-text.children-mt-em(:field="doc.data.details")
+          a.mt-6.inline-block.-ml-2(v-if="workAssetURL", :href="workAssetURL", target="_blank", rel="noopener noreferrer")
+            btn.px-12(theme="drkgray", size="small") File
 
       //- footer.sticky.bottom-0.left-0.w-full.p-8.lg_pb-10.lg_px-12.flex.flex-wrap.whitespace-no-wrap(v-if="work")
         .flex.w-full.flex-wrap.whitespace-no-wrap.text-white.text-lg
