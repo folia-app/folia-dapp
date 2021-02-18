@@ -1,15 +1,16 @@
 <template lang="pug">
   article#info.bg-white.text-black.flex.flex-col.justify-between
-    .px-16.py-20
+    section.px-16.py-20
       .text-red.text-4xl.leading-normal
-        section.underline-off
-          h2.md_w-10x12.text-red
-            | Folia is a platform for exhibiting and collecting #[a.border-b-2.border-current.border-dotted.hover_border-solid(href="https://opensea.io/blog/guides/non-fungible-tokens/" target="_blank") NFTs]
-            | #[button.ml-3.inline-block.text-black.py-px.rounded-full.px-3.bg-gray-100.text-xs.hover_bg-gray-200.focus_outline-none(@click="more = true", v-show="!more", style="font-size:0.4em") •••]
+        h2.md_w-10x12.text-red
+          | Folia is a platform for exhibiting and collecting #[a.border-b-2.border-current.border-dotted.hover_border-solid(href="https://opensea.io/blog/guides/non-fungible-tokens/" target="_blank") NFTs]
+          | #[button.ml-3.inline-block.text-black.py-px.rounded-full.px-3.bg-gray-100.text-xs.hover_bg-gray-200.focus_outline-none(@click="more = true", v-show="!more", style="font-size:0.4em") •••]
 
         transition(name="fadeinonly")
-          section#faq.md_w-3x4(v-show="more")
-            p.mt-lh-snugff.text-gray-800.text-sm.mt-6 proudly presented by #[a(href="https://bin.am", target="_blank") Bin Studio]
+          ul.md_w-3x4.mt-6.text-gray-800.text-sm(v-show="more")
+            li(v-if="contractAddr")
+              | Contract – #[a(:href="`https://etherscan.io/address/${contractAddr}`", target="_blank") {{ contractAddr }}]
+            li proudly presented by #[a(href="https://bin.am", target="_blank") Bin Studio]
             //-
               h2.font-sans.font-bold What are these?
               p Each &ldquo;patch&rdquo; here is a &ldquo;Non-Fungible Token&rdquo; (NFT) on the Ethereum blockchain.
@@ -43,7 +44,8 @@ export default {
   name: 'Info',
   data () {
     return {
-      more: false
+      more: false,
+      contractAddr: '0xDCe09254dD3592381b6A5b7a848B29890b656e01'
     }
   },
   methods: {
