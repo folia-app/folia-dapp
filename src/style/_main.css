@@ -32,4 +32,6 @@ html{
 
 button{
   font-weight: inherit;
+  color:inherit;
+  letter-spacing: inherit;
 }

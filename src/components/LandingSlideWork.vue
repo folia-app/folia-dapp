@@ -1,41 +1,27 @@
 <template lang="pug">
   .landing-slide-work.absolute.overlay.overflow-hidden
     //- media
-    //- img.absolute.overlay.object-cover.object-center(v-if="work.data.icon.url", :src="work.data.icon.url", :alt="work.data.icon.alt")
-    video.absolute.overlay.object-cover.object-center.transform.scale-150.origin-center(:src="work.data.teaser_video.url", muted, ref="video", playsinline, loop)
+    //- img.absolute.overlay.object-cover.object-center(v-if="doc.data.icon.url", :src="doc.data.icon.url", :alt="doc.data.icon.alt")
+    video.absolute.overlay.object-cover.object-center.transform.scale-150.origin-center(:src="doc.data.teaser_video.url", muted, ref="video", playsinline, loop)
     //- (blur?)
     //- .absolute.overlay(:style="{backdropFilter: `blur(12px)`}")
 
-    countdown-play-btn-overlay.z-10.text-lg(:work="work", @released="isReleased = true")
-    //- .absolute.z-10.overlay.flex.items-center.justify-center
-      //- (countdown)
-      template(v-if="!isReleased")
-        button.focus_outline-none(@click="$router.push({name: 'work', params: {work: work.uid}})")
-          btn.px-12.text-lg(theme="darken")
-            countdown(:until="work.data.release_time", @ended="isReleased = true")
-
-      //- (play btn)
-      template(v-else)
-        button.block.p-40.focus_outline-none.text-black-a15.hover_text-white(aria-label="Play", @click="$router.push({name: 'view', params: {work: work.uid}})")
-          <svg class="text-60 md_text-72 xl_text-96" style="width:calc(59 / 38 * 1em); height: 1em" viewBox="0 0 59 38" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio>
-            <path d="M1 1.49251L57.3157 19L0.999998 36.5075L1 1.49251Z" fill="currentColor" style="transition: all 200ms" />
-          </svg>
+    countdown-play-btn-overlay.z-10.text-lg(:doc="doc", @released="isReleased = true")
 
     //- bottom info
     .absolute.bottom-0.z-10.w-full.pb-12.md_px-12.xl_pb-16.text-md.lg_text-base.xl_text-lg.flex.flex-wrap.items-end.justiy-center.md_justify-between
       //- title
-      router-link(:to="'/works/' + work.uid").w-full.md_w-auto.flex.flex-wrap.justify-center.group-off
-        btn.px-10 {{ $store.getters.workId(work.uid, true) }}
+      router-link(:to="'/works/' + doc.uid").w-full.md_w-auto.flex.flex-wrap.justify-center.group-off
+        btn.px-10 {{ $store.getters.workId(doc.uid, true) }}
         .w-full.md_w-0
-        btn.px-10 {{ work.data.artist.split(',').join(' + ') }}
+        btn.px-10 {{ doc.data.artist.split(',').join(' + ') }}
         .w-full.md_w-0
-        btn.px-10 {{ work.data.title }}
-        btn.px-10 {{ work.data.year }}
+        btn.px-10 {{ doc.data.title }}
+        btn.px-10 {{ doc.data.year }}
 
       //- buy btn
-      button.mx-auto.md_m-0.focus_outline-none(@click="$store.dispatch('buy', work.uid)", :disabled="!isReleased")
-        btn.px-20(:disabled="!isReleased")
-          | BUY
+      button.mx-auto.md_m-0.focus_outline-none(@click="$store.dispatch('buy', doc.uid)", :disabled="!isReleased || isSoldOut")
+        btn.px-16(:disabled="!isReleased || isSoldOut", :class="{'px-20': !isSoldOut}") {{ isSoldOut ? 'SOLD OUT' : 'BUY' }}
 
 </template>
 
@@ -46,11 +32,19 @@ export default {
   name: 'LandingSlideWork',
   components: { Btn, CountdownPlayBtnOverlay },
   props: {
-    work: { type: Object, default: undefined }
+    doc: { type: Object, default: undefined }
   },
   data () {
     return {
       isReleased: false // || process.env.VUE_APP_DEV_IGNORE_RELEASES === 'true'
+    }
+  },
+  computed: {
+    work () {
+      return this.$store.state.works.find(work => work.id === this.doc.uid)
+    },
+    isSoldOut () {
+      return this.work && this.work.printed >= this.work.editions
     }
   },
   methods: {
@@ -68,7 +62,7 @@ export default {
     },
     getMetadata () {
       if (this.isReleased) {
-        this.$store.dispatch('getMetadata', { work: this.work.uid })
+        this.$store.dispatch('getMetadata', { work: this.doc.uid })
       }
     }
   },
@@ -76,6 +70,7 @@ export default {
   // lifecycle
   created () {
     this.getMetadata()
+    this.$store.dispatch('getWork', { id: this.doc.uid })
   },
   mounted () {
     this.observe()

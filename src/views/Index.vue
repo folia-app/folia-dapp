@@ -28,46 +28,11 @@
                   span.group-hover_opacity-0.truncate {{ address.slice(0, 6) + '...' + address.slice(-4) }}
                   span.hidden.group-hover_block.absolute.overlay.text-right.p-10 Disconnect
         //- landing
-        .w-full.bg-black.text-white.relative.flex.items-center.justify-center.font-sans.text-sm.h-90vh.md_h-93vh-off.md_h-screen(:style="{cursor: works.length > 1 ? 'e-resize' : 'auto'}", @click="next")
+        .w-full.bg-black.text-white.relative.flex.items-center.justify-center.font-sans.text-sm.h-90vh.md_h-93vh-off.md_h-screen(:style="{cursor: workDocs.length > 1 ? 'e-resize' : 'auto'}", @click="next")
           //- slides...
-          transition-group(:name="works.length > 1 ? 'slide' : 'none'")
-            figure.absolute.overlay(v-for="(work, i) in works", v-show="current === i", :key="work.uid")
-              landing-slide-work(:work="work")
-            //- figure.absolute.overlay.overflow-hidden.flex.flex-col.justify-between(v-for="(work, i) in works", v-show="current === i", :key="i")
-              //- [video]
-              template(v-if="work.data.video_teaser.url")
-                //- img.absolute.overlay.object-cover.object-center(v-if="work.data.icon.url", :src="work.data.icon.url", :alt="work.data.icon.alt")
-                video.absolute.overlay.object-cover.object-center.transform.scale-150.origin-center(:src="work.data.video_teaser.url", muted, ref="slidevideo", playsinline, :autoplay="current === i", loop)
-                //- (blur?)
-                //- .absolute.overlay(:style="{backdropFilter: `blur(12px)`}")
-
-                //- counter
-                .absolute.overlay.flex.items-center.justify-center
-                  btn.px-12.text-lg(theme="darken")
-                    countdown(:until="work.data.release_time")
-                //- play btn
-                .absolute.z-10.overlay.flex.items-center.justify-center(v-show="false")
-                  //- .relative.z-10.flex-1.w-full.flex.justify-center.items-center.pt-16.xl_pt-20
-                  button.block.p-40.focus_outline-none(aria-label="Play", @click="$router.push({name: 'view', params: {work: work.uid}})")
-                    <svg class="text-60 md_text-72 xl_text-96" style="width:calc(59 / 38 * 1em); height: 1em" viewBox="0 0 59 38" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio>
-                      <path d="M1 1.49251L57.3157 19L0.999998 36.5075L1 1.49251Z" stroke-off="currentColor" stroke-width-off="0.66px" fill="rgba(0,0,0,0.15)" />
-                    </svg>
-
-              //- bottom info
-              .absolute.bottom-0.z-10.w-full.pb-12.md_px-12.xl_pb-16.text-md.lg_text-base.xl_text-lg.flex.flex-wrap.items-end.justiy-center.md_justify-between
-                //- title
-                router-link(:to="'/works/' + work.uid").w-full.md_w-auto.flex.flex-wrap.justify-center.group-off
-                  btn.px-10 {{ workId(work.uid, true) }}
-                  .w-full.md_w-0
-                  btn.px-10 {{ work.data.artist.split(',').join(' + ') }}
-                  .w-full.md_w-0
-                  btn.px-10 {{ work.data.title }}
-                  btn.px-10 {{ work.data.year }}
-                //- buy btn
-                button.mx-auto.md_m-0.focus_outline-none(@click="buy(work.uid)")
-                  btn.px-20
-                    | BUY
-                  //- | {{ work.data.price_eth }} ETH
+          transition-group(:name="workDocs.length > 1 ? 'slide' : 'none'")
+            figure.absolute.overlay(v-for="(doc, i) in workDocs", v-show="current === i", :key="doc.uid")
+              landing-slide-work(:doc="doc")
 
           //- dots
           //- ul.absolute.bottom-0.left-0.w-full.flex.items-center.justify-center.pb-6(v-if="slides.length > 1")
@@ -79,9 +44,9 @@
         template(v-for="n in 1")
           //- thumbs...
           //- work-thumb.w-full.md_w-1x2.lg_w-1x3(v-for="(doc, index) in works", :doc="doc", :key="doc.id + n")
-          router-link.w-full.md_w-1x2.lg_w-1x3.bg-yellow.hover_shadow-inner-red(v-for="work in works", :to="{name: 'work', params: {work: work.uid}}")
+          router-link.w-full.md_w-1x2.lg_w-1x3.bg-yellow.hover_shadow-inner-red(v-for="doc in workDocs", :to="{name: 'work', params: {work: doc.uid}}")
             .pb-full.relative
-              .absolute.overlay.flex.items-center.justify-center {{ ('00' + (Number(work.uid) / 1000000)).slice(-3) }}
+              .absolute.overlay.flex.items-center.justify-center {{ ('00' + (Number(doc.uid) / 1000000)).slice(-3) }}
 
         //- 002...
         .relative.block.w-full.md_w-1x2.lg_w-1x3
@@ -98,13 +63,13 @@
               span.hidden.group-hover_inline Coming Soon
 
         //- info
-        info.w-full.min-h-100vw.md_min-h-50vw.lg_min-h-33vw(v-show="infoVisible && works.length > 0")
+        info.w-full.min-h-100vw.md_min-h-50vw.lg_min-h-33vw(v-show="infoVisible && workDocs.length > 0")
 
     //- video player
     .fixed.overlay.transition.transform.duration-700.origin-right.py-5.md_p-10.lg_p-12.xl_p-24.flex.bg-gray-200(ref="player", :class="{'pointer-events-none scale-x-0': !viewWork}", style="cursor:w-resize", @click="$router.go(-1)")
       .relative.w-full
         //- video element should be present so you can play from other views... (no child route)
-        video.absolute.overlay.object-contain.object-center.transition-opacity.duration-700.pointer-events-none(v-for="(metadata, i) in metadatas", v-if="metadata.animation_url", :src="metadata.animation_url", playsinline, :data-work="metadata._work", @contextmenu.prevent, :class="{'opacity-0': viewWork !== metadata._work}", preload="metadata")
+        video.absolute.overlay.object-contain.object-center.transition-opacity.duration-700.cursor-pointer(v-for="(metadata, i) in metadatas", v-if="metadata.animation_url_optim", :src="metadata.animation_url_optim", playsinline, :data-work="metadata._work", @contextmenu.prevent, :class="{'opacity-0': viewWork !== metadata._work}", preload="metadata", @click.stop="$event => $event.target.paused ? $event.target.play() : $event.target.pause()", @ended="$router.go(-1)")
 </template>
 
 <script>
@@ -131,7 +96,7 @@ export default {
     ...mapGetters(['workId']),
     ...mapState({
       address: state => state.address,
-      works: state => state.prismic.works,
+      workDocs: state => state.prismic.works,
       metadatas: state => state.metadatas
     }),
     viewWork () {
@@ -140,7 +105,7 @@ export default {
   },
   methods: {
     next () {
-      this.current = this.current + 1 === this.works.length ? 0 : this.current + 1
+      this.current = this.current + 1 === this.workDocs.length ? 0 : this.current + 1
     },
     onLogoClick () {
       document.getElementById('info').scrollIntoView({ behavior: 'smooth' })
@@ -156,7 +121,7 @@ export default {
       prev = prev && this.$el.querySelector('video[data-work="' + prev + '"]')
       if (next) {
         next.currentTime = 0
-        // next.load()
+        next.load()
         // this.$refs.player.requestFullscreen()
         setTimeout(() => {
           // next.style.opacity = '1'

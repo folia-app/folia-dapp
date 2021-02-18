@@ -7,9 +7,15 @@
             svg-fleuron.block.mr-2(style="width:0.96em;height:0.96em")
             div.leading-none {{ workId(doc.uid, true) }}
           //- div.leading-none {{ workId(doc.uid, true) }} — #[h1.inline {{ doc.data.artist }}] — {{ doc.data.title }} — {{ doc.data.year }}
-          h1.font-bold {{ doc.data.artist }}
-          div {{ doc.data.title }}, {{ doc.data.year }}
-          div {{ work ? work.printed + '/' + work.editions : 'ed. of ' + doc.data.edition }}
+          div {{ doc.data.title }}
+          .font-bold {{ doc.data.artist }}
+          rich-text(:field="doc.data.medium")
+          div
+            template(v-if="work") {{ work.printed }}/{{work.editions}} Minted
+            template(v-else) Edition of {{ doc.data.edition }}
+          //- div {{ work ? work.editions : doc.data.edition }}
+          //- div(v-if="work") Available {{ work.editions - work.printed }}
+          //- div {{ work ? work.printed + '/' + work.editions : 'ed. of ' + doc.data.edition }}
           div {{ work ? weiToETH(work.price) : doc.data.price_eth }} ETH
 
         button.block.group.relative.focus_outline-none(v-if="canBuy", @click="buy", :disabled="!isReleased")
@@ -24,11 +30,14 @@
             //- .relative.w-full.origin-center(:style="{transform: 'scale(' + imgScale + ')'}")
             img.absolute.overlay.object-contain.object-center(:src="doc.data.icon.url")
 
-      figure.relative.w-full.sm_w-10x12
+      figure.relative.w-full.sm_w-10x12.lg_pr-16
         //- img.w-full.block(:src="doc.data.icon.url")
-        video.w-full.block(:src="doc.data.teaser_video.url", loop, playsinline, muted, preload="metadata")
+        template(v-if="!isReleased")
+          video.w-full.block(:src="doc.data.teaser_video.url", loop, playsinline, muted, preload="metadata")
+        template(v-else)
+          img.w-full(:src="metadata.image")
         //- play btn?
-        countdown-play-btn-overlay.text-sm(:work="doc", :counter="false", size="small", @released="isReleased = true")
+        countdown-play-btn-overlay.text-sm.text-black-a30ff(:doc="doc", :counter="false", size="small", @released="isReleased = true")
         //- router-link.absolute.overlay.flex.items-center.justify-center(:to="{name: 'view', params: {work: doc.uid}}")
           <svg class="text-5xl lg_text-6xl xl_text-60 block" style="width:calc(59 / 38 * 1em); height: 1em" viewBox="0 0 59 38" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio>
             <path d="M1 1.49251L57.3157 19L0.999998 36.5075L1 1.49251Z" fill="rgba(255,255,255,0.9)" />
@@ -40,6 +49,8 @@
             btn.px-12(theme="drkgray", :active="view === 'info'") Info
           button.focus_outline-none(@click="view = 'owners'")
             btn.px-12(theme="drkgray", :active="view === 'owners'") Collectors
+          a(v-if="workAssetURL", :href="workAssetURL", target="_blank", rel="noopener noreferrer")
+            btn.px-12(theme="drkgray") File
 
         work-owners(v-if="work", v-show="view === 'owners'", :work="work")
 
@@ -75,16 +86,27 @@ export default {
     return {
       doc: undefined,
       work: undefined,
-      imgScale: 1,
-      imgOpacity: 1,
       view: 'info',
       isReleased: false
     }
   },
   computed: {
     ...mapGetters(['weiToETH', 'workId']),
+    id () {
+      return this.$route.params.work
+    },
+    metadata () {
+      return this.$store.state.metadatas.find(metadata => metadata._work === this.id)
+    },
     canBuy () {
       return this.work && (Number(this.work.printed) < Number(this.work.editions))
+    },
+    workAssetURL () {
+      let url
+      if (this.isReleased && this.metadata) {
+        url = this.metadata.animation_url?.length ? this.metadata.animation_url : this.metadata.image
+      }
+      return url
     }
   },
   created () {
@@ -93,14 +115,14 @@ export default {
   },
   methods: {
     async buy () {
-      await this.$store.dispatch('buy', this.$route.params.work)
+      await this.$store.dispatch('buy', this.id)
       this.fetchWork(true)
     },
     async fetchDoc () {
-      this.doc = await this.$store.dispatch('prismic/getWork', this.$route.params.work)
+      this.doc = await this.$store.dispatch('prismic/getWork', this.id)
     },
     async fetchWork (flush) {
-      this.work = await this.$store.dispatch('getWork', { id: this.$route.params.work, flush })
+      this.work = await this.$store.dispatch('getWork', { id: this.id, flush })
     }
   },
   components: { RichText, svgX, Btn, svgFleuron, WorkOwners, CountdownPlayBtnOverlay }
