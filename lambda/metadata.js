@@ -26,9 +26,11 @@ exports.handler = async function (event, context) {
     const printNo = tokenId - (workId * 1000000) // 2000016 - 2000000 = 16
 
     // api was used recently ?
-    if (!api) {
-      api = await initApi(event)
-    }
+    // if (!api) {
+    //   api = await initApi(event)
+    // }
+    // always use fresh...
+    api = await initApi(event)
 
     // fetch !
     const resp = await api.query(Prismic.Predicates.at('my.work.uid', docId.toString()), { pageSize: 1 })
@@ -99,7 +101,11 @@ exports.handler = async function (event, context) {
       // tags: ['cool', 'hot', 'mild']
 
       // open sea
-      animation_url: doc.data.animation_url.url, // 'https://prismic-io.s3.amazonaws.com/folia-dev/0b70ee18-1a6b-4715-9e3a-7079141cf608_mov_bbb.mp4',
+      animation_url: doc.data.animation_url.url,
+
+      // optimized for folia site
+      animation_url_optim: doc.data.animation_url_optim.url,
+
       youtube_url: ''
     }
 
