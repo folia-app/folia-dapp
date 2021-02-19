@@ -66,12 +66,12 @@
         info.w-full.min-h-100vw.md_min-h-50vw.lg_min-h-33vw(v-show="infoVisible && workDocs.length > 0")
 
     //- video player
-    .fixed.overlay.transition.transform.duration-700.origin-right.py-5.md_p-10.lg_p-12.xl_p-24.flex.bg-gray-200(ref="player", :class="{'pointer-events-none scale-x-0': !viewWork}", style="cursor:w-resize", @click="$router.go(-1)")
+    .fixed.overlay.transition.transform.duration-700.origin-right.py-5.md_p-10.lg_p-12.xl_p-24.flex.bg-gray-200(ref="player", :class="{'pointer-events-none scale-x-0': !viewWork}")
       .relative.w-full
         //- video element should be present so you can play from other views... (no child route)
         video.absolute.overlay.object-contain.object-center.transition-opacity.duration-700.cursor-pointer(v-for="(metadata, i) in metadatas", v-if="metadata.animation_url_optim", :src="metadata.animation_url_optim", playsinline, :data-work="metadata._work", @contextmenu.prevent, :class="{'opacity-0': viewWork !== metadata._work}", preload="metadata", @click.stop="$event => $event.target.paused ? $event.target.play() : $event.target.pause()", @ended="$router.go(-1)")
       //- back btn
-      button.absolute.top-0.left-0.h-full.w-1x4.focus_outline-none(@click="$router.go(-1)", aria-label="Go back", style="cursor: w-resize")
+      button.absolute.top-0.left-0.h-full.w-1x4.focus_outline-none(@click.stop="$router.go(-1)", aria-label="Go back", style="cursor: w-resize")
 </template>
 
 <script>
