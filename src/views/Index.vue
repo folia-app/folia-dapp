@@ -70,6 +70,8 @@
       .relative.w-full
         //- video element should be present so you can play from other views... (no child route)
         video.absolute.overlay.object-contain.object-center.transition-opacity.duration-700.cursor-pointer(v-for="(metadata, i) in metadatas", v-if="metadata.animation_url_optim", :src="metadata.animation_url_optim", playsinline, :data-work="metadata._work", @contextmenu.prevent, :class="{'opacity-0': viewWork !== metadata._work}", preload="metadata", @click.stop="$event => $event.target.paused ? $event.target.play() : $event.target.pause()", @ended="$router.go(-1)")
+      //- back btn
+      button.absolute.top-0.left-0.h-full.w-1x4.focus_outline-none(@click="$router.go(-1)", aria-label="Go back", style="cursor: w-resize")
 </template>
 
 <script>
