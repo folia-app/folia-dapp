@@ -1,7 +1,7 @@
 <template lang="pug">
   .landing-slide-work.absolute.overlay.overflow-hidden
     //- media
-    //- img.absolute.overlay.object-cover.object-center(v-if="doc.data.icon.url", :src="doc.data.icon.url", :alt="doc.data.icon.alt")
+    img.absolute.overlay.object-cover.object-center(v-if="doc.data.teaser_image.url", :src="doc.data.teaser_image.url", :alt="doc.data.teaser_image.alt")
     video.absolute.overlay.object-cover.object-center.transform.scale-150.origin-center(:src="doc.data.teaser_video.url", muted, ref="video", playsinline, loop)
     //- (blur?)
     //- .absolute.overlay(:style="{backdropFilter: `blur(12px)`}")
