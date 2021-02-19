@@ -1,7 +1,7 @@
 <template lang="pug">
   article.work.w-full.text-white
     .relative.overflow-y-scroll.h-screen.scrollbars-hidden(v-if="doc")
-      header.p-8.lg_p-12.lg_pb-16.flex.items-center
+      header.p-8.lg_p-12.lg_pb-16.flex.items-start
         .flex-1.text-lg
           .flex.mb-10
             svg-fleuron.block.mr-2(style="width:0.96em;height:0.96em")
@@ -18,8 +18,11 @@
           //- div {{ work ? work.printed + '/' + work.editions : 'ed. of ' + doc.data.edition }}
           div {{ work ? weiToETH(work.price) : doc.data.price_eth }} ETH
 
-        button.block.group.relative.focus_outline-none(v-if="canBuy", @click="buy", :disabled="!isReleased")
-          btn.px-16(theme="drkgray", :disabled="!isReleased") BUY
+        template(v-if="isSoldOut(work.id)")
+          sold-out-dot
+        template(v-else)
+          button.block.group.relative.focus_outline-none.-m-2(@click="buy", :disabled="!isReleased")
+            btn.px-16(theme="drkgray", :disabled="!isReleased") BUY
             //- span.absolute.overlay.flex.items-center.justify-center.opacity-0.group-hover_opacity-100 BUY
             //- span.group-hover_opacity-0 {{ work ? weiToETH(work.price) : doc.data.price_eth }} ETH
 
@@ -87,6 +90,7 @@ import Btn from '@/components/Btn'
 import svgFleuron from '@/components/SVG-Fleuron'
 import WorkOwners from '@/components/WorkOwners'
 import CountdownPlayBtnOverlay from '@/components/CountdownPlayBtnOverlay'
+import SoldOutDot from '@/components/SoldOutDot'
 export default {
   name: 'Work',
   data () {
@@ -97,7 +101,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['weiToETH', 'workId']),
+    ...mapGetters(['weiToETH', 'workId', 'isSoldOut']),
     id () {
       return this.$route.params.work
     },
@@ -110,9 +114,12 @@ export default {
     metadata () {
       return this.$store.state.metadatas.find(metadata => metadata._work === this.id)
     },
-    canBuy () {
-      return this.work && (Number(this.work.printed) < Number(this.work.editions))
-    },
+    // canBuy () {
+    //   return this.work && (Number(this.work.printed) < Number(this.work.editions))
+    // },
+    // isSoldOut () {
+    //   return this.work && (Number(this.work.printed) >=)
+    // },
     workAssetURL () {
       let url
       if (this.isReleased && this.metadata) {
@@ -137,7 +144,7 @@ export default {
       this.$store.dispatch('getWork', { id: this.id, flush })
     }
   },
-  components: { RichText, svgX, Btn, svgFleuron, WorkOwners, CountdownPlayBtnOverlay }
+  components: { RichText, svgX, Btn, svgFleuron, WorkOwners, CountdownPlayBtnOverlay, SoldOutDot }
 }
 </script>
 

@@ -20,18 +20,27 @@
         btn.px-10 {{ doc.data.year }}
 
       //- buy btn
-      .mx-auto.md_m-0
-      button.mx-auto.md_m-0.focus_outline-none(@click="$store.dispatch('buy', doc.uid)", :disabled="!isReleased || isSoldOut")
-        btn.px-16(:disabled="!isReleased || isSoldOut", :class="{'px-20': !isSoldOut}") {{ isSoldOut ? 'SOLD OUT' : 'BUY' }}
+      //- .mx-auto.md_m-0
+      //- template(v-if="isSoldOut")
+      template(v-if="isSoldOut(work.id)")
+        sold-out-dot.ml-auto.mr-12.md_mr-0
+      //- .group
+        span.group-hover_hidden.block.h-8.w-8.rounded-full.bg-red-duller
+        .hidden.group-hover_block
+          btn.px-8.bg-red-duller.text-xs.pointer-events-none(theme="none", size="small") SOLD
+        //- button.mx-auto.md_m-0.focus_outline-none(@click="$store.dispatch('buy', doc.uid)", :disabled="!isReleased || isSoldOut")
+          btn.px-16(:disabled="!isReleased || isSoldOut", :class="{'px-20': !isSoldOut}") {{ isSoldOut ? 'SOLD OUT' : 'BUY' }}
 
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import Btn from '@/components/Btn'
 import CountdownPlayBtnOverlay from '@/components/CountdownPlayBtnOverlay'
+import SoldOutDot from '@/components/SoldOutDot'
 export default {
   name: 'LandingSlideWork',
-  components: { Btn, CountdownPlayBtnOverlay },
+  components: { Btn, CountdownPlayBtnOverlay, SoldOutDot },
   props: {
     doc: { type: Object, default: undefined }
   },
@@ -41,11 +50,9 @@ export default {
     }
   },
   computed: {
+    ...mapGetters(['isSoldOut']),
     work () {
       return this.$store.state.works.find(work => work.id === this.doc.uid)
-    },
-    isSoldOut () {
-      return this.work && Number(this.work.editions) ? this.work.printed >= this.work.editions : false
     }
   },
   methods: {

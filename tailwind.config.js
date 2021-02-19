@@ -68,6 +68,7 @@ module.exports = {
 
       yellow: 'yellow',
       red: 'red',
+      'red-duller': '#ce1212', // soldout
 
       gray: {
         50: '#fafafa',

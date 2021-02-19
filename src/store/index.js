@@ -58,7 +58,11 @@ export default new Vuex.Store({
         : id // 1 - for contract communication
     },
     addrShort: () => (addr) => addr.slice(0, 6) + '...' + addr.slice(-4),
-    contractAddr: (state) => state.foliaContract?._address
+    contractAddr: (state) => state.foliaContract?._address,
+    isSoldOut: (state) => (id) => {
+      const work = state.works.find(work => work.id === id)
+      return work && Number(work.editions) && Number(work.printed) >= Number(work.editions)
+    }
   },
   mutations: {
     SIGN_IN (state, address) {
@@ -188,6 +192,8 @@ export default new Vuex.Store({
         await foliaControllerContract.methods
           .buy(state.address, workId)
           .send({ from: state.address, value: work.price })
+        // refresh work data for app
+        dispatch('getWork', { id: workId, flush: true })
       } catch (e) {
         console.error('@buy:', e)
         // TODO - more elegant UX error ?
