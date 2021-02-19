@@ -10,7 +10,7 @@
           ul.md_w-3x4.mt-6.text-gray-800.text-sm(v-show="more")
             li.truncate(v-if="contractAddr")
               | Contract – #[a(:href="`https://etherscan.io/address/${contractAddr}`", target="_blank") {{ contractAddr }}]
-            li proudly presented by #[a(href="https://bin.am", target="_blank") Bin Studio]
+            li proudly presented by #[a(href="https://bin.am", target="_blank", rel="noopener") Bin Studio]
             //-
               h2.font-sans.font-bold What are these?
               p Each &ldquo;patch&rdquo; here is a &ldquo;Non-Fungible Token&rdquo; (NFT) on the Ethereum blockchain.
@@ -30,6 +30,8 @@
           btn.px-10(theme="ltgray") discord
         a(href="https://folia.substack.com", target="_blank", rel="noopener")
           btn.px-10(theme="ltgray") substack
+        a(href="https://github.com/folia-app", target="_blank", rel="noopener noreferrer")
+          btn.px-10(theme="ltgray") github
 
       svg-fleuron.text-black.h-12.m-12
 
