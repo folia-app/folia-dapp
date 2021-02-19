@@ -67,9 +67,9 @@
 
     //- video player
     .fixed.overlay.transition.transform.duration-700.origin-right.py-5.md_p-10.lg_p-12.xl_p-24.flex.bg-gray-200(ref="player", :class="{'pointer-events-none scale-x-0': !viewWork}")
-      .relative.w-full
+      figure.relative.w-full.transition-opacity.duration-700(v-for="(metadata, i) in metadatas", :class="{'opacity-0': viewWork !== metadata._work}")
         //- video element should be present so you can play from other views... (no child route)
-        video.absolute.overlay.object-contain.object-center.transition-opacity.duration-700.cursor-pointer(v-for="(metadata, i) in metadatas", v-if="metadata.animation_url_optim", :src="metadata.animation_url_optim", playsinline, :data-work="metadata._work", @contextmenu.prevent, :class="{'opacity-0': viewWork !== metadata._work}", preload="metadata", @click.stop="$event => $event.target.paused ? $event.target.play() : $event.target.pause()", @ended="$router.go(-1)")
+        video.absolute.overlay.object-contain.object-center(v-if="metadata.animation_url_optim", :src="metadata.animation_url_optim", playsinline, :data-work="metadata._work", @contextmenu.prevent, preload="auto", @click.stop="$event => $event.target.paused ? $event.target.play() : null", @ended="$router.go(-1)", :poster="metadata.image")
       //- back btn
       button.absolute.top-0.left-0.h-full.w-1x4.focus_outline-none(@click.stop="$router.go(-1)", aria-label="Go back", style="cursor: w-resize")
 </template>
@@ -122,18 +122,12 @@ export default {
       next = next && this.$el.querySelector('video[data-work="' + next + '"]')
       prev = prev && this.$el.querySelector('video[data-work="' + prev + '"]')
       if (next) {
-        next.currentTime = 0
-        next.load()
-        // this.$refs.player.requestFullscreen()
-        setTimeout(() => {
-          // next.style.opacity = '1'
-          next.play()
-        }, 500)
+        // after transition...
+        setTimeout(() => next.play(), 500)
       }
       if (prev) {
         prev.pause()
-        // prev.style.opacity = ''
-        // document.exitFullscreen()
+        prev.currentTime = 0 // reset for next viewing
       }
     },
     '$route' (to, from) {
