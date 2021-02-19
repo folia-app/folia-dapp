@@ -32,6 +32,11 @@ Vue.use(PrismicVue, {
 })
 
 const pwd = async cb => {
+  // disabled
+  if (!process.env.VUE_APP_SITE_PWD_ENABLED) {
+    return cb()
+  }
+  // check pwd...
   const p = sessionStorage.getItem('p') || window.prompt('password')
   const checkPwd = (p) => fetch('/.netlify/functions/pwd', { method: 'POST', body: p })
 

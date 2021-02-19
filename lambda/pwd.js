@@ -3,7 +3,7 @@ const password = process.env.SITE_PWD
 
 exports.handler = async function (event, context) {
   try {
-    if (event.body === password) {
+    if (!password || event.body === password) {
       return {
         statusCode: 200,
         body: JSON.stringify({ status: 200, msg: 'success' })
