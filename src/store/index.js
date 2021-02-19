@@ -174,13 +174,16 @@ export default new Vuex.Store({
 
     /* buy artwork */
     async buy ({ state, dispatch }, workId) {
-      if (!state.address) return dispatch('connect')
       try {
         const work = await dispatch('getWork', { id: workId, flush: true })
         // !! unavailable
-        if (!work.exists) throw new Error(`Work ${workId} doesn't exist`)
-        if (Number(work.printed) >= Number(work.editions)) throw new Error(`Work ${1} is sold out`)
-        if (work.paused) throw new Error(`Work ${workId} is locked. Please wait for release or try again shortly.`)
+        if (!work.exists) throw new Error(`!! Work ${workId} doesn't exist`)
+        if (Number(work.printed) >= Number(work.editions)) throw new Error(`!! Work ${1} is sold out`)
+        if (work.paused) throw new Error(`!! Work ${workId} is locked. Please wait for release or try again shortly.`)
+        // wallet connected ?
+        if (!state.address) {
+          await dispatch('connect')
+        }
         // buy
         await foliaControllerContract.methods
           .buy(state.address, workId)
@@ -188,7 +191,9 @@ export default new Vuex.Store({
       } catch (e) {
         console.error('@buy:', e)
         // TODO - more elegant UX error ?
-        alert(e.message)
+        if (e.message?.includes('!! ')) {
+          alert(e.message.replace('!! ', ''))
+        }
       }
     },
 
