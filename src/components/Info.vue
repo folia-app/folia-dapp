@@ -1,6 +1,6 @@
 <template lang="pug">
   article#info.bg-white.text-black.flex.flex-col.justify-between
-    section.px-16.py-20
+    section.p-12.lg_px-16.lg_py-20
       .text-red.text-4xl.leading-normal
         h2.md_w-10x12.text-red
           | Folia is a platform for exhibiting and collecting #[a.border-b-2.border-current.border-dotted.hover_border-solid(href="https://opensea.io/blog/guides/non-fungible-tokens/" target="_blank") NFTs]
@@ -8,7 +8,7 @@
 
         transition(name="fadeinonly")
           ul.md_w-3x4.mt-6.text-gray-800.text-sm(v-show="more")
-            li(v-if="contractAddr")
+            li.truncate(v-if="contractAddr")
               | Contract – #[a(:href="`https://etherscan.io/address/${contractAddr}`", target="_blank") {{ contractAddr }}]
             li proudly presented by #[a(href="https://bin.am", target="_blank") Bin Studio]
             //-
