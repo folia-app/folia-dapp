@@ -59,8 +59,7 @@ export default new Vuex.Store({
     },
     addrShort: () => (addr) => addr.slice(0, 6) + '...' + addr.slice(-4),
     contractAddr: (state) => state.foliaContract?._address,
-    isSoldOut: (state) => (id) => {
-      const work = state.works.find(work => work.id === id)
+    isSoldOut: () => (work) => {
       return work && Number(work.editions) && Number(work.printed) >= Number(work.editions)
     }
   },
@@ -76,8 +75,10 @@ export default new Vuex.Store({
     },
     SAVE_WORK (state, work) {
       const i = state.works.findIndex(svd => svd.id === work.id)
-      if (i > -1) state.works[i] = work
-      else state.works.push(work)
+      // remove existing ?
+      if (i > -1) state.works.splice(i, 1)
+      // push so app updates
+      state.works.push(work)
     },
     SAVE_TOKEN (state, token) {
       state.tokens.push(token) // [tokenId, ownerAddr]

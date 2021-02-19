@@ -22,13 +22,17 @@
       //- buy btn
       //- .mx-auto.md_m-0
       //- template(v-if="isSoldOut")
-      template(v-if="isSoldOut(work.id)")
+      template(v-if="isSoldOut(work)")
         sold-out-dot.ml-auto.mr-12.md_mr-0
+      template(v-else)
+        button.mx-auto.md_m-0.focus_outline-none(@click="$store.dispatch('buy', doc.uid)", :disabled="!isReleased")
+          btn.px-16(:disabled="!isReleased") BUY
+
       //- .group
         span.group-hover_hidden.block.h-8.w-8.rounded-full.bg-red-duller
         .hidden.group-hover_block
           btn.px-8.bg-red-duller.text-xs.pointer-events-none(theme="none", size="small") SOLD
-        //- button.mx-auto.md_m-0.focus_outline-none(@click="$store.dispatch('buy', doc.uid)", :disabled="!isReleased || isSoldOut")
+        button.mx-auto.md_m-0.focus_outline-none(@click="$store.dispatch('buy', doc.uid)", :disabled="!isReleased || isSoldOut")
           btn.px-16(:disabled="!isReleased || isSoldOut", :class="{'px-20': !isSoldOut}") {{ isSoldOut ? 'SOLD OUT' : 'BUY' }}
 
 </template>

@@ -18,7 +18,7 @@
           //- div {{ work ? work.printed + '/' + work.editions : 'ed. of ' + doc.data.edition }}
           div {{ work ? weiToETH(work.price) : doc.data.price_eth }} ETH
 
-        template(v-if="isSoldOut(work.id)")
+        template(v-if="isSoldOut(work)")
           sold-out-dot
         template(v-else)
           button.block.group.relative.focus_outline-none.-m-2(@click="buy", :disabled="!isReleased")
@@ -135,7 +135,6 @@ export default {
   methods: {
     async buy () {
       await this.$store.dispatch('buy', this.id)
-      this.fetchWork(true)
     },
     fetchDoc () {
       this.$store.dispatch('prismic/getWork', this.id)
