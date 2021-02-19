@@ -56,7 +56,7 @@
 
         work-owners(v-if="work", v-show="view === 'owners'", :work="work")
 
-        rich-text.children-mt-em.lg_w-10x12(style="max-width:32em;", v-show="view === 'info'", :field="doc.data.description")
+        rich-text.children-mt-em.lg_w-10x12(style="max-width:28em;", v-show="view === 'info'", :field="doc.data.description")
 
         div(v-show="view === 'details'")
           rich-text.children-mt-em(:field="doc.data.details")
