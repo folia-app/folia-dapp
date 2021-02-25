@@ -5,21 +5,26 @@ const vue = new Vue()
 export default {
   namespaced: true,
   state: {
-    works: []
+    docs: []
+  },
+  getters: {
+    works (state) {
+      return state.docs.filter(doc => doc.type === 'work')
+    }
   },
   mutations: {
-    setWorks (state, docs) {
-      state.works = docs
+    setDocs (state, docs) {
+      state.docs = docs
     }
   },
   actions: {
-    async getWorks ({ commit }) {
-      const resp = await prismic(vue.$prismic.Predicates.at('document.type', 'work'))
-      commit('setWorks', resp.results)
+    async getDocs ({ commit }) {
+      const resp = await prismic('', { pageSize: 100 })
+      commit('setDocs', resp.results)
     },
 
     async getWork ({ state }, uid) {
-      const saved = state.works.find(doc => doc.uid === uid)
+      const saved = state.docs.find(doc => doc.uid === uid)
       return saved || (await prismic(vue.$prismic.Predicates.at('my.work.uid', uid)))?.results[0]
     }
   }

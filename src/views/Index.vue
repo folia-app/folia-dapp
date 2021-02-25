@@ -13,7 +13,8 @@
         button(v-show="workPanel", @click="$router.push('/')").absolute.overlay.bg-black.z-10.cursor-pointer.opacity-25.md_opacity-50
 
       //- MAIN
-      main.index.relative.min-h-screen.transition.duration-500.transform.origin-left.flex.flex-wrap(:class="{'scale-x-0 sm_scale-x-25 lg_scale-x-50': workPanel}")
+      main.index.relative.min-h-screen.transition.duration-500.transform.origin-left(:class="{'scale-x-0 sm_scale-x-25 lg_scale-x-50': workPanel}")
+        //- HEADER
         header.absolute.top-0.left-0.w-full.z-20.text-white
           .absolute.top-0.left-0.w-full
             .flex.w-full.justify-between.items-center
@@ -28,11 +29,12 @@
                   span.group-hover_opacity-0.truncate {{ address.slice(0, 6) + '...' + address.slice(-4) }}
                   span.hidden.group-hover_block.absolute.overlay.text-right.p-10 Disconnect
         //- landing
-        .w-full.bg-black.text-white.relative.flex.items-center.justify-center.font-sans.text-sm.h-90vh.md_h-93vh-off.md_h-screen(:style="{cursor: workDocs.length > 1 ? 'e-resize' : 'auto'}", @click="next")
-          //- slides...
-          transition-group(:name="workDocs.length > 1 ? 'slide' : 'none'")
-            figure.absolute.overlay(v-for="(doc, i) in workDocs", v-show="current === i", :key="doc.uid")
-              landing-slide-work(:doc="doc")
+        section.w-full.bg-black.text-white.relative.flex.items-center.justify-center.font-sans.text-sm.h-90vh.md_h-93vh-off.md_h-screen(:style="{cursor: carouselEnabled > 1 ? 'e-resize' : 'auto'}", @click="carouselEnabled && next()")
+          template(v-if="home")
+            //- slides...
+            transition-group(:name="home.landing.length > 1 ? 'slide' : 'none'")
+              figure.absolute.overlay(v-for="(slice, i) in home.landing", v-show="current === i", :key="i")
+                landing-slide-work(:doc="workDocs.find(doc => doc.uid === slice.primary.link.uid)")
 
           //- dots
           //- ul.absolute.bottom-0.left-0.w-full.flex.items-center.justify-center.pb-6(v-if="slides.length > 1")
@@ -40,27 +42,31 @@
               .w-4.h-2.border-b.border-white(:class="{'bg-white': current === i}")
           //- span.opacity-50 (videos/slideshow)
 
-        //- list
-        template(v-for="n in 1")
+        section(v-if="home")
           //- thumbs...
           //- work-thumb.w-full.md_w-1x2.lg_w-1x3(v-for="(doc, index) in works", :doc="doc", :key="doc.id + n")
-          router-link.w-full.md_w-1x2.lg_w-1x3.bg-yellow.hover_shadow-inner-red(v-for="doc in workDocs", :to="{name: 'work', params: {work: doc.uid}}")
-            .pb-full.relative
-              .absolute.overlay.flex.items-center.justify-center {{ ('00' + (Number(doc.uid) / 1000000)).slice(-3) }}
+          template(v-for="(slice, i) in home.body")
+            //- slice: works grid
+            template(v-if="slice.slice_type === 'works_grid'")
+              .slice-works-grid.flex.flex-wrap
+                //- items...
+                router-link.w-full.md_w-1x2.lg_w-1x3.bg-yellow.hover_shadow-inner-red(v-for="item in slice.items", :to="{name: 'work', params: {work: item.work.uid}}")
+                  .pb-full.relative
+                    .absolute.overlay.flex.items-center.justify-center {{ workId(item.work.uid, true) }}
 
-        //- 002...
-        .relative.block.w-full.md_w-1x2.lg_w-1x3
-          .pb-full
-            .absolute.overlay.flex.items-center.justify-center.bg-black.text-white.border-b.md_border-b-0.md_border-r.border-gray-800.font-sans.group
-              span.group-hover_hidden 002
-              span.hidden.group-hover_inline Coming Soon
+                //- 002...
+                .relative.block.w-full.md_w-1x2.lg_w-1x3
+                  .pb-full
+                    .absolute.overlay.flex.items-center.justify-center.bg-black.text-white.border-b.md_border-b-0.md_border-r.border-gray-800.font-sans.group
+                      span.group-hover_hidden 003
+                      span.hidden.group-hover_inline Coming Soon
 
-        //- collectors link
-        .hidden.lg_block.relative.w-full.md_w-1x2.lg_w-1x3
-          .pb-full
-            .absolute.overlay.flex.items-center.justify-center.bg-black.text-white.font-sans.group
-              span.group-hover_hidden Collectors
-              span.hidden.group-hover_inline Coming Soon
+              //- collectors link
+              //- .hidden.lg_block.relative.w-full.md_w-1x2.lg_w-1x3
+                .pb-full
+                  .absolute.overlay.flex.items-center.justify-center.bg-black.text-white.font-sans.group
+                    span.group-hover_hidden Collectors
+                    span.hidden.group-hover_inline Coming Soon
 
         //- info
         info.w-full.min-h-100vw.md_min-h-50vw.lg_min-h-33vw(v-show="infoVisible && workDocs.length > 0")
@@ -95,14 +101,22 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['workId']),
     ...mapState({
+      home: state => state.prismic.docs.find(doc => doc.type === 'home')?.data,
       address: state => state.address,
-      workDocs: state => state.prismic.works,
+      // doc: state => state.prismic.
+      // workDocs: state => state.prismic.works,
       metadatas: state => state.metadatas
+    }),
+    ...mapGetters({
+      workDocs: 'prismic/works',
+      workId: 'workId'
     }),
     viewWork () {
       return this.$route.name === 'view' ? this.$route.params.work : null
+    },
+    carouselEnabled () {
+      return this.home?.landing.length > 1
     }
   },
   methods: {
@@ -115,8 +129,8 @@ export default {
   },
   watch: {
     current (to, from) {
-      this.$refs.slidevideo[to].play()
-      this.$refs.slidevideo[from].pause()
+      // this.$refs.slidevideo[to].play()
+      // this.$refs.slidevideo[from].pause()
     },
     viewWork (next, prev) {
       next = next && this.$el.querySelector('video[data-work="' + next + '"]')

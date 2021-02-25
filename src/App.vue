@@ -23,7 +23,7 @@ export default {
   name: 'App',
   created () {
     this.$store.dispatch('init')
-    this.$store.dispatch('prismic/getWorks')
+    this.$store.dispatch('prismic/getDocs')
   },
   mounted () {
     return document.getElementById('loading')?.remove()

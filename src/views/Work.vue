@@ -106,7 +106,7 @@ export default {
       return this.$route.params.work
     },
     doc () {
-      return this.$store.state.prismic.works.find(doc => doc.uid === this.id)
+      return this.$store.getters['prismic/works'].find(doc => doc.uid === this.id)
     },
     work () {
       return this.$store.state.works.find(work => work.id === this.id)
