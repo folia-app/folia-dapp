@@ -1,8 +1,31 @@
-// import Prismic from 'prismic-javascript'
 import * as works from './works' // works.FLA1000000, ...
+import { Folia } from 'folia-contracts'
+import Web3 from 'web3'
 require('dotenv').config()
 require('encoding') // netlify build error / missing package??
 const ignoreRelease = process.env.VUE_APP_DEV_IGNORE_RELEASES === 'true'
+const infura = process.env.METADATA_INFURA_ENDPOINT
+
+// setup contract utility
+const web3 = new Web3(new Web3.providers.HttpProvider(infura))
+const foliaContract = new web3.eth.Contract(
+  Folia.abi,
+  Folia.networks[4].address
+)
+
+// get token owner helper
+async function getNFTOwnerByTokenId (tokenId) {
+  let owner
+  try {
+    // get new data
+    if (foliaContract) {
+      owner = await foliaContract.methods.ownerOf(tokenId).call()
+    }
+  } catch (e) {
+    console.error('get owner error', e)
+  }
+  return owner
+}
 
 // handler
 exports.handler = async function (event, context) {
@@ -11,6 +34,10 @@ exports.handler = async function (event, context) {
     const tokenId = event.path.substr(event.path.lastIndexOf('/') + 1) // 1000005
     const workId = Math.floor(tokenId / 1000000) // 1
     const workNamespace = workId * 1000000 // 1000000
+
+    // test contract check
+    const owner = await getNFTOwnerByTokenId(tokenId)
+    console.log('owner:', owner)
 
     // find work
     const work = works['FLA' + workNamespace]
