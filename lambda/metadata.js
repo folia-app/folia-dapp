@@ -25,7 +25,7 @@ exports.handler = async function (event, context) {
     const workId = Math.floor(tokenId / 1000000) // 1
     const workNamespace = workId * 1000000 // 1000000
     // const docId = workId
-    const printNo = tokenId - workNamespace // 2000016 - 2000000 = 16
+    // const printNo = tokenId - workNamespace // 2000016 - 2000000 = 16
 
     // api was used recently ?
     // if (!api) {
@@ -70,9 +70,12 @@ exports.handler = async function (event, context) {
     // this would be your own api with rich data and actual information about the artworks
     // cosnt storedMetadata = axios('https://mydatabase.com/storageSystem/'+tokenId)
 
+    // format print No.
+    const no = printNo(work, tokenId)
+
     const metadata = {
       // both opensea and rarebits
-      name: work.titlePattern.replace('{{no}}', printNo),
+      name: work.titlePattern.replace('{{no}}', no),
       // name: `${doc.data.artist}, "${doc.data.title}", ${doc.data.year} (${printNo}/${doc.data.edition})`,
 
       description: work.description, // by token ID?
@@ -149,4 +152,18 @@ const asset = (work, tokenId, key) => {
     asset = path + file
   }
   return asset
+}
+
+// formating print no. in title
+const printNo = (work, tokenId) => {
+  const workNamespace = Math.floor(tokenId / 1000000) * 1000000 // 2000000
+  let printNo = tokenId - workNamespace // 16
+  if (printNo > work.editions) {
+    printNo = `(AP${printNo - work.editions})` // AP1
+  } else if (work.variable) {
+    printNo = `#${printNo}` // #16
+  } else {
+    printNo = `(${printNo}/${work.editions})`
+  }
+  return printNo
 }

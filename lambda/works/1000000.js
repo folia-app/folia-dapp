@@ -1,5 +1,6 @@
 export default {
-  titlePattern: 'Petra Cortright & James Whipple, "Untitled 01", 2021, ({{no}}/1)',
+  titlePattern: 'Petra Cortright & James Whipple, "Untitled 01", 2021 {{no}}',
+  editions: 1,
   directory: 'https://gateway.pinata.cloud/ipfs/QmSWUxcZUznyWts5GPVUMgk1GT81ymvepQozkhxuzCV18E',
   assetPath: '',
   release: '02-20-2021 08:00:00 pm +01:00',

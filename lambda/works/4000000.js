@@ -5,7 +5,8 @@ const asset = {
 }
 
 export default {
-  titlePattern: 'Harm van den Dorpel, "Blob.gif", 2017, ({{no}}/3)',
+  titlePattern: 'Harm van den Dorpel, "Blob.gif", 2017 {{no}}',
+  editions: 3,
   description: '.GIF, 233 frames, 512x512 pixels, 18.1MB, Edition 3 + 1AP, Created 2017, Minted 2021',
   release: '02-20-2021 08:00:00 pm +01:00',
   directory: 'https://gateway.pinata.cloud/ipfs/QmUTPAQuVpXpr1BhXCrvyQ5TocrMwjJ4h4qYPTj9dWoAj8/FLA4000000__harm-van-den-dorpel__blob__2017',

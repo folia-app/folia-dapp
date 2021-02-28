@@ -5,7 +5,8 @@ const asset = {
 }
 
 export default {
-  titlePattern: 'Harm van den Dorpel, "Bison.gif", 2005, ({{no}}/1)',
+  titlePattern: 'Harm van den Dorpel, "Bison.gif", 2005, {{no}}',
+  editions: 1,
   description: '.GIF, 306 frames, 720x576 pixels, 3.9MB, Edition 1 + 1AP, Created 2005, Minted 2021',
   release: '02-20-2021 08:00:00 pm +01:00',
   directory: 'https://gateway.pinata.cloud/ipfs/QmdLZQBarqkN1VbL6myz24tuz2JrntuveMPF82ukURGqPS/FLA6000000__harm-van-den-dorpel__bison__2005',
