@@ -4,32 +4,28 @@ import Web3 from 'web3'
 require('dotenv').config()
 require('encoding') // netlify build error / missing package??
 const ignoreRelease = process.env.VUE_APP_DEV_IGNORE_RELEASES === 'true'
-const infura = process.env.METADATA_INFURA_ENDPOINT
 
-// setup contract utility
-const web3 = new Web3(new Web3.providers.HttpProvider(infura))
-const foliaContract = new web3.eth.Contract(
-  Folia.abi,
-  Folia.networks[4].address
-)
+let foliaContract
 
-// get token owner helper
-async function getNFTOwnerByTokenId (tokenId) {
-  let owner
-  try {
-    // get new data
-    if (foliaContract) {
-      owner = await foliaContract.methods.ownerOf(tokenId).call()
-    }
-  } catch (e) {
-    console.error('get owner error', e)
-  }
-  return owner
+// infura endpoints
+const infura = {
+  1: 'https://mainnet.infura.io/v3/21b72335f32c40eb8f48a7ee7d9beebb',
+  4: 'https://rinkeby.infura.io/v3/21b72335f32c40eb8f48a7ee7d9beebb'
 }
 
 // handler
 exports.handler = async function (event, context) {
+  console.log(event)
   try {
+    // setup contract
+    const networkId = event.queryStringParameters.network ?? 1 // ?network=4
+    console.log(networkId, infura[networkId])
+    const web3 = new Web3(new Web3.providers.HttpProvider(infura[networkId]))
+    foliaContract = new web3.eth.Contract(
+      Folia.abi,
+      Folia.networks[1].address
+    )
+
     // get token from path
     const tokenId = event.path.substr(event.path.lastIndexOf('/') + 1) // 1000005
     const workId = Math.floor(tokenId / 1000000) // 1
@@ -167,4 +163,18 @@ const printNo = (work, tokenId) => {
     printNo = `(${printNo}/${work.editions})`
   }
   return printNo
+}
+
+// get token owner helper
+async function getNFTOwnerByTokenId (tokenId) {
+  let owner
+  try {
+    // get new data
+    if (foliaContract) {
+      owner = await foliaContract.methods.ownerOf(tokenId).call()
+    }
+  } catch (e) {
+    console.error('get owner error', e)
+  }
+  return owner
 }
