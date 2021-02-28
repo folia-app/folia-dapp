@@ -1,6 +1,8 @@
 export default {
-  titlePattern: 'Travess Smalley, "Emoji Script", 2021, ({{no}}/100)',
-  description: 'Non-Fungible Token (.PNG)',
+  titlePattern: 'Travess Smalley, "Emoji Script" {{no}}',
+  editions: 100,
+  variable: true,
+  description: 'PNG, ...',
   release: '03-06-2021 08:00:00 pm +01:00',
   directory: '',
   assetPath: 'https://res.cloudinary.com/folia/image/upload/v1614439745/travess-emoji-script/test/',

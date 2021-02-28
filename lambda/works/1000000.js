@@ -1,9 +1,10 @@
 export default {
-  titlePattern: 'Petra Cortright & James Whipple, "Untitled 01", 2021, ({{no}}/1)',
+  titlePattern: 'Petra Cortright & James Whipple, "Untitled 01", 2021 {{no}}',
+  editions: 1,
   directory: 'https://gateway.pinata.cloud/ipfs/QmSWUxcZUznyWts5GPVUMgk1GT81ymvepQozkhxuzCV18E',
   assetPath: '',
   release: '02-20-2021 08:00:00 pm +01:00',
-  description: 'Non-Fungible Token (Video/MP4), 1:33, 1810x1368 pixels, 56.4MB, Edition 1/1',
+  description: 'Video/MP4, 1:33, 1810x1368 pixels, 56.4MB, Edition 1',
   tokens: {
     1000001: {
       image: 'https://gateway.pinata.cloud/ipfs/QmesHGK1vaRKoGE1YXYqeQk8xPNXK9UjRp6echFyucKoam',

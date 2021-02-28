@@ -2,44 +2,18 @@
 import * as works from './works' // works.FLA1000000, ...
 require('dotenv').config()
 require('encoding') // netlify build error / missing package??
-// const apiEndpoint = process.env.METADATA_PRISMIC_ENDPOINT
-// const accessToken = process.env.METADATA_PRISMIC_TOKEN
 const ignoreRelease = process.env.VUE_APP_DEV_IGNORE_RELEASES === 'true'
-
-// Initialize the prismic.io api
-// function initApi (req) {
-//   return Prismic.getApi(apiEndpoint, {
-//     accessToken: accessToken,
-//     req: req
-//   })
-// }
-
-// let api
 
 // handler
 exports.handler = async function (event, context) {
-  // console.log(context)
   try {
     // get token from path
     const tokenId = event.path.substr(event.path.lastIndexOf('/') + 1) // 1000005
     const workId = Math.floor(tokenId / 1000000) // 1
     const workNamespace = workId * 1000000 // 1000000
-    // const docId = workId
-    const printNo = tokenId - workNamespace // 2000016 - 2000000 = 16
 
-    // api was used recently ?
-    // if (!api) {
-    //   api = await initApi(event)
-    // }
-    // always use fresh...
-    // api = await initApi(event)
-
+    // find work
     const work = works['FLA' + workNamespace]
-
-    // fetch !
-    // const resp = await api.query(Prismic.Predicates.at('my.work.uid', docId.toString()), { pageSize: 1 })
-    // doc
-    // const doc = resp.results[0]
 
     // !! not found
     if (!work) {
@@ -70,10 +44,12 @@ exports.handler = async function (event, context) {
     // this would be your own api with rich data and actual information about the artworks
     // cosnt storedMetadata = axios('https://mydatabase.com/storageSystem/'+tokenId)
 
-    console.log(work)
+    // format print No.
+    const no = printNo(work, tokenId)
+
     const metadata = {
       // both opensea and rarebits
-      name: work.titlePattern.replace('{{no}}', printNo),
+      name: work.titlePattern.replace('{{no}}', no),
       // name: `${doc.data.artist}, "${doc.data.title}", ${doc.data.year} (${printNo}/${doc.data.edition})`,
 
       description: work.description, // by token ID?
@@ -117,7 +93,10 @@ exports.handler = async function (event, context) {
       // optimized for folia site
       animation_url_optim: asset(work, tokenId, 'animation_url_optim'),
 
-      youtube_url: ''
+      youtube_url: '',
+
+      // sha hashes for posterity
+      sha256: work.sha256 || {}
     }
 
     // return metadata :)
@@ -139,4 +118,26 @@ exports.handler = async function (event, context) {
 // HELPERS
 
 // helper for URL for individual asset
-const asset = (work, tokenId, key) => work && work.tokens[tokenId] ? work.assetPath + work.tokens[tokenId][key] : ''
+const asset = (work, tokenId, key) => {
+  let asset = ''
+  const file = work && work.tokens && work.tokens[tokenId] && work.tokens[tokenId][key]
+  if (file) {
+    const path = work.assetPath || ''
+    asset = path + file
+  }
+  return asset
+}
+
+// formating print no. in title
+const printNo = (work, tokenId) => {
+  const workNamespace = Math.floor(tokenId / 1000000) * 1000000 // 2000000
+  let printNo = tokenId - workNamespace // 16
+  if (printNo > work.editions) {
+    printNo = `(AP${printNo - work.editions})` // AP1
+  } else if (work.variable) {
+    printNo = `#${printNo}` // #16
+  } else {
+    printNo = `(${printNo}/${work.editions})`
+  }
+  return printNo
+}
