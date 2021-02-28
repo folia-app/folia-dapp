@@ -1,7 +1,9 @@
 export default {
-  titlePattern: 'Travess Smalley, "Emoji Script", {{year}}, ({{no}}/100)',
-  assetBase: 'https://res.cloudinary.com/folia/image/upload/v1614439745/travess-emoji-script/test/',
+  titlePattern: 'Travess Smalley, "Emoji Script", 2021, ({{no}}/100)',
+  description: 'Non-Fungible Token (.PNG)',
   release: '03-06-2021 08:00:00 pm +01:00',
+  directory: '',
+  assetPath: 'https://res.cloudinary.com/folia/image/upload/v1614439745/travess-emoji-script/test/',
   tokens: {
     2000001: { image: 'FLA2000001__Moji_Portrait_v3_2021_02_19__09_58_53_TSmalley_wjohkq.png' },
     2000002: { image: 'FLA2000002__Moji_Portrait_v3_2021_02_19__09_59_10_TSmalley_loxcee.png' },
