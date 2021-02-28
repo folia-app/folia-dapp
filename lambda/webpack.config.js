@@ -1,23 +1,7 @@
-// const webpack = require('webpack')
-// const path = require('path')
 
 module.exports = {
-  // plugins: [
-  // ignore these plugins completely
-  // new webpack.IgnorePlugin(/^(?:electron|ws)$/)
-  // ]
-  // module: {
-  //   rules: [
-  //     {
-  //       test: /\.js$/,
-  //       loader: 'babel-loader',
-  //       exclude: /node_modules/,
-  //       options: {
-  //         presets: ['@babel/preset-env']
-  //       }
-  //     }
-  //   ]
-  // }
+  // ignore electron from web3 deps
+  // https://stackoverflow.com/questions/34427446/bundle-error-using-webpack-for-electron-application-cannot-resolve-module-elec
   externals: [
     (function () {
       var IGNORES = [

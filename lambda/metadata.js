@@ -4,6 +4,7 @@ import Web3 from 'web3'
 require('dotenv').config()
 require('encoding') // netlify build error / missing package??
 const ignoreRelease = process.env.VUE_APP_DEV_IGNORE_RELEASES === 'true'
+const ignoreIsOwned = process.env.VUE_APP_DEV_IGNORE_IS_OWNED === 'true'
 
 let foliaContract
 
@@ -15,25 +16,11 @@ const infura = {
 
 // handler
 exports.handler = async function (event, context) {
-  console.log(event)
   try {
-    // setup contract
     const networkId = event.queryStringParameters.network ?? 1 // ?network=4
-    console.log(networkId, infura[networkId])
-    const web3 = new Web3(new Web3.providers.HttpProvider(infura[networkId]))
-    foliaContract = new web3.eth.Contract(
-      Folia.abi,
-      Folia.networks[1].address
-    )
-
-    // get token from path
     const tokenId = event.path.substr(event.path.lastIndexOf('/') + 1) // 1000005
     const workId = Math.floor(tokenId / 1000000) // 1
     const workNamespace = workId * 1000000 // 1000000
-
-    // test contract check
-    const owner = await getNFTOwnerByTokenId(tokenId)
-    console.log('owner:', owner)
 
     // find work
     const work = works['FLA' + workNamespace]
@@ -64,15 +51,22 @@ exports.handler = async function (event, context) {
       }
     }
 
-    // this would be your own api with rich data and actual information about the artworks
-    // cosnt storedMetadata = axios('https://mydatabase.com/storageSystem/'+tokenId)
+    // !! not owned / minted
+    const owner = await getNFTOwnerByTokenId(tokenId, networkId)
+    if (!owner && !ignoreIsOwned) {
+      return {
+        statusCode: 200,
+        body: JSON.stringify({
+          message: 'Not yet minted'
+        })
+      }
+    }
 
-    // format print No.
-    const no = printNo(work, tokenId)
-
+    // the sauce
     const metadata = {
       // both opensea and rarebits
-      name: work.titlePattern.replace('{{no}}', no),
+      name: work.titlePattern.replace('{{no}}', printNo(work, tokenId)),
+      owner: owner,
       // name: `${doc.data.artist}, "${doc.data.title}", ${doc.data.year} (${printNo}/${doc.data.edition})`,
 
       description: work.description, // by token ID?
@@ -165,16 +159,20 @@ const printNo = (work, tokenId) => {
   return printNo
 }
 
-// get token owner helper
-async function getNFTOwnerByTokenId (tokenId) {
+// get token owner (check if token minted...)
+async function getNFTOwnerByTokenId (tokenId, networkId = 1) {
   let owner
   try {
-    // get new data
-    if (foliaContract) {
-      owner = await foliaContract.methods.ownerOf(tokenId).call()
-    }
+    // setup contract
+    const web3 = new Web3(new Web3.providers.HttpProvider(infura[networkId]))
+    foliaContract = new web3.eth.Contract(
+      Folia.abi,
+      Folia.networks[networkId].address
+    )
+    owner = await foliaContract.methods.ownerOf(tokenId).call()
   } catch (e) {
-    console.error('get owner error', e)
+    // will throw error if no owner...
+    // console.error(e)
   }
   return owner
 }
