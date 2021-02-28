@@ -14,6 +14,8 @@
     "@prismicio/vue": "^2.0.7",
     "@walletconnect/web3-provider": "^1.3.3",
     "folia-contracts": "github:folia-app/folia-contracts",
+    "global": "^4.4.0",
+    "netlify-cli": "^3.10.1",
     "prismic-dom": "^2.2.4",
     "prismic-javascript": "^3.0.2",
     "tailwindcss": "1",
