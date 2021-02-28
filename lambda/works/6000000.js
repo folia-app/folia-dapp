@@ -5,7 +5,7 @@ const asset = {
 }
 
 export default {
-  titlePattern: 'Harm van den Dorpel, "Bison.gif", 2005, {{no}}',
+  titlePattern: 'Harm van den Dorpel, "Bison.gif", 2005 {{no}}',
   editions: 1,
   description: '.GIF, 306 frames, 720x576 pixels, 3.9MB, Edition 1 + 1AP, Created 2005, Minted 2021',
   release: '02-20-2021 08:00:00 pm +01:00',
