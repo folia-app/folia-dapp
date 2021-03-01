@@ -161,9 +161,11 @@ export default {
     '$route' (to, from) {
       if (to.name === 'work') {
         this.workPanel = true
+        document.body.style.overflow = 'hidden'
       }
       if (to.name === 'index') {
         this.workPanel = false
+        document.body.style.overflow = ''
       }
     }
   },
