@@ -1,7 +1,7 @@
 export default {
   titlePattern: 'Travess Smalley, "Emoji Script" {{no}}',
   editions: 100,
-  variable: true,
+  generative: true,
   description: 'PNG, ...',
   release: '03-06-2021 08:00:00 pm +01:00',
   directory: '',

@@ -24,8 +24,8 @@ export default new Router({
       component: Index,
       children: [
         {
-          path: '/works/:work/view',
-          name: 'view'
+          path: '/view/:token',
+          name: 'view-token'
           // component: ViewWork
         },
         {

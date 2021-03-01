@@ -51,9 +51,9 @@ exports.handler = async function (event, context) {
       }
     }
 
-    // !! not owned / minted
+    // !! not owned / minted AND work.generative
     const owner = await getNFTOwnerByTokenId(tokenId, networkId)
-    if (!owner && !ignoreIsOwned) {
+    if (work.generative && !owner && !ignoreIsOwned) {
       return {
         statusCode: 200,
         body: JSON.stringify({
@@ -136,7 +136,7 @@ exports.handler = async function (event, context) {
 
 // helper for URL for individual asset
 const asset = (work, tokenId, key) => {
-  let asset = ''
+  let asset = null
   const file = work && work.tokens && work.tokens[tokenId] && work.tokens[tokenId][key]
   if (file) {
     const path = work.assetPath || ''
@@ -151,7 +151,7 @@ const printNo = (work, tokenId) => {
   let printNo = tokenId - workNamespace // 16
   if (printNo > work.editions) {
     printNo = `(AP${printNo - work.editions})` // AP1
-  } else if (work.variable) {
+  } else if (work.generative) {
     printNo = `#${printNo}` // #16
   } else {
     printNo = `(${printNo}/${work.editions})`

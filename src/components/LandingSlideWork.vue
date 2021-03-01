@@ -6,7 +6,7 @@
     //- (blur?)
     //- .absolute.overlay(:style="{backdropFilter: `blur(12px)`}")
 
-    countdown-play-btn-overlay.z-10.text-lg(:doc="doc", @released="isReleased = true")
+    countdown-play-btn-overlay.z-10.text-lg(:doc="doc", @released="isReleased = true", :playBtn="false")
 
     //- bottom info
     .absolute.bottom-0.z-10.w-full.pb-12.md_px-12.xl_pb-16.text-md.lg_text-base.xl_text-lg.flex.flex-wrap.items-end.justiy-center.md_justify-between
@@ -25,7 +25,7 @@
       template(v-if="isSoldOut(work)")
         sold-out-dot.ml-auto.mr-12.md_mr-0
       template(v-else)
-        button.mx-auto.md_m-0.focus_outline-none(@click="$store.dispatch('buy', doc.uid)", :disabled="!isReleased")
+        button.mx-auto.md_m-0.focus_outline-none(@click="$store.dispatch('buy', doc.uid)", :disabled="!isReleased", :class="{'opacity-50': !isReleased}")
           btn.px-16(:disabled="!isReleased") BUY
 
       //- .group

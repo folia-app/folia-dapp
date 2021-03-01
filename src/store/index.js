@@ -235,7 +235,8 @@ export default new Vuex.Store({
           return saved
         }
         // fetch new
-        let metadata = await fetch('/.netlify/functions/metadata/' + token).then(resp => resp.json())
+        const url = `/.netlify/functions/metadata/${token}?network=${state.networkId}`
+        let metadata = await fetch(url).then(resp => resp.json())
         if (metadata && metadata.name) {
           metadata = { _work: work, _token: token, ...metadata }
           commit('SAVE_METADATA', metadata)

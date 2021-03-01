@@ -2,7 +2,7 @@
   .index
 
     //- BODY - squishes for video player
-    .relative.transform.transition-transform.origin-left.duration-700(:class="{'scale-x-0': viewWork}")
+    .relative.transform.transition-transform.origin-left.duration-700(:class="{'scale-x-0': viewToken}")
       //- (WORK PANEL)
       .sticky.z-20.top-0.right-0.w-full.h-0
         .absolute.top-0.right-0.w-full.sm_w-3x4.lg_w-1x2.transition.duration-500.transform.origin-right.bg-black.min-h-screen(:class="{'scale-x-0': !workPanel}")
@@ -72,12 +72,13 @@
         info.w-full.min-h-100vw.md_min-h-50vw.lg_min-h-33vw(v-show="infoVisible && workDocs.length > 0")
 
     //- video player
-    .fixed.overlay.transition.transform.duration-700.origin-right.py-5.md_p-10.lg_p-12.xl_p-24.flex.bg-gray-200(ref="player", :class="{'pointer-events-none scale-x-0': !viewWork}")
-      figure.relative.w-full.transition-opacity.duration-700(v-for="(metadata, i) in metadatas", :class="{'opacity-0': viewWork !== metadata._work}")
+    .fixed.overlay.transition.transform.duration-700.origin-right.py-5.md_p-10.lg_p-12.xl_p-24.flex.bg-gray-200(:class="{'pointer-events-none scale-x-0': !viewToken}")
+      view-token(:token="viewToken", @close="closeViewer")
+      //- figure.relative.w-full.transition-opacity.duration-700(v-for="(metadata, i) in metadatas", :class="{'opacity-0': viewToken !== metadata._work}")
         //- video element should be present so you can play from other views... (no child route)
         video.absolute.overlay.object-contain.object-center(v-if="metadata.animation_url_optim", :src="metadata.animation_url_optim", playsinline, :data-work="metadata._work", @contextmenu.prevent, preload="auto", @click.stop="$event => $event.target.paused ? $event.target.play() : null", @ended="$router.go(-1)", :poster="metadata.image")
       //- back btn
-      button.absolute.top-0.left-0.h-full.w-1x4.focus_outline-none(@click.stop="$router.go(-1)", aria-label="Go back", style="cursor: w-resize")
+        button.absolute.top-0.left-0.h-full.w-1x4.focus_outline-none(@click.stop="$router.go(-1)", aria-label="Go back", style="cursor: w-resize")
 </template>
 
 <script>
@@ -88,10 +89,12 @@ import Info from '@/components/Info'
 // import WorkThumb from '@/components/WorkThumb'
 import Btn from '@/components/Btn'
 import WorkView from '@/views/Work'
+import ViewToken from '@/views/ViewToken'
 import LandingSlideWork from '@/components/LandingSlideWork'
+let lastRt
 export default {
   name: 'Index',
-  components: { WorkView, Logo, Info, svgFleuron, Btn, LandingSlideWork },
+  components: { WorkView, Logo, Info, svgFleuron, Btn, LandingSlideWork, ViewToken },
   data () {
     return {
       squish: false,
@@ -112,8 +115,8 @@ export default {
       workDocs: 'prismic/works',
       workId: 'workId'
     }),
-    viewWork () {
-      return this.$route.name === 'view' ? this.$route.params.work : null
+    viewToken () {
+      return this.$route.name === 'view-token' ? this.$route.params.token : null
     },
     carouselEnabled () {
       return this.home?.landing.length > 1
@@ -125,24 +128,35 @@ export default {
     },
     onLogoClick () {
       document.getElementById('info').scrollIntoView({ behavior: 'smooth' })
+    },
+    closeViewer () {
+      return lastRt?.name ? this.$router.go(-1) : this.$router.push('/')
     }
+  },
+  beforeRouteEnter (to, from, next) {
+    lastRt = from
+    next()
+  },
+  beforeRouteUpdate (to, from, next) {
+    lastRt = from
+    next()
   },
   watch: {
     current (to, from) {
       // this.$refs.slidevideo[to].play()
       // this.$refs.slidevideo[from].pause()
     },
-    viewWork (next, prev) {
-      next = next && this.$el.querySelector('video[data-work="' + next + '"]')
-      prev = prev && this.$el.querySelector('video[data-work="' + prev + '"]')
-      if (next) {
-        // after transition...
-        setTimeout(() => next.play(), 500)
-      }
-      if (prev) {
-        prev.pause()
-        prev.currentTime = 0 // reset for next viewing
-      }
+    viewToken (next, prev) {
+      // next = next && this.$el.querySelector('video[data-work="' + next + '"]')
+      // prev = prev && this.$el.querySelector('video[data-work="' + prev + '"]')
+      // if (next) {
+      //   // after transition...
+      //   setTimeout(() => next.play(), 500)
+      // }
+      // if (prev) {
+      //   prev.pause()
+      //   prev.currentTime = 0 // reset for next viewing
+      // }
     },
     '$route' (to, from) {
       if (to.name === 'work') {
