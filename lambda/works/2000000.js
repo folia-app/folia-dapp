@@ -3,7 +3,7 @@ export default {
   editions: 100,
   generative: true,
   description: 'PNG, ...',
-  release: '03-06-2021 08:00:00 pm +01:00',
+  release: '03-05-2021 09:00:00 pm +01:00',
   directory: '',
   assetPath: 'https://res.cloudinary.com/folia/image/upload/e_blur:10000,h_400,q_auto/v1614439745/travess-emoji-script/test/',
   tokens: {

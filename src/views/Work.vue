@@ -21,7 +21,7 @@
         template(v-if="isSoldOut(work)")
           sold-out-dot
         template(v-else)
-          button.block.group.relative.focus_outline-none.-m-2(@click="buy", :disabled="!isReleased")
+          button.block.group.relative.focus_outline-none.-m-2(@click="buy", :disabled="!isReleased", :class="{'opacity-50': !isReleased}")
             btn.px-16(theme="drkgray", :disabled="!isReleased") BUY
             //- span.absolute.overlay.flex.items-center.justify-center.opacity-0.group-hover_opacity-100 BUY
             //- span.group-hover_opacity-0 {{ work ? weiToETH(work.price) : doc.data.price_eth }} ETH

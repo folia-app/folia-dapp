@@ -1,6 +1,7 @@
 import * as works from './works' // works.FLA1000000, ...
 import { Folia } from 'folia-contracts'
-import Web3 from 'web3'
+// import Web3 from 'web3'
+import Eth from 'web3-eth'
 require('dotenv').config()
 require('encoding') // netlify build error / missing package??
 const ignoreRelease = process.env.VUE_APP_DEV_IGNORE_RELEASES === 'true'
@@ -10,8 +11,8 @@ let foliaContract
 
 // infura endpoints
 const infura = {
-  1: 'https://mainnet.infura.io/v3/21b72335f32c40eb8f48a7ee7d9beebb',
-  4: 'https://rinkeby.infura.io/v3/21b72335f32c40eb8f48a7ee7d9beebb'
+  1: 'wss://mainnet.infura.io/ws/v3/21b72335f32c40eb8f48a7ee7d9beebb', // https://mainnet.infura.io/v3/21b72335f32c40eb8f48a7ee7d9beebb',
+  4: 'wss://rinkeby.infura.io/ws/v3/21b72335f32c40eb8f48a7ee7d9beebb' // https://rinkeby.infura.io/v3/21b72335f32c40eb8f48a7ee7d9beebb'
 }
 
 // handler
@@ -164,8 +165,9 @@ async function getNFTOwnerByTokenId (tokenId, networkId = 1) {
   let owner
   try {
     // setup contract
-    const web3 = new Web3(new Web3.providers.HttpProvider(infura[networkId]))
-    foliaContract = new web3.eth.Contract(
+    // const web3 = new Web3(new Web3.providers.HttpProvider(infura[networkId]))
+    const eth = new Eth(infura[networkId])
+    foliaContract = new eth.Contract(
       Folia.abi,
       Folia.networks[networkId].address
     )
