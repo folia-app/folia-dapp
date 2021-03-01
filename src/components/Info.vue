@@ -3,7 +3,7 @@
     section.p-12.lg_px-16.lg_py-20
       .text-red.text-4xl.leading-normal
         h2.md_w-10x12.text-red
-          | Folia is a platform for exhibiting and collecting #[a.border-b-2.border-current.border-dotted.hover_border-solid(href="https://opensea.io/blog/guides/non-fungible-tokens/" target="_blank") NFTs]
+          | Folia is a space for exhibiting and collecting #[a.border-b-2.border-current.border-dotted.hover_border-solid(href="https://opensea.io/blog/guides/non-fungible-tokens/" target="_blank") NFTs]
           | #[button.ml-3.inline-block.text-black.py-px.rounded-full.px-3.bg-gray-100.text-xs.hover_bg-gray-200.focus_outline-none(@click="more = true", v-show="!more", style="font-size:0.4em") •••]
 
         transition(name="fadeinonly")
