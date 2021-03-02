@@ -15,7 +15,7 @@ export default {
     fit: { type: String, default: 'object-cover object-center' },
     lazy: { type: Boolean, default: true },
     anim: { type: Boolean, default: true }, // animate lazyload
-    lazyBuffer: { type: String, default: '1000' }
+    lazyBuffer: { type: String, default: '500' }
   },
   data () {
     return {
@@ -44,7 +44,7 @@ export default {
 
 // find image size
 export function optimImgSize (length) {
-  const sizes = [480, 960, 1280, 1600, 2048, 3072, 4096]
+  const sizes = [360, 480, 960, 1280, 1600, 2048, 3072, 4096]
   const dpx = window.devicePixelRatio || 1
   length = length * dpx * 0.75 // less density optically ok ? (target 80%)
   // find optimal
@@ -53,11 +53,13 @@ export function optimImgSize (length) {
 
 // Cloudinary resizer
 export function resizeCloudinary (url, size = []) {
+  let params = 'q_auto'
   // expect it's /upload
   size[0] = size[0] ? 'w_' + optimImgSize(size[0]) : ''
   size[1] = size[1] ? 'h_' + optimImgSize(size[1]) : ''
   size = size.join(',')
-  return size.length ? url.replace('upload/', `upload/${size}/`) : url
+  params = size.length ? params + ',' + size : params
+  return url.replace('upload/', `upload/${params}/`)
 }
 
 // Shopify resizer

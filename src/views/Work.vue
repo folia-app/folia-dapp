@@ -48,7 +48,7 @@
             btn.px-8.md_px-12(theme="drkgray", :active="view === 'tokens'") Tokens
           button.focus_outline-none(@click="view = 'info'")
             btn.px-8.md_px-12(theme="drkgray", :active="view === 'info'") Info
-          button.focus_outline-none(@click="view = 'owners'", v-if="isReleased && work.editions < 20")
+          button.focus_outline-none(@click="view = 'owners'", v-if="isReleased && work && work.editions < 20")
             btn.px-8.md_px-12(theme="drkgray", :active="view === 'owners'") Collectors
           button.focus_outline-none(@click="view = 'details'")
             btn.px-8.md_px-12(theme="drkgray", :active="view === 'details'") Details

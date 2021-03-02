@@ -14,17 +14,18 @@
             <line x1="0.530937" y1="32.8311" x2="63.9023" y2="32.8311" stroke="rgb(255,255,255,0.8)"/>
           </svg>
     //- tokens
-    template(v-for="n in 6")
+    template(v-for="n in 1")
       .w-full.sm_w-1x2.lg_w-1x3(v-if="tokens", v-for="token in tokens", :key="token.image + n")
         squishy-thumb
-          img.absolute.overlay.object-cover.object-center(slot="media", :src="token.image")
+          resp-img(slot="media", :bg="true", :image="{src: token.image}")
+          //- inner content
           .absolute.overlay.flex.items-center.justify-center.group
             //- router-link.absolute.overlay(:to="{name: 'view-token', params: {token: token.tokenId}}", style="cursor: zoom-in")
             a.relative.z-10(:href="$store.getters.openSeaLink({token: token.tokenId})", target="_blank", rel="noopener noreferrer")
               btn.px-8.hover_bg-black-a15(theme="none") {{ token.tokenId.slice(-3) }}
             //- view large
             router-link.absolute.bottom-0.right-0.py-3.px-4.opacity-0.group-hover_opacity-100(:to="{name: 'view-token', params: {token: token.tokenId}}")
-              btn.px-4.hover_bg-black-a15(size="small", theme="none")
+              btn.px-6.hover_bg-black-a15(size="small", theme="none")
                 <svg style="display:block;width:3rem" viewBox="0 0 512 512" xmlns:xlink="http://www.w3.org/1999/xlink" preserveAspectRatio>
                   <g fill="currentColor">
                     <path d="m34,256l26.2,26.2c108,108 283.7,108 391.7,0l26.1-26.2-26.2-26.2c-108-108-283.7-108-391.7,0l-26.1,26.2zm222,126.2c-75.8,0-151.6-28.9-209.3-86.6l-32.9-32.9c-3.7-3.7-3.7-9.7 0-13.5l32.9-32.9c115.4-115.4 303.2-115.4 418.6,0l32.9,32.9c3.7,3.7 3.7,9.7 0,13.5l-32.9,32.9c-57.7,57.7-133.5,86.6-209.3,86.6z"/>
@@ -38,6 +39,7 @@
 import { mapState } from 'vuex'
 import SquishyThumb from '@/components/SquishyThumb'
 import Btn from '@/components/Btn'
+import RespImg from '@/components/RespImg'
 export default {
   name: 'WorkTokens',
   props: {
@@ -72,7 +74,7 @@ export default {
       this.getTokens()
     }
   },
-  components: { Btn, SquishyThumb }
+  components: { Btn, SquishyThumb, RespImg }
 }
 </script>
 
