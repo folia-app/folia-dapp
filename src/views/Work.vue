@@ -4,9 +4,9 @@
       .min-h-screen.flex.flex-col
         header.p-8.lg_p-12.flex.items-start
           .flex-1.text-lg
-            .flex.mb-10
+            router-link.flex.mb-10(to="/")
               svg-fleuron.block.mr-2(style="width:0.96em;height:0.96em")
-              div.leading-none {{ workId(doc.uid, true) }}
+              .leading-none {{ workId(doc.uid, true) }}
             //- div.leading-none {{ workId(doc.uid, true) }} — #[h1.inline {{ doc.data.artist }}] — {{ doc.data.title }} — {{ doc.data.year }}
             div {{ doc.data.title }}
             .font-bold {{ doc.data.artist }}
