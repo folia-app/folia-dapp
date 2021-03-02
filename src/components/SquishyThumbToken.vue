@@ -1,5 +1,5 @@
 <template lang="pug">
-  squishy-thumb.squishy-thumb-token.text-sm.lg_text-md.transition.duration-200(@open="fetchOwner", :style="{background: userIsOwner && '#ffeb00'}")
+  squishy-thumb.squishy-thumb-token.transition.duration-200(@open="fetchOwner", :style="{background: userIsOwner && '#ffeb00'}")
     resp-img(slot="media", :bg="true", :image="{src: token.image}")
     //- inner content
     .absolute.overlay.flex.items-center.justify-center.group

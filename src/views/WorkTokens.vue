@@ -1,7 +1,7 @@
 <template lang="pug">
-  .work-tokens.flex.flex-wrap.align-start.text-black
+  .work-tokens.flex.flex-wrap.align-start.text-black.text-sm.lg_text-md
     //- buy block
-    .w-full.sm_w-1x2.lg_w-1x3(v-if="canBuy")
+    .w-1x2.md_w-1x3.xl_w-1x4(v-if="canBuy")
       .relative.pb-full.overflow-hidden
         //- (teaser video as background)
         video.absolute.overlay.object-cover.object-contain.opacity-25.transform.scale-180(:src="doc.data.teaser_video.url", loop, playsinline, muted, autoplay, @loadedmetadata="$event => $event.target.playbackRate = 0.25")
@@ -15,7 +15,7 @@
           </svg>
     //- tokens
     template(v-for="n in 1")
-      .w-1x2.lg_w-1x3(v-if="tokens", v-for="token in tokens", :key="token.image + n")
+      .w-1x2.md_w-1x3.xl_w-1x4(v-if="tokens", v-for="token in tokens", :key="token.image + n")
         squishy-thumb-token(:token="token")
         //- squishy-thumb
           resp-img(slot="media", :bg="true", :image="{src: token.image}")
