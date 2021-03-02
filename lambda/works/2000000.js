@@ -5,7 +5,7 @@ export default {
   description: 'PNG, ...',
   release: '03-05-2021 09:00:00 pm +01:00',
   directory: '',
-  assetPath: 'https://res.cloudinary.com/folia/image/upload/e_blur:10000,h_400,q_auto/v1614439745/travess-emoji-script/test/',
+  assetPath: 'https://res.cloudinary.com/folia/image/upload/h_400,q_auto/v1614439745/travess-emoji-script/test/',
   tokens: {
     2000001: { image: 'FLA2000001__Moji_Portrait_v3_2021_02_19__09_58_53_TSmalley_wjohkq.png' },
     2000002: { image: 'FLA2000002__Moji_Portrait_v3_2021_02_19__09_59_10_TSmalley_loxcee.png' },

@@ -7,7 +7,7 @@
       .sticky.z-20.top-0.right-0.w-full.h-0
         .absolute.top-0.right-0.transition.duration-500.transform.origin-right.bg-black.min-h-screen(:class="[panelWidths[0], {'scale-x-0': !workPanel}]")
           transition(name="fade")
-            work-view(v-if="workPanel", :key='$route.params.work')
+            work-view(v-if="workPanel")
       //- close workpanel
       transition(name="fade")
         button(v-show="workPanel", @click="$router.push('/')").absolute.overlay.bg-black.z-10.cursor-pointer.opacity-25.md_opacity-50
@@ -139,7 +139,7 @@ export default {
       // [workPanel, body]
       let widths = ['w-full sm_w-3x4 lg_w-1x2', 'scale-x-0 sm_scale-x-25 lg_scale-x-50']
       if (isWide) {
-        widths = ['w-full lg_w-3x4', 'scale-x-0 lg_scale-x-25']
+        widths = ['w-full lg_w-9x10', 'scale-x-0 lg_scale-x-10']
       }
       this.panelWidths = widths
     },
