@@ -1,15 +1,16 @@
 <template lang="pug">
-  .sliding-thumb.relative.bg-yellow.hover_shadow-inner-red.overflow-hidden
+  .sliding-thumb.relative.bg-yellow.overflow-hidden.hover_shadow-inner-red
+    //- sizer
+    .pb-full
     //- image (.bg-gray-900 to prevent shadow poking through...)
-    figure.pb-full.relative.z-10.cursor-pointer.bg-gray-900.transition-transform.duration-400.bg-cover.bg-center(:data-dir="rand", :class="{'squish': squish}", @click="squish = !squish")
+    figure.absolute.overlay-px.z-10.cursor-pointer.bg-white.transition-transform.duration-400.bg-cover.bg-center(:data-dir="rand", :class="{'squish': squish}", @click="squish = !squish", style="backface-visibility:hidden")
       slot(name="media")
       //- img.absolute.overlay.z-10.object-cover.object-center(:src="doc.data.index_thumbnail.square.url", :alt="doc.data.index_thumbnail.alt")
 
-    header.absolute.overlay.z-0.flex.overflow-hidden.text-md
+    header.absolute.overlay.z-0.flex(:class="tableClasses")
       slot(name="bg")
-      .w-full.flex(:class="tableClasses")
-        .relative.w-full
-          slot
+      .relative.w-full
+        slot
         //-
           .flex-1.flex.px-2
             .w-1x2.flex.justify-center.items-center(v-for="artist in doc.data.artist.split(',')") {{ artist }}
@@ -51,6 +52,11 @@ export default {
         'pr-1x4': this.rand === 2,
         'pr-1x4 md_pr-0 md_pb-1x4': this.rand === 3
       }
+    }
+  },
+  watch: {
+    squish (squish) {
+      if (squish) this.$emit('open')
     }
   }
   // methods: {

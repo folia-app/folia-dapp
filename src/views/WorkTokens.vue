@@ -15,8 +15,9 @@
           </svg>
     //- tokens
     template(v-for="n in 1")
-      .w-full.sm_w-1x2.lg_w-1x3(v-if="tokens", v-for="token in tokens", :key="token.image + n")
-        squishy-thumb
+      .w-1x2.lg_w-1x3(v-if="tokens", v-for="token in tokens", :key="token.image + n")
+        squishy-thumb-token(:token="token")
+        //- squishy-thumb
           resp-img(slot="media", :bg="true", :image="{src: token.image}")
           //- inner content
           .absolute.overlay.flex.items-center.justify-center.group
@@ -37,9 +38,7 @@
 
 <script>
 import { mapState } from 'vuex'
-import SquishyThumb from '@/components/SquishyThumb'
-import Btn from '@/components/Btn'
-import RespImg from '@/components/RespImg'
+import SquishyThumbToken from '@/components/SquishyThumbToken'
 export default {
   name: 'WorkTokens',
   props: {
@@ -74,7 +73,7 @@ export default {
       this.getTokens()
     }
   },
-  components: { Btn, SquishyThumb, RespImg }
+  components: { SquishyThumbToken }
 }
 </script>
 

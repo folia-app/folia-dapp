@@ -11,6 +11,11 @@ html{
 .overlay{
   @apply w-full h-full top-0 left-0;
 }
+.overlay-px{
+  top:-1px; left:-1px;
+  width:calc(100% + 2px);
+  height:calc(100% + 2px);
+}
 .scrollbars-hidden::-webkit-scrollbar{ display: none; }
 
 .btn-theme-darken{

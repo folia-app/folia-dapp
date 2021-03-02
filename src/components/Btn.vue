@@ -1,5 +1,5 @@
 <template lang="pug">
-  .rounded-full.text-center(:class="clss")
+  .rounded-full.text-center.leading-none(:class="clss")
     slot
 </template>
 
@@ -22,7 +22,7 @@ export default {
         'bg-white focus_bg-white text-black': this.theme === 'drkgray' && this.active,
         // sizing
         'p-5 md_py-6 xl_py-8': this.size === 'medium',
-        'p-4 md_py-5 xl_py-6': this.size === 'small',
+        'p-4 md_pt-5 xl_pb-5 xl_pt-6': this.size === 'small',
         // cursor
         'cursor-not-allowed': this.disabled,
         'cursor-pointer': !this.disabled
