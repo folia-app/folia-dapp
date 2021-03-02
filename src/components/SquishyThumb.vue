@@ -3,7 +3,7 @@
     //- sizer
     .pb-full
     //- image (.bg-gray-900 to prevent shadow poking through...)
-    figure.absolute.overlay-px.z-10.cursor-pointer.bg-white.transition-transform.duration-400.bg-cover.bg-center(:data-dir="rand", :class="{'squish': squish}", @click="squish = !squish", style="backface-visibility:hidden")
+    figure.absolute.overlay-px.z-10.cursor-pointer.bg-gray-900.transition-transform.duration-400.bg-cover.bg-center(:data-dir="rand", :class="{'squish': squish}", @click="squish = !squish", style="backface-visibility:hidden")
       slot(name="media")
       //- img.absolute.overlay.z-10.object-cover.object-center(:src="doc.data.index_thumbnail.square.url", :alt="doc.data.index_thumbnail.alt")
 
