@@ -1,7 +1,7 @@
 <template lang="pug">
   .sliding-thumb.relative.bg-yellow.hover_shadow-inner-red.overflow-hidden
-    //- image (.bg-white to prevent shadow poking through...)
-    figure.pb-full.relative.z-10.cursor-pointer.bg-white.transition-transform.duration-400.bg-cover.bg-center(:data-dir="rand", :class="{'squish': squish}", @click="squish = !squish")
+    //- image (.bg-gray-900 to prevent shadow poking through...)
+    figure.pb-full.relative.z-10.cursor-pointer.bg-gray-900.transition-transform.duration-400.bg-cover.bg-center(:data-dir="rand", :class="{'squish': squish}", @click="squish = !squish")
       slot(name="media")
       //- img.absolute.overlay.z-10.object-cover.object-center(:src="doc.data.index_thumbnail.square.url", :alt="doc.data.index_thumbnail.alt")
 
