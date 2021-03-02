@@ -5,15 +5,15 @@
     .relative.transform.transition-transform.origin-left.duration-700(:class="{'scale-x-0': viewToken}")
       //- (WORK PANEL)
       .sticky.z-20.top-0.right-0.w-full.h-0
-        .absolute.top-0.right-0.w-full.sm_w-3x4.lg_w-1x2.transition.duration-500.transform.origin-right.bg-black.min-h-screen(:class="{'scale-x-0': !workPanel}")
+        .absolute.top-0.right-0.transition.duration-500.transform.origin-right.bg-black.min-h-screen(:class="[panelWidths[0], {'scale-x-0': !workPanel}]")
           transition(name="fade")
-            work-view(v-if="workPanel", :key='$route.params.work')
+            work-view(v-if="workPanel")
       //- close workpanel
       transition(name="fade")
         button(v-show="workPanel", @click="$router.push('/')").absolute.overlay.bg-black.z-10.cursor-pointer.opacity-25.md_opacity-50
 
       //- MAIN
-      main.index.relative.min-h-screen.transition.duration-500.transform.origin-left(:class="{'scale-x-0 sm_scale-x-25 lg_scale-x-50': workPanel}")
+      main.index.relative.min-h-screen.transition.duration-500.transform.origin-left(:class="workPanel ? panelWidths[1] : ''")
         //- HEADER
         header.absolute.top-0.left-0.w-full.z-20.text-white
           .absolute.top-0.left-0.w-full
@@ -100,7 +100,8 @@ export default {
       squish: false,
       infoVisible: true,
       workPanel: this.$route.name === 'work',
-      current: 0
+      current: 0,
+      panelWidths: []
     }
   },
   computed: {
@@ -131,6 +132,26 @@ export default {
     },
     closeViewer () {
       return lastRt?.name ? this.$router.go(-1) : this.$router.push('/')
+    },
+    setPanelWidths () {
+      const work = this.workDocs.find(doc => doc.uid === this.$route.params.work)
+      const isWide = work?.data.page_layout === 'generative'
+      // [workPanel, body]
+      let widths = ['w-full sm_w-3x4 lg_w-1x2', 'scale-x-0 sm_scale-x-25 lg_scale-x-50']
+      if (isWide) {
+        widths = ['w-full lg_w-9x10', 'scale-x-0 lg_scale-x-10']
+      }
+      this.panelWidths = widths
+    },
+    openWorkPanel () {
+      this.setPanelWidths()
+      this.workPanel = true
+      document.body.style.overflow = 'hidden'
+    },
+    closeWorkPanel () {
+      document.body.style.overflow = ''
+      this.workPanel = false
+      setTimeout(() => this.setPanelWidths(), 700) // after transition
     }
   },
   beforeRouteEnter (to, from, next) {
@@ -142,31 +163,16 @@ export default {
     next()
   },
   watch: {
-    current (to, from) {
-      // this.$refs.slidevideo[to].play()
-      // this.$refs.slidevideo[from].pause()
-    },
-    viewToken (next, prev) {
-      // next = next && this.$el.querySelector('video[data-work="' + next + '"]')
-      // prev = prev && this.$el.querySelector('video[data-work="' + prev + '"]')
-      // if (next) {
-      //   // after transition...
-      //   setTimeout(() => next.play(), 500)
-      // }
-      // if (prev) {
-      //   prev.pause()
-      //   prev.currentTime = 0 // reset for next viewing
-      // }
-    },
     '$route' (to, from) {
       if (to.name === 'work') {
-        this.workPanel = true
-        document.body.style.overflow = 'hidden'
+        this.openWorkPanel()
       }
       if (to.name === 'index') {
-        this.workPanel = false
-        document.body.style.overflow = ''
+        this.closeWorkPanel()
       }
+    },
+    workDocs () {
+      this.setPanelWidths()
     }
   },
   created () {

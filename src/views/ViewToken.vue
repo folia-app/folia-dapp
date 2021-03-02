@@ -1,9 +1,14 @@
 <template lang="pug">
-  .view-token.absolute.overlay
+  .view-token.absolute.overlay.bg-black
     //- video format
-    .absolute.overlay.py-5.md_p-10.lg_p-12.xl_p-24.bg-gray-200.flex(v-show="videoUrl")
+    figure.absolute.overlay.py-5.md_p-10.lg_p-12.xl_p-24.bg-gray-100.flex(v-show="videoUrl")
       .relative.w-full
-        video.absolute.overlay.object-contain.object-center(ref="video", :src="videoUrl", playsinline, @contextmenu.prevent, @click.stop="$event => $event.target.paused ? $event.target.play() : null", @ended="close", :poster="metadata && metadata.image")
+        video.absolute.overlay.object-contain.object-center(ref="video", :src="videoUrl", playsinline, @contextmenu.prevent, @click.stop="$event => $event.target.paused ? $event.target.play() : null", @ended="close", :poster="imageUrl")
+
+    //- image format
+    figure.absolute.overlay.py-5.md_p-10.lg_p-12.xl_p-24.flex(v-if="!videoUrl && imageUrl")
+      .relative.w-full
+        img.absolute.overlay.object-contain.object-center.opacity-0.transition.duration-200(:src="imageUrl", @load="$event => $event.target.style.opacity = '1'")
 
     //- back btn
     button.absolute.top-0.left-0.h-full.w-1x4.focus_outline-none(@click.stop="close", aria-label="Go back", style="cursor: w-resize")
@@ -15,28 +20,29 @@ export default {
   props: ['token'],
   data () {
     return {
-      videoUrl: null
-    }
-  },
-  computed: {
-    metadata () {
-      return this.$store.state.metadatas.find(meta => meta._token === this.token)
+      videoUrl: null,
+      imageUrl: null
     }
   },
   methods: {
-    get () {
-      return this.token && this.$store.dispatch('getMetadata', { token: this.token }).then(() => this.autoplayVideo())
+    async get () {
+      if (this.token) {
+        const meta = await this.$store.dispatch('getMetadata', { token: this.token })
+        this.videoUrl = meta?.animation_url_optim
+        this.imageUrl = meta?.image
+        this.autoplayVideo()
+      }
     },
     autoplayVideo () {
       if (this.videoUrl && this.$route.name === 'view-token') {
-        this.$refs.video.play()
+        return this.$refs.video?.play()
       }
     },
     close () {
       this.$emit('close')
     },
     async onWorkView (to, from) {
-      // on work view, preload video so safari will autoplay...
+      // PRELOAD VIDEOS FOR SAFARI
       const newWork = to?.params.work && to.params.work !== from?.params.work
       if (newWork) {
         const token = to.params.work * 1000000 + 1 // first token has asset ?
@@ -52,15 +58,16 @@ export default {
     '$route' (to, from) {
       this.onWorkView(to, from)
       this.autoplayVideo()
-    },
-    metadata (metadata) {
-      if (metadata) {
-        // load in video ?
-        this.videoUrl = this.metadata?.animation_url_optim
-      } else {
-        // pause video and remove after transition
-        this.$refs.video.pause()
-        setTimeout(() => { this.videoUrl = null }, 1000)
+
+      // on leaving...
+      if (from.name === 'view-token') {
+        // remove after transition
+        setTimeout(() => {
+          this.videoUrl = null
+          this.imageUrl = null
+        }, 1000)
+        // (pause video)
+        return this.$refs.video?.pause()
       }
     }
   },

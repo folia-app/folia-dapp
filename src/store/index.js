@@ -61,6 +61,13 @@ export default new Vuex.Store({
     contractAddr: (state) => state.foliaContract?._address,
     isSoldOut: () => (work) => {
       return work && Number(work.editions) && Number(work.printed) >= Number(work.editions)
+    },
+    openSeaLink: (state, getters) => ({ token, account }) => {
+      const isTestnet = [4].includes(state.networkId)
+      const path = token ? `/assets/${getters.contractAddr}/${token}`
+        : account ? `/accounts/${account}`
+          : ''
+      return `https://${isTestnet ? 'testnets.' : ''}opensea.io` + path
     }
   },
   mutations: {
@@ -111,6 +118,7 @@ export default new Vuex.Store({
         // setup contracts
         const network = state.networkId || await web3.eth.net.getId() || networks.mainnet.id
         console.log('network:', network)
+        commit('SET_NETWORK', network)
         setContracts(network)
         commit('SET_CONTRACT', foliaContract)
 
