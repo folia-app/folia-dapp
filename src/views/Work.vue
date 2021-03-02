@@ -76,12 +76,12 @@
             </svg>
 
         //- (info)
-        section.text-lg.px-10.lg_px-12(v-show="view === 'info'", style="padding-bottom-off:25vh")
+        section.text-lg.px-10.lg_px-12(v-show="view === 'info'", style="padding-bottom:25vh")
           h3.sr-only Info
           rich-text.children-mt-em.lg_w-10x12(style="max-width:28em;", :field="doc.data.description")
 
         //- (details)
-        section.text-lg.px-10.lg_px-12(v-show="view === 'details'", style="padding-bottom-off:25vh")
+        section.text-lg.px-10.lg_px-12(v-show="view === 'details'", style="padding-bottom:25vh")
           h3.sr-only Details
           rich-text.children-mt-em(:field="doc.data.details")
           a.mt-6.inline-block.-ml-2(v-if="workAssetURL", :href="workAssetURL", target="_blank", rel="noopener noreferrer")
