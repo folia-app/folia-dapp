@@ -24,7 +24,9 @@ exports.handler = async function (event, context) {
     const workNamespace = workId * 1000000 // 1000000
 
     // find work
-    const work = works['FLA' + workNamespace]
+    const prefix = networkId !== 1 ? 'TEST' : 'FLA'
+    // (test data || main data)
+    const work = works[prefix + workNamespace] || works['FLA' + workNamespace]
 
     // !! not found
     if (!work) {
@@ -52,7 +54,7 @@ exports.handler = async function (event, context) {
       }
     }
 
-    // !! not owned / minted AND work.generative
+    // !! generative && not owned / minted yet
     const owner = await getNFTOwnerByTokenId(tokenId, networkId)
     if (work.generative && !owner && !ignoreIsOwned) {
       return {

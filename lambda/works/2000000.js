@@ -2,7 +2,7 @@ export default {
   titlePattern: 'Travess Smalley, "Emoji Script" {{no}}',
   editions: 500,
   generative: true,
-  description: 'PNG, 2550x2550 pixels, Variable Edition of 500, Script Created 2021',
+  description: 'PNG, 2550x2550 pixels, Variable Edition of 500, [Script Created 2021](https://github.com/travess/Emoji-Script/blob/main/Emoji%20Script.js)',
   release: '03-05-2021 09:00:00 pm +01:00',
   directory: 'https://folia.app/works/2',
   assetPath: 'https://res.cloudinary.com/folia/image/upload/v1614897972/FLA2000000/',

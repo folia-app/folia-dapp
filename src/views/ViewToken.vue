@@ -3,7 +3,8 @@
     //- video format
     figure.absolute.overlay.py-5.md_p-10.lg_p-12.xl_p-24.bg-gray-100.flex(v-show="videoUrl")
       .relative.w-full
-        video.absolute.overlay.object-contain.object-center(ref="video", :src="videoUrl", playsinline, @contextmenu.prevent, @click.stop="$event => $event.target.paused ? $event.target.play() : null", @ended="close", :poster="imageUrl")
+        img.absolute.overlay.object-contain.object-center(:src="imageUrl")
+        video.absolute.overlay.object-contain.object-center(ref="video", :src="videoUrl", playsinline, @contextmenu.prevent, @click.stop="$event => $event.target.paused ? $event.target.play() : null", @ended="close")
 
     //- image format
     figure.absolute.overlay.py-5.md_p-10.lg_p-12.xl_p-24.flex(v-if="!videoUrl && imageUrl")
@@ -15,6 +16,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 export default {
   name: 'ViewToken',
   props: ['token'],
@@ -23,6 +25,9 @@ export default {
       videoUrl: null,
       imageUrl: null
     }
+  },
+  computed: {
+    ...mapState(['networkId'])
   },
   methods: {
     async get () {
@@ -53,6 +58,9 @@ export default {
   },
   watch: {
     token () {
+      this.get()
+    },
+    networkId () {
       this.get()
     },
     '$route' (to, from) {
