@@ -178,6 +178,18 @@ export default {
       }
     }
   },
+  metaInfo () {
+    if (this.$route.name === 'work' && this.doc) {
+      const doc = this.doc.data
+      return {
+        title: `Folia – ${doc.artist}, "${doc.title}" (${doc.year})`,
+        meta: [
+          // TODO use better image
+          { property: 'og:image', content: doc.teaser_image?.url }
+        ]
+      }
+    }
+  },
   components: { RichText, svgX, Btn, svgFleuron, WorkOwners, CountdownPlayBtnOverlay, SoldOutDot, WorkTokens }
 }
 </script>
