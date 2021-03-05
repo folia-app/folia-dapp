@@ -65,6 +65,29 @@ export default new Vuex.Store({
         : account ? `/accounts/${account}`
           : ''
       return `https://${isTestnet ? 'testnets.' : ''}opensea.io` + path
+    },
+    meta: state => ({ title, descrip, img }) => {
+      const meta = []
+      // defaults
+      const siteTitle = 'Folia'
+      const siteDescrip = 'A space for collecting and exhibiting NFTs'
+      const siteImg = 'https://www.folia.app/folia-logo-twitter-black.png'
+      // custom
+      title = title ? `${siteTitle} - ${title}` : siteTitle
+      descrip = descrip || siteDescrip
+      img = img || siteImg
+      // add
+      meta.push({ property: 'og:title', content: title })
+      meta.push({ property: 'og:site_name', content: siteTitle })
+      meta.push({ property: 'og:type', content: 'website' })
+      meta.push({ name: 'description', content: descrip })
+      meta.push({ property: 'og:description', content: descrip })
+      meta.push({ property: 'og:image', content: img })
+      // twitter?
+      meta.push({ name: 'twitter:card', content: 'summary_large_image' })
+      meta.push({ name: 'twitter:domain', content: 'folia.app' })
+      // meta.push({ property: 'og:url', content: ##ADDCANNONICAL## })
+      return meta
     }
   },
   mutations: {

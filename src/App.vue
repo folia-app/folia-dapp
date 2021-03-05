@@ -21,6 +21,10 @@
 import '@/style/_main.css'
 export default {
   name: 'App',
+  metaInfo: {
+    title: 'Folia',
+    titleTemplate: 'Folia – %s'
+  },
   created () {
     this.$store.dispatch('init')
     this.$store.dispatch('prismic/getDocs')
