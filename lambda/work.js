@@ -23,7 +23,9 @@ exports.handler = async function (event, context) {
     const workNamespace = workId * 1000000 // 1000000
 
     // find work
-    const metadata = metadatas['FLA' + workNamespace]
+    const prefix = networkId !== 1 ? 'TEST' : 'FLA'
+    // (test data || main data)
+    const metadata = metadatas[prefix + workNamespace] || metadatas['FLA' + workNamespace]
 
     // !! not found
     if (!metadata) {

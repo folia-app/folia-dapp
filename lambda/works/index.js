@@ -1,5 +1,6 @@
 export { default as FLA1000000 } from './1000000'
 export { default as FLA2000000 } from './2000000'
+export { default as TEST2000000 } from './rinkeby/rinkeby.2000000'
 export { default as FLA3000000 } from './3000000'
 export { default as FLA4000000 } from './4000000'
 export { default as FLA5000000 } from './5000000'
