@@ -61,7 +61,7 @@ export default {
   },
   methods: {
     play () {
-      return this.$refs.video?.play()
+      return this.$refs.video?.paused && this.$refs.video.play()
     },
     pause () {
       return this.$refs.video?.pause()
