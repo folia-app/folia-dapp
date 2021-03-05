@@ -64,19 +64,22 @@ exports.handler = async function (event, context) {
 
     // tokens list
     let tokens = Object.keys(metadata.tokens) // [2000001, 2000002, ...]
-    tokens = tokens.map(token => ({ tokenId: token, ...metadata.tokens[token] })) // {tokenId: ..., image: ...}
     // generative? >> only exposed what's been printed...
     if (metadata.generative) {
       tokens = tokens.slice(0, Number(work.printed))
     }
     // format...
-    tokens = tokens.map(token => ({
-      ...token,
-      // add assetpath to assets
-      image: metadata.assetPath + token.image
-      // animation_url: metadata.assetPath + token.animation_url,
-      // animation_url_optim: metadata.assetPath + token.animation_url_optim
-    }))
+    tokens = tokens.map(token => {
+      const data = metadata.tokens[token]
+      return {
+        tokenId: token,
+        ...data,
+        // overwrite image with assetpath to assets
+        image: metadata.assetPath + data.image
+        // animation_url: metadata.assetPath + token.animation_url,
+        // animation_url_optim: metadata.assetPath + token.animation_url_optim
+      }
+    })
 
     // return metadata :)
     return {

@@ -118,7 +118,7 @@ export default new Vuex.Store({
           if (provider) {
             web3 = new Web3(provider)
           } else {
-            const n = process.env.NODE_ENV === 'dev' ? 'rinkeby' : 'mainnet'
+            const n = process.env.NODE_ENV === 'development' ? 'rinkeby' : 'mainnet'
             web3 = new Web3(new Web3.providers.WebsocketProvider(networks[n].infura))
           }
         }
