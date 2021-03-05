@@ -17,13 +17,14 @@ const infura = {
 // handler
 exports.handler = async function (event, context) {
   try {
-    const networkId = event.queryStringParameters.network ?? 1 // ?network=4
+    const networkId = event.queryStringParameters.network ?? '1' // ?network=4
     const workId = event.path.substr(event.path.lastIndexOf('/') + 1) // .../work/1 => 1
     // const workId = Math.floor(tokenId / 1000000) // 1
     const workNamespace = workId * 1000000 // 1000000
 
     // find work
-    const prefix = networkId !== 1 ? 'TEST' : 'FLA'
+    const prefix = networkId !== '1' ? 'TEST' : 'FLA'
+    // console.log(prefix, networkId, typeof networkId)
     // (test data || main data)
     const metadata = metadatas[prefix + workNamespace] || metadatas['FLA' + workNamespace]
 
