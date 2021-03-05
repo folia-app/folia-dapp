@@ -6,6 +6,9 @@ export default {
   release: '03-05-2021 09:00:00 pm +01:00',
   directory: 'https://folia.app/works/2',
   assetPath: 'https://res.cloudinary.com/folia/image/upload/v1614897972/FLA2000000/',
+  sha256: {
+    'Emoji Script.js': '31fb83c87e6c79976c4e80b5eb0aa11f75cbf1bad4acbf7772241e86cde620a7'
+  },
   tokens: {
     2000001: { image: 'FLA2000001__Emoji_Script_v4_TSmalley2021_03_01__20_22_44_qcbucm.png' },
     2000002: { image: 'FLA2000002__Emoji_Script_v4_TSmalley2021_03_01__20_22_57_v09jit.png' },
