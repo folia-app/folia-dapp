@@ -4,9 +4,12 @@ import router from './router'
 import store from './store'
 import 'lazysizes'
 import PrismicVue from '@prismicio/vue'
+import linkResolver from '@/plugins/prismic/link-resolver.js'
+import VueMeta from 'vue-meta'
+
 // import { PortisProvider } from 'portis'
 // import Web3 from 'web3'
-import linkResolver from '@/plugins/prismic/link-resolver.js'
+
 // import '@/plugins/register-vue-components.js'
 // router.afterEach((to, from, next) => {
 //   if (ga) ga('send', 'pageview')
@@ -31,6 +34,8 @@ Vue.use(PrismicVue, {
   endpoint: process.env.VUE_APP_PRISMIC_ENDPOINT,
   linkResolver
 })
+
+Vue.use(VueMeta)
 
 const pwd = async cb => {
   // disabled

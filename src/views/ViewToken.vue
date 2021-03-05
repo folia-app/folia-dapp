@@ -22,6 +22,7 @@ export default {
   props: ['token'],
   data () {
     return {
+      metadata: null,
       videoUrl: null,
       imageUrl: null
     }
@@ -35,6 +36,7 @@ export default {
         const meta = await this.$store.dispatch('getMetadata', { token: this.token })
         this.videoUrl = meta?.animation_url_optim
         this.imageUrl = meta?.image
+        this.metadata = meta
         this.autoplayVideo()
       }
     },
@@ -83,6 +85,15 @@ export default {
     this.get()
     this.onWorkView(this.$route)
     this.autoplayVideo()
+  },
+  metaInfo () {
+    return this.metadata && {
+      title: 'Folia – ' + this.metadata.name,
+      meta: [
+        { property: 'og:image', content: this.metadata.image }
+        // { property: 'og:url', content: this.metadata.external_url }
+      ]
+    }
   }
 }
 </script>
