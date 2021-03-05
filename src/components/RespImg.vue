@@ -44,7 +44,7 @@ export default {
 
 // find image size
 export function optimImgSize (length) {
-  const sizes = [360, 480, 960, 1280, 1600, 2048, 3072, 4096]
+  const sizes = [360, 480, 640, 1024, 1280, 1600, 2048, 3072, 4096]
   const dpx = window.devicePixelRatio || 1
   length = length * dpx * 0.75 // less density optically ok ? (target 80%)
   // find optimal
@@ -52,14 +52,15 @@ export function optimImgSize (length) {
 }
 
 // Cloudinary resizer
-export function resizeCloudinary (url, size = []) {
-  let params = 'q_auto'
+export function resizeCloudinary (url, size = [], optim = true) {
+  let params = ['q_auto']
+  const optimize = (size) => optim ? optimImgSize(size) : size
   // expect it's /upload
-  size[0] = size[0] ? 'w_' + optimImgSize(size[0]) : ''
-  size[1] = size[1] ? 'h_' + optimImgSize(size[1]) : ''
-  size = size.join(',')
-  params = size.length ? params + ',' + size : params
-  return url.replace('upload/', `upload/${params}/`)
+  if (size[0]) params.push('w_' + optimize(size[0]))
+  if (size[1]) params.push('h_' + optimize(size[1]))
+  params = params.join(',')
+  return url.includes('cloudinary.com') ? url.replace('upload/', `upload/${params}/`)
+    : `https://res.cloudinary.com/folia/image/fetch/${params}/${url}`
 }
 
 // Shopify resizer

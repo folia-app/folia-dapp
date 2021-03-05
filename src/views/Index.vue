@@ -180,6 +180,13 @@ export default {
     if (this.$route.name === 'view') {
       this.$router.replace('/')
     }
+  },
+  metaInfo () {
+    if (this.$route.name === 'index') {
+      return {
+        meta: this.$store.getters.meta({})
+      }
+    }
   }
 }
 </script>

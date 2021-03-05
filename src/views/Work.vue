@@ -181,12 +181,10 @@ export default {
   metaInfo () {
     if (this.$route.name === 'work' && this.doc) {
       const doc = this.doc.data
+      const title = `${doc.artist}, "${doc.title}" (${doc.year})`
       return {
-        title: `Folia – ${doc.artist}, "${doc.title}" (${doc.year})`,
-        meta: [
-          // TODO use better image
-          { property: 'og:image', content: doc.teaser_image?.url }
-        ]
+        title: title,
+        meta: this.$store.getters.meta({ title: title, descrip: '', img: doc.meta_image?.url })
       }
     }
   },

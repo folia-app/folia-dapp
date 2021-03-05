@@ -87,12 +87,11 @@ export default {
     this.autoplayVideo()
   },
   metaInfo () {
-    return this.metadata && {
-      title: 'Folia – ' + this.metadata.name,
-      meta: [
-        { property: 'og:image', content: this.metadata.image }
-        // { property: 'og:url', content: this.metadata.external_url }
-      ]
+    if (this.metadata) {
+      return {
+        title: this.metadata.name,
+        meta: this.$store.getters.meta({ title: this.metadata.name, descrip: '', img: this.metadata.image })
+      }
     }
   }
 }
