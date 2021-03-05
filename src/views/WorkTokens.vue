@@ -95,6 +95,7 @@ export default {
           .on('data', this.onEditionBought)
           .on('error', (error) => console.error(error))
         this.listening = true
+        console.log('listening!')
       }
     },
     onEditionBought (event) {
