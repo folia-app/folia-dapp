@@ -174,6 +174,7 @@ export default {
         if (this.isVariableEdition) {
           this.view = 'tokens'
         }
+        this.fetchWork(true)
       }
     }
   },

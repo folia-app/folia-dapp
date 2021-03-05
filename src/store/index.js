@@ -2,21 +2,17 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import prismic from './prismic'
 import { Folia, FoliaController } from 'folia-contracts'
-// import FoliaController from 'folia-contracts/build/contracts/FoliaController.json'
-// import FoliaContract from 'folia-contracts/build/contracts/FoliaContract.json'
 import Web3 from 'web3'
 import Web3Modal from 'web3modal'
 import WalletConnectProvider from '@walletconnect/web3-provider'
 
 const networks = {
-  mainnet: { id: 1, infura: 'https://mainnet.infura.io/v3/1363143c08464562ba87cc807ac77020' },
-  rinkeby: { id: 4, infura: 'https://rinkeby.infura.io/v3/1363143c08464562ba87cc807ac77020' }
+  mainnet: { id: 1, infura: 'wss://mainnet.infura.io/ws/v3/1363143c08464562ba87cc807ac77020' },
+  rinkeby: { id: 4, infura: 'wss://rinkeby.infura.io/ws/v3/1363143c08464562ba87cc807ac77020' }
 }
 
 let web3
 let provider = window.ethereum || Web3.currentProvider || Web3.givenProvider
-let foliaControllerContract
-let foliaContract
 
 // provider options
 const providerOptions = {
@@ -44,7 +40,8 @@ export default new Vuex.Store({
     address: null,
     networkId: null,
 
-    foliaContract,
+    foliaContract: null,
+    foliaControllerContract: null,
 
     works: [],
     tokens: [],
@@ -93,8 +90,18 @@ export default new Vuex.Store({
     SAVE_METADATA (state, metadata) {
       state.metadatas.push(metadata)
     },
-    SET_CONTRACT (state, contract) {
-      state.foliaContract = contract
+    SET_CONTRACTS (state, { web3, networkId }) {
+      if (!web3) return new Error('web3 not defined')
+      // controller
+      state.foliaControllerContract = new web3.eth.Contract(
+        FoliaController.abi,
+        FoliaController.networks[networkId].address
+      )
+      // folia
+      state.foliaContract = new web3.eth.Contract(
+        Folia.abi,
+        Folia.networks[networkId].address
+      )
     }
   },
   actions: {
@@ -111,16 +118,16 @@ export default new Vuex.Store({
           if (provider) {
             web3 = new Web3(provider)
           } else {
-            web3 = new Web3(new Web3.providers.HttpProvider(networks.mainnet.infura))
+            const n = process.env.NODE_ENV === 'dev' ? 'rinkeby' : 'mainnet'
+            web3 = new Web3(new Web3.providers.WebsocketProvider(networks[n].infura))
           }
         }
 
         // setup contracts
-        const network = state.networkId || await web3.eth.net.getId() || networks.mainnet.id
-        console.log('network:', network)
-        commit('SET_NETWORK', network)
-        setContracts(network)
-        commit('SET_CONTRACT', foliaContract)
+        const networkId = state.networkId || await web3.eth.net.getId() || networks.mainnet.id
+        console.log('network:', networkId)
+        commit('SET_NETWORK', networkId)
+        commit('SET_CONTRACTS', { web3, networkId })
 
         // listen to provider events
         dispatch('listenToProvider')
@@ -198,7 +205,7 @@ export default new Vuex.Store({
           await dispatch('connect')
         }
         // buy
-        await foliaControllerContract.methods
+        await state.foliaControllerContract.methods
           .buy(state.address, workId)
           .send({ from: state.address, value: work.price })
         // refresh work data for app
@@ -217,9 +224,9 @@ export default new Vuex.Store({
       let work = state.works.find(work => work.id === id)
       if (!flush && work) return work
       // get new data
-      if (foliaControllerContract && id) {
+      if (state.foliaControllerContract && id) {
         try {
-          work = await foliaControllerContract.methods.works(id).call()
+          work = await state.foliaControllerContract.methods.works(id).call()
           work = { id, ...work } // add id
           commit('SAVE_WORK', work)
         } catch (e) {
@@ -263,8 +270,8 @@ export default new Vuex.Store({
         let owner = token && token[1]
         if (owner) return owner
         // get new data
-        if (foliaContract) {
-          owner = await foliaContract.methods.ownerOf(tokenId).call()
+        if (state.foliaContract) {
+          owner = await state.foliaContract.methods.ownerOf(tokenId).call()
           commit('SAVE_TOKEN', [tokenId, owner])
           return owner
         }
@@ -275,16 +282,3 @@ export default new Vuex.Store({
     }
   }
 })
-
-const setContracts = (network) => {
-  if (!web3) return new Error('web3 not defined')
-  foliaControllerContract = new web3.eth.Contract(
-    FoliaController.abi,
-    FoliaController.networks[network].address
-  )
-
-  foliaContract = new web3.eth.Contract(
-    Folia.abi,
-    Folia.networks[network].address
-  )
-}

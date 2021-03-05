@@ -21,7 +21,7 @@
             </svg>
 
       //- (owner)
-      a.absolute.top-0.left-0.py-3.px-4(v-if="owner", :href="openSeaLink({account: owner})", target="_blank", rel="noopener noreferrer", :class="{'opacity-0 group-hover_opacity-100': !userIsOwner}")
+      a.absolute.top-0.left-0.py-3.px-4(v-if="owner", :href="openSeaLink({account: owner})", target="_blank", rel="noopener noreferrer", :class="{'opacity-0 group-hover_opacity-100': true || !userIsOwner}")
         btn.px-5.hover_bg-black-a15(theme="none", size="small") {{ userIsOwner ? 'You' : addrShort(owner) }}
 
       //- ...
