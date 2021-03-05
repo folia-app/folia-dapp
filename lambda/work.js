@@ -24,7 +24,7 @@ exports.handler = async function (event, context) {
 
     // find work
     const prefix = networkId !== '1' ? 'TEST' : 'FLA'
-    console.log(prefix, networkId, typeof networkId)
+    // console.log(prefix, networkId, typeof networkId)
     // (test data || main data)
     const metadata = metadatas[prefix + workNamespace] || metadatas['FLA' + workNamespace]
 
