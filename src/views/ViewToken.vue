@@ -87,9 +87,11 @@ export default {
     this.autoplayVideo()
   },
   metaInfo () {
-    return this.metadata && {
-      title: this.metadata.name,
-      meta: this.$store.getters.meta({ title: this.metadata.name, descrip: '', img: this.metadata.image })
+    if (this.metadata) {
+      return {
+        title: this.metadata.name,
+        meta: this.$store.getters.meta({ title: this.metadata.name, descrip: '', img: this.metadata.image })
+      }
     }
   }
 }
