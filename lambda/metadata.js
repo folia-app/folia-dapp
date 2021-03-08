@@ -25,7 +25,7 @@ exports.handler = async function (event, context) {
 
     // find work
 
-    const prefix = networkId !== '1' ? 'TEST' : 'FLA'
+    const prefix = networkId === '4' ? 'TEST' : 'FLA'
     // console.log(prefix, networkId, typeof networkId)
     // (test data || main data)
     const work = works[prefix + workNamespace] || works['FLA' + workNamespace]
