@@ -1,11 +1,11 @@
 <template lang="pug">
-  squishy-thumb.squishy-thumb-token.transition.duration-200(@open="fetchOwner", :style="{background: userIsOwner && '#ffeb00'}")
+  squishy-thumb.squishy-thumb-token.transition.duration-200(@open="open", :style="{background: userIsOwner && '#ffeb00'}")
     //- image
     //- resp-img(slot="media", :bg="true", :image="{src: token.image}", :lazy="false")
-    img.absolute.overlay.object-contain.object-center.transition.duration-300.opacity-0(slot="media", :srcset="`${resizeCloudinary(token.image, [414], false)} 414w,${resizeCloudinary(token.image, [640], false)} 1920w, ${resizeCloudinary(token.image, [960], false)}`", @load="$event => $event.target.style.opacity = 1")
+    img.absolute.overlay.object-contain.object-center.transition.duration-300.opacity-0.lazyload(slot="media", :data-srcset="`${resizeCloudinary(token.image, [414], false)} 414w,${resizeCloudinary(token.image, [640], false)} 1920w, ${resizeCloudinary(token.image, [960], false)}`", @load="$event => $event.target.style.opacity = 1")
 
     //- inner content
-    .absolute.overlay.flex.items-center.justify-center.group
+    .absolute.overlay.flex.items-center.justify-center.group(v-if="opened")
       //- No.
       //- a.absolute.bottom-0.right-0.px-4.py-3.opacity-0.group-hover_opacity-100(:href="openSeaLink({token: token.tokenId})", target="_blank", rel="noopener noreferrer")
         btn.px-8.hover_bg-black-a15(theme="none", size="small") {{ token.tokenId.slice(-3) }}
@@ -44,7 +44,8 @@ export default {
   props: ['token'],
   data () {
     return {
-      owner: ''
+      owner: '',
+      opened: false
     }
   },
   computed: {
@@ -60,6 +61,10 @@ export default {
     resizeCloudinary,
     async fetchOwner () {
       this.owner = await this.$store.dispatch('getNFTOwnerByTokenId', this.token.tokenId)
+    },
+    open () {
+      this.opened = true
+      this.fetchOwner()
     }
   },
   components: { Btn, SquishyThumb }

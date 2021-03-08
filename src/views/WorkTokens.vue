@@ -43,7 +43,7 @@
                     <path d="m256,183.5c-40,0-72.5,32.5-72.5,72.5s32.5,72.5 72.5,72.5c40,0 72.5-32.5 72.5-72.5s-32.5-72.5-72.5-72.5zm0,164c-50.5,0-91.5-41.1-91.5-91.5 0-50.5 41.1-91.5 91.5-91.5s91.5,41.1 91.5,91.5c0,50.5-41,91.5-91.5,91.5z"/>
                   </g>
                 </svg>
-      observer.w-full(style="height:200vh;margin-top:-50vh", :threshold="0.01", @visible="limit = limit + 12", v-if="limit < tokensFiltered.length")
+      observer.w-full(style="height:200vh;margin-top:-50vh", :threshold="0.01", @visible="loadTokens", v-if="limit < tokensFiltered.length")
 </template>
 
 <script>
@@ -93,7 +93,7 @@ export default {
       }
     },
     listenToContract () {
-      if (this.foliaControllerContract && !this.listening) {
+      if (this.foliaControllerContract && !this.listening && this.canBuy) {
         this.foliaControllerContract.events
           .editionBought()
           .on('data', this.onEditionBought)
@@ -103,6 +103,7 @@ export default {
       }
     },
     onEditionBought (event) {
+      console.log(event)
       // re-fetch tokens if bought from current work
       if (event.returnValues?.workId === this.doc?.uid) {
         this.getTokens()
@@ -118,6 +119,9 @@ export default {
     },
     resetLimit () {
       this.limit = 12
+    },
+    loadTokens () {
+      this.limit = this.limit + 12
     }
   },
   created () {
