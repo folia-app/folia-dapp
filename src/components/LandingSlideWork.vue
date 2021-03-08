@@ -90,11 +90,11 @@ export default {
   watch: {
     isReleased () {
       this.getMetadata()
+    },
+    '$route' (to, from) {
+      const isIndex = to.name === 'index'
+      return isIndex ? this.$refs.video?.play() : this.$refs.video?.pause()
     }
-    // '$route' (to, from) {
-    //   const isIndex = to.name === 'index'
-    //   return isIndex ? this.$refs.video?.play() : this.$refs.video?.pause()
-    // }
   }
 }
 </script>

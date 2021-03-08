@@ -2,7 +2,7 @@
   .resp-img(:class="{'relative': !bg}", :style="{paddingBottom: !bg && dims && `${dims.height / dims.width * 100}%`}", v-if="src")
     //- modern browsers load srcset instead of src
     //- lazysizes will load data-srcset when visible
-    img.absolute.h-full.w-full.top-0.left-0(ref="img", :class="[fit, {'lazyload': lazy, 'no-lazyload-anim': !anim}]", :srcset="lazy ? '/loading.gif' : thumb", :data-srcset="thumb", data-sizes="auto", :alt="image.alt || alt", @click="$emit('click', thumb)", :data-expand="lazyBuffer")
+    img.absolute.h-full.w-full.top-0.left-0(ref="img", :class="[fit, {'lazyload': lazy, 'no-lazyload-anim': !anim}]", :srcset="lazy ? '/loading.gif' : thumb", :data-srcset="thumb", data-sizes="auto", :alt="image.alt || alt", :data-expand="lazyBuffer")
 </template>
 
 <script>
@@ -35,10 +35,14 @@ export default {
     //   return this.image?.dimensions || { height: this.image?.height, width: this.image?.width }
     // }
   },
+  created () {
+    console.time('thumb:' + this.src)
+  },
   mounted () {
     this.dims = { height: this.$el.offsetHeight, width: this.$el.offsetWidth }
     // optimized image size, based on el width (must be rendered)
     this.thumb = this.resize(this.src, [this.$el.offsetWidth])
+    console.timeEnd('thumb:' + this.src)
   }
 }
 
@@ -53,7 +57,7 @@ export function optimImgSize (length) {
 
 // Cloudinary resizer
 export function resizeCloudinary (url, size = [], optim = true) {
-  let params = ['q_auto']
+  let params = ['q_auto', 'f_auto']
   const optimize = (size) => optim ? optimImgSize(size) : size
   // expect it's /upload
   if (size[0]) params.push('w_' + optimize(size[0]))

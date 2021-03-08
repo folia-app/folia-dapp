@@ -1,6 +1,9 @@
 <template lang="pug">
   squishy-thumb.squishy-thumb-token.transition.duration-200(@open="fetchOwner", :style="{background: userIsOwner && '#ffeb00'}")
-    resp-img(slot="media", :bg="true", :image="{src: token.image}")
+    //- image
+    //- resp-img(slot="media", :bg="true", :image="{src: token.image}", :lazy="false")
+    img.absolute.overlay.object-contain.object-center.transition.duration-300.opacity-0(slot="media", :srcset="`${resizeCloudinary(token.image, [414], false)} 414w,${resizeCloudinary(token.image, [640], false)} 1920w, ${resizeCloudinary(token.image, [960], false)}`", @load="$event => $event.target.style.opacity = 1")
+
     //- inner content
     .absolute.overlay.flex.items-center.justify-center.group
       //- No.
@@ -34,10 +37,16 @@
 import { mapState, mapGetters } from 'vuex'
 import SquishyThumb from '@/components/SquishyThumb'
 import Btn from '@/components/Btn'
-import RespImg from '@/components/RespImg'
+// import RespImg from '@/components/RespImg'
+import { resizeCloudinary } from '@/components/RespImg'
 export default {
   name: 'SquishyThumbToken',
   props: ['token'],
+  data () {
+    return {
+      owner: ''
+    }
+  },
   computed: {
     ...mapState({
       userAddress: state => state.address
@@ -45,18 +54,15 @@ export default {
     ...mapGetters(['addrShort', 'openSeaLink']),
     userIsOwner () {
       return this.userAddress === this.owner
-    },
-    owner () {
-      const saved = this.$store.state.tokens.find(token => token[0] === this.token.tokenId)
-      return saved && saved[1]
     }
   },
   methods: {
-    fetchOwner () {
-      this.$store.dispatch('getNFTOwnerByTokenId', this.token.tokenId)
+    resizeCloudinary,
+    async fetchOwner () {
+      this.owner = await this.$store.dispatch('getNFTOwnerByTokenId', this.token.tokenId)
     }
   },
-  components: { Btn, SquishyThumb, RespImg }
+  components: { Btn, SquishyThumb }
 }
 </script>
 

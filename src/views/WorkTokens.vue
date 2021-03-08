@@ -24,7 +24,8 @@
           </svg>
     //- tokens
     template(v-for="n in 1")
-      .w-1x2.md_w-1x3.xl_w-1x4(v-if="tokens", v-for="token in tokensFiltered", :key="token.image + n")
+      .w-1x2.md_w-1x3.xl_w-1x4(v-for="(token, i) in tokensFiltered", v-if="i < limit", :key="token.image + n")
+        //- .pb-full.border.border-white
         squishy-thumb-token(:token="token")
         //- squishy-thumb
           resp-img(slot="media", :bg="true", :image="{src: token.image}")
@@ -42,13 +43,14 @@
                     <path d="m256,183.5c-40,0-72.5,32.5-72.5,72.5s32.5,72.5 72.5,72.5c40,0 72.5-32.5 72.5-72.5s-32.5-72.5-72.5-72.5zm0,164c-50.5,0-91.5-41.1-91.5-91.5 0-50.5 41.1-91.5 91.5-91.5s91.5,41.1 91.5,91.5c0,50.5-41,91.5-91.5,91.5z"/>
                   </g>
                 </svg>
-
+      observer.w-full(style="height:200vh;margin-top:-50vh", :threshold="0.01", @visible="limit = limit + 12", v-if="limit < tokensFiltered.length")
 </template>
 
 <script>
 import { mapState } from 'vuex'
 import SquishyThumbToken from '@/components/SquishyThumbToken'
 import Btn from '@/components/Btn'
+import Observer from '@/components/Observer'
 export default {
   name: 'WorkTokens',
   props: {
@@ -58,7 +60,8 @@ export default {
   data () {
     return {
       tokens: null,
-      listening: false
+      listening: false,
+      limit: 12
     }
   },
   computed: {
@@ -79,6 +82,7 @@ export default {
   },
   methods: {
     async getTokens () {
+      console.log('get')
       if (!this.networkId) return console.warn('no network')
       try {
         let resp = await fetch(`/.netlify/functions/work/${this.doc.uid}?network=${this.networkId}`)
@@ -109,7 +113,11 @@ export default {
       query.sort = !query.sort ? 'index' : undefined // TODO: add "you" ?
       // no query if default
       if (!query.sort) delete query.sort
+      this.resetLimit()
       this.$router.replace({ query })
+    },
+    resetLimit () {
+      this.limit = 12
     }
   },
   created () {
@@ -124,7 +132,7 @@ export default {
       this.listenToContract()
     }
   },
-  components: { SquishyThumbToken, Btn }
+  components: { SquishyThumbToken, Btn, Observer }
 }
 </script>
 

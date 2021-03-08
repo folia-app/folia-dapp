@@ -39,7 +39,7 @@ export default {
   data () {
     return {
       squish: false, // Math.random() >= 0.25,
-      rand: Math.floor(Math.random() * (3 - 0 + 1))
+      rand: 0 // Math.floor(Math.random() * (3 - 0 + 1))
       // work: null
     }
   },
