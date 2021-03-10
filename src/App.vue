@@ -22,8 +22,9 @@ import '@/style/_main.css'
 export default {
   name: 'App',
   metaInfo: {
-    title: 'Folia',
-    titleTemplate: 'Folia – %s'
+    titleTemplate: (ttl) => {
+      return ttl ? `Folia – ${ttl}` : 'Folia'
+    }
   },
   created () {
     this.$store.dispatch('init')
