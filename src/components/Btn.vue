@@ -16,7 +16,9 @@ export default {
     clss () {
       return {
         'bg-black-a15 hover_bg-black-a30 focus_bg-black-a30 group-hover_bg-black-a30 transition-background duration-100': this.theme === 'darken',
-        'bg-gray-100 hover_bg-gray-200': this.theme === 'ltgray',
+        // theme: ltgray
+        'bg-gray-100 hover_bg-gray-200 focus_bg-gray-200': this.theme === 'ltgray' && !this.active,
+        'bg-black text-white': this.theme === 'ltgray' && this.active,
         // theme: drkgray
         'bg-gray-900 hover_bg-gray-950 focus_bg-gray-950 group-hover_bg-gray-950 transition-background duration-100': this.theme === 'drkgray' && !this.active,
         'bg-white focus_bg-white text-black': this.theme === 'drkgray' && this.active,

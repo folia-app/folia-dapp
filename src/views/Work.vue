@@ -2,6 +2,11 @@
   article.work.w-full.text-white
     .relative.overflow-y-scroll.h-screen.scrollbars-hidden(v-if="doc")
       .min-h-screen.flex.flex-col
+        //- (series header)
+        router-link.bg-white.text-black.p-8.lg_px-12.lg_py-10.flex.justify-between.text-md(to="/sets/pixel-sorters")
+          .font-boldff Pixel Sorters
+          //- div Harm van den Dorpel
+
         header.p-8.lg_p-12.flex.items-start
           .flex-1.text-lg
             router-link.flex.mb-10(to="/")
@@ -113,9 +118,10 @@ import CountdownPlayBtnOverlay from '@/components/CountdownPlayBtnOverlay'
 import SoldOutDot from '@/components/SoldOutDot'
 export default {
   name: 'Work',
+  props: ['id'],
   data () {
     return {
-      id: this.$route.params.work,
+      // id: this.$route.params.work,
       view: 'info',
       isReleased: false,
       imgLoaded: false

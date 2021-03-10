@@ -13,3 +13,14 @@
 .fadeinonly-enter{
   opacity:0;
 }
+
+.pagesfade-leave-active{
+  transition: opacity 500ms
+}
+.pagesfade-enter-active{
+  transition: opacity 500ms 500ms;
+}
+.pagesfade-leave-to,
+.pagesfade-enter{
+  opacity:0;
+}

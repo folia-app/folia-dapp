@@ -30,10 +30,16 @@ export default new Router({
         },
         {
           path: '/works/:work/:token?',
-          name: 'work'
+          name: 'work',
+          meta: { layout: 'panel' }
           // component: Work,
           // props: true,
           // meta: { isSingle: true }
+        },
+        {
+          path: '/sets/:set',
+          name: 'set',
+          meta: { layout: 'panel' }
         }
       ]
     }

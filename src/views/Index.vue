@@ -5,15 +5,17 @@
     .relative.transform.transition-transform.origin-left.duration-700(:class="{'scale-x-0': viewToken}")
       //- (WORK PANEL)
       .sticky.z-20.top-0.right-0.w-full.h-0
-        .absolute.top-0.right-0.transition.duration-500.transform.origin-right.bg-black.min-h-screen(:class="[panelWidths[0], {'scale-x-0': !workPanel}]")
-          transition(name="fade")
-            work-view(v-if="workPanel")
+        .absolute.top-0.right-0.transition.duration-500.transform.origin-right.bg-black.min-h-screen(:class="[panelWidths[0], {'scale-x-0': !panelOpen}]")
+          transition-group(name="pagesfade")
+            set-view(v-if="$route.name === 'set'", key="set")
+            work-view(v-else-if="activeWork", :id="activeWork", key="work")
+
       //- close workpanel
       transition(name="fade")
-        button(v-show="workPanel", @click="$router.push('/')").absolute.overlay.bg-black.z-10.cursor-pointer.opacity-25.md_opacity-50
+        button(v-show="panelOpen", @click="$router.push('/')").absolute.overlay.bg-black.z-10.cursor-pointer.opacity-25.md_opacity-50
 
       //- MAIN
-      main.index.relative.min-h-screen.transition.duration-500.transform.origin-left(:class="workPanel ? panelWidths[1] : ''")
+      main.index.relative.min-h-screen.transition.duration-500.transform.origin-left(:class="panelOpen ? panelWidths[1] : ''")
         //- HEADER
         header.absolute.top-0.left-0.w-full.z-20.text-white
           .absolute.top-0.left-0.w-full
@@ -89,17 +91,20 @@ import Info from '@/components/Info'
 // import WorkThumb from '@/components/WorkThumb'
 import Btn from '@/components/Btn'
 import WorkView from '@/views/Work'
+import SetView from '@/views/Set'
 import ViewToken from '@/views/ViewToken'
 import LandingSlideWork from '@/components/LandingSlideWork'
 let lastRt
 export default {
   name: 'Index',
-  components: { WorkView, Logo, Info, svgFleuron, Btn, LandingSlideWork, ViewToken },
+  components: { WorkView, Logo, Info, svgFleuron, Btn, LandingSlideWork, ViewToken, SetView },
   data () {
     return {
       squish: false,
       infoVisible: true,
-      workPanel: this.$route.name === 'work',
+      // workPanel: this.$route.name === 'work',
+      panelOpen: this.$route.meta.layout === 'panel',
+      activeWork: this.$route.params.work,
       current: 0,
       panelWidths: []
     }
@@ -143,14 +148,14 @@ export default {
       }
       this.panelWidths = widths
     },
-    openWorkPanel () {
+    openPanel () {
       this.setPanelWidths()
-      this.workPanel = true
+      this.panelOpen = true
       document.body.style.overflow = 'hidden'
     },
     closeWorkPanel () {
       document.body.style.overflow = ''
-      this.workPanel = false
+      this.panelOpen = false
       setTimeout(() => this.setPanelWidths(), 700) // after transition
     }
   },
@@ -164,11 +169,17 @@ export default {
   },
   watch: {
     '$route' (to, from) {
-      if (to.name === 'work') {
-        this.openWorkPanel()
+      // open panel ?
+      if (to.meta.layout === 'panel') {
+        this.openPanel()
       }
+      // close panel ?
       if (to.name === 'index') {
         this.closeWorkPanel()
+      }
+      // update active work ?
+      if (to.params.work) {
+        this.activeWork = to.params.work
       }
     },
     workDocs () {
