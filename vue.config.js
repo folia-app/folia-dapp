@@ -19,15 +19,15 @@ module.exports = {
         .filename('[name].[hash].js')
         .end()
     }
-  }
+  },
 
   // webpack
-  // configureWebpack: {
-  //   optimization: {
-  //     splitChunks: {
-  //       minSize: 10000,
-  //       maxSize: 250000
-  //     }
-  //   }
-  // }
+  configureWebpack: {
+    optimization: {
+      splitChunks: {
+        minSize: 10000,
+        maxSize: 250000
+      }
+    }
+  }
 }
