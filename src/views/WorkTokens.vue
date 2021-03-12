@@ -93,7 +93,6 @@ export default {
       }
     },
     onEditionBought (event) {
-      console.log(event)
       // re-fetch tokens if bought from current work
       if (event.returnValues?.workId === this.doc?.uid) {
         this.getTokens()
@@ -112,7 +111,6 @@ export default {
     },
     loadTokens () {
       this.limit = this.limit + 12
-      console.log('load more', this.limit)
     }
   },
   created () {
