@@ -343,6 +343,7 @@ module.exports = {
     padding: theme => ({
       ...theme('spacing'),
       full: '100%',
+      'ar-1x1': '100%',
       '1x4': '25%',
       '1x5': '22%'
     }),
