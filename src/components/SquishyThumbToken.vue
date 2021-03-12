@@ -2,7 +2,7 @@
   squishy-thumb.squishy-thumb-token.transition.duration-200(@open="open", :style="{background: userIsOwner && '#ffeb00'}")
     //- image
     //- resp-img(slot="media", :bg="true", :image="{src: token.image}", :lazy="false")
-    img.absolute.overlay.object-contain.object-center.transition.duration-300.opacity-0.lazyload(slot="media", :data-srcset="`${resizeCloudinary(token.image, [414], false)} 414w,${resizeCloudinary(token.image, [640], false)} 1920w, ${resizeCloudinary(token.image, [960], false)}`", @load="$event => $event.target.style.opacity = 1")
+    img.absolute.overlay.object-contain.object-center.transition.duration-300.opacity-0.lazyload(slot="media", :srcset="`${resizeCloudinary(token.image, [414], false)} 414w,${resizeCloudinary(token.image, [640], false)} 1920w, ${resizeCloudinary(token.image, [960], false)}`", @load="$event => $event.target.style.opacity = 1")
 
     //- inner content
     .absolute.overlay.flex.items-center.justify-center.group(v-if="opened")

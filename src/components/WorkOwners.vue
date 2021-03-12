@@ -1,15 +1,17 @@
 <template lang="pug">
   ul.work-owners
+    //- tokens...
     li.flex(v-for="token in tokensSorted")
-      a(:href="`${openSea}/assets/${$store.getters.contractAddr}/${token[0]}`", target="_blank", rel="noopener noreferrer")
+      a(:href="openSeaLink({ token: token[0] })", target="_blank", rel="noopener noreferrer")
         btn.px-8(theme="drkgray", style="min-width:4em") {{ token[0].toString().slice(-3) }}
-      a.truncate(:href="`${openSea}/accounts/${token[1]}`", target="_blank", rel="noopener noreferrer")
+      a.truncate(:href="openSeaLink({ account: token[1] })", target="_blank", rel="noopener noreferrer")
         btn.px-8.truncate(theme="drkgray")
           template(v-if="token[1] === $store.state.address") You
           template(v-else) {{ token[1] }}
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import Btn from '@/components/Btn'
 export default {
   name: 'WorkOwners',
@@ -22,6 +24,7 @@ export default {
     }
   },
   computed: {
+    ...mapGetters(['openSeaLink']),
     tokensSorted () {
       return this.tokens.slice().sort((a, b) => a[0] - b[0])
     },
