@@ -35,6 +35,14 @@ html{
 
 .children-mt-em > * + *{ margin-top: 1.2em; }
 
+.links-underline a {
+  @apply border-b border-current;
+  border-style: dashed;
+  &:hover, &:focus{
+    border-style:solid;
+  }
+}
+
 button{
   font-weight: inherit;
   color:inherit;

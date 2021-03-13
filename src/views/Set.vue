@@ -53,7 +53,7 @@
 
           //- (info)
           .px-8.lg_px-12(v-show="view === 'info'")
-            rich-text.children-mt-em(:field="doc.data.info", style="max-width:30em")
+            rich-text.children-mt-em.links-underline(:field="doc.data.info", style="max-width:30em")
 </template>
 
 <script>
