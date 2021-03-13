@@ -3,8 +3,8 @@
     .relative.overflow-y-scroll.h-screen.scrollbars-hidden(v-if="doc")
       .min-h-screen.flex.flex-col
         //- (series header)
-        router-link.bg-white.text-black.p-8.lg_px-12.lg_py-10.flex.justify-between.text-md(to="/sets/pixel-sorters")
-          .font-boldff Pixel Sorters
+        router-link.bg-white.text-black.p-8.lg_px-12.lg_py-10.flex.justify-between.text-md(v-if="doc.data.set", :to="{name: 'set', params: {set: doc.data.set.uid}}")
+          .font-boldff {{ doc.data.set.data.title }}
           //- div Harm van den Dorpel
 
         header.p-8.lg_p-12.flex.items-start

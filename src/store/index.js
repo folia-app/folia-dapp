@@ -51,7 +51,7 @@ export default new Vuex.Store({
   getters: {
     weiToETH: () => (wei) => web3?.utils.fromWei(wei) ?? '-',
     workId: () => (uid, prefix) => {
-      const id = Number(uid) / 1000000
+      const id = Number(uid) // / 1000000
       return prefix ? ('00' + id).slice(-3) // 001
         : id // 1 - for contract communication
     },

@@ -1,54 +1,95 @@
 <template lang="pug">
   article.set.w-full.bg-white.text-black
     .relative.overflow-y-scroll.h-screen.scrollbars-hidden
-      .min-h-screen
+      .min-h-screen(v-if="doc")
+        //- header
         header.p-8.lg_p-12.text-xl.lg_pb-16
-          .flex.w-full.justify-start.mb-20
-            //- router-link(to="/")
+          .flex.w-full.justify-between.mb-20
+            //- label
+            .leading-none.whitespace-no-wrap.text-smm.uppercase {{ doc.data.set_type_label }}
+            //- (link home mbl)
+            router-link.md_hidden(to="/")
               svg-fleuron.block.mr-2(style="width:0.96em;height:0.96em")
-            .leading-none.whitespace-no-wrap.text-smm SERIES
-          //- heading
-          .font-bold Pixel Sorters
-          div Harm van den Dorpel
-          //- div 2017
-            //- rich-text(:field="doc.data.medium")
-            //- div
-            //-   template(v-if="work") {{ work.printed }}/{{work.editions}} Minted
-            //-   template(v-else) Edition of {{ doc.data.edition }}
 
-            //- div {{ work ? weiToETH(work.price) : doc.data.price_eth }} ETH
+          //- title
+          rich-text.set__heading(:field="doc.data.heading")
+
+        //- tabs
         nav.px-8.lg_px-12.flex.justify-start.mb-12.-ml-2.text-md
           button.focus_outline-none(@click="view = 'set'")
             btn.px-8.md_px-10(theme="ltgray", :active="view === 'set'") Works
           button.focus_outline-none(@click="view = 'info'")
             btn.px-8.md_px-10(theme="ltgray", :active="view === 'info'") Info
 
-        section.mt-12
-          div(v-if="view === 'set'")
+        //- body
+        section.mt-12.pb-64
+          //- (works)
+          div(v-show="view === 'set'")
             ol
-              li
-                router-link.block.border-t.border-b.-mb-px.border-gray-600.flex.items-center.pl-8.lg_pl-12.hover_bg-gray-50.focus_bg-gray-50(v-for="n in [4,5,6]", to="/works/4", style="border-style:dotted")
-                  span.flex.items-end.text-lg
-                    svg-fleuron.block.mr-2(style="width:0.96em;height:0.96em")
-                    .leading-none.whitespace-no-wrap.text-base 00{{n}}
-                  h6.ml-20.text-md Blob.gif
-                  figure.w-48.h-48.bg-black.ml-auto.relative
-                    img.absolute.o
+              //- rows format
+                li(v-for="n in [4,5,6]")
+                  router-link.block.-mb-px.border-gray-600.flex.items-center.pl-8.lg_pl-12.hover_bg-gray-50.focus_bg-gray-50(to="/works/4", style="border-style:dotted", :class="{'bg-gray-100 hover_bg-white': n % 2 === 0}")
+                    span.flex.items-end.text-lg
+                      svg-fleuron.block.mr-2(style="width:0.96em;height:0.96em")
+                      .leading-none.whitespace-no-wrap.text-base 00{{n}}
+                    h6.ml-20.text-md Blob.gif
+                    figure.w-48.h-48.bg-black.ml-auto.relative
+                      img.absolute.o
+              //- blocks
+              li.flex.flex-wrap.mx-10.border.rounded-3xl.border-gray-400.-mb-px(v-for="(item, i) in items", :class="{'flex-row-reverse': i % 2 === 1}")
+                prismic-link.w-full.p-8.flex.justify-between(:field="item.link", :linkResolver="linkResolver")
+                  h6.text-base {{ item.link.data.title }}
+                  div
+                    span.flex.items-center.text-base
+                      svg-fleuron.block.mr-2(style="width:0.96em;height:0.96em")
+                      span.leading-none.whitespace-no-wrap.text-md.pt-1 {{ $store.getters.workId(item.link.uid, true) }}
+                prismic-link.w-full.block.px-8.pb-8(:field="item.link", :linkResolver="linkResolver")
+                  //- (video)
+                  template(v-if="item.thumbnail.link_type === 'Media' && item.thumbnail.kind === 'document'")
+                    video.w-auto.max-w-full.mx-auto.block.lazyload(:src="item.thumbnail.url", autoplay, muted, loop, playsinline, data-expand="0")
+                  //- (image)
+                  template(v-else-if="item.thumbnail.kind === 'image'")
+                    img.w-auto.max-w-full.mx-auto.block(:src="item.thumbnail.url")
+
+          //- (info)
+          .px-8.lg_px-12(v-show="view === 'info'")
+            rich-text.children-mt-em(:field="doc.data.info", style="max-width:30em")
 </template>
 
 <script>
 import svgFleuron from '@/components/SVG-Fleuron'
 import Btn from '@/components/Btn'
+import linkResolver from '@/plugins/prismic/link-resolver'
+import RichText from '@/components/RichText'
 export default {
   name: 'Set',
-  components: { svgFleuron, Btn },
+  components: { svgFleuron, Btn, RichText },
   data () {
     return {
-      view: 'set'
+      view: 'set',
+      linkResolver
+    }
+  },
+  computed: {
+    doc () {
+      return this.$store.state.prismic.docs.find(doc => doc.uid === this.$route.params.set)
+    },
+    items () {
+      return this.doc?.data.items || []
+    }
+  },
+  metaInfo () {
+    return this.doc && {
+      title: this.doc.data.title
     }
   }
 }
 </script>
 
 <style>
+.set__heading {
+  & h1 {
+    @apply font-bold;
+  }
+}
 </style>
