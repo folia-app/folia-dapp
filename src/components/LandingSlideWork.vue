@@ -1,10 +1,13 @@
 <template lang="pug">
   .landing-slide-work.absolute.overlay.overflow-hidden
     //- media
-    //- img.absolute.overlay.object-cover.object-center(v-if="doc.data.teaser_image.url", :src="doc.data.teaser_image.url", :alt="doc.data.teaser_image.alt")
-    video.absolute.overlay.object-cover.object-center.transform.scale-150.origin-center(:src="slice.primary.media.url", muted, ref="video", playsinline, loop, style="filter: invert(100%)")
-    //- (blur?)
-    //- .absolute.overlay(:style="{backdropFilter: `blur(12px)`}")
+    figure.absolute.overlay(style="filter: invert(100%)")
+      //- (image / poster)
+      img.absolute.overlay.object-cover.object-center(v-if="slice.primary.image && slice.primary.image.url", :src="slice.primary.image.url", :alt="slice.primary.image.alt")
+      //- (video)
+      video.absolute.overlay.object-cover.object-center.transform.scale-150.origin-center(v-if="slice.primary.media && slice.primary.media.url", :src="slice.primary.media.url", muted, ref="video", playsinline, loop)
+      //- (blur?)
+      //- .absolute.overlay(:style="{backdropFilter: `blur(12px)`}")
 
     //- countdown-play-btn-overlay.z-10.text-lg(:doc="doc", @released="isReleased = true", :playBtn="false")
 
@@ -60,9 +63,11 @@ export default {
   },
   computed: {
     ...mapGetters(['isSoldOut']),
+    workId () {
+      return this.slice?.primary.link?.uid
+    },
     work () {
-      const linkUid = this.slice?.primary.link?.uid
-      return this.$store.state.works.find(work => work.id === linkUid)
+      return this.$store.state.works.find(work => work.id === this.workId)
     }
   },
   methods: {
@@ -80,16 +85,19 @@ export default {
       observer.observe(this.$el)
     },
     getMetadata () {
-      if (this.isReleased) {
-        this.$store.dispatch('getMetadata', { work: this.doc.uid })
+      if (this.isReleased && this.workId) {
+        this.$store.dispatch('getMetadata', { work: this.workId })
       }
+    },
+    getWork () {
+      return !isNaN(this.workId) && this.$store.dispatch('getWork', { id: this.workId })
     }
   },
 
   // lifecycle
   created () {
     this.getMetadata()
-    this.$store.dispatch('getWork', { id: this.doc.uid })
+    this.getWork()
   },
   mounted () {
     this.observe()
