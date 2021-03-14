@@ -10,6 +10,18 @@
   font-style: normal;
   font-weight: bold;
 }
+@font-face {
+  font-family: 'Karrik';
+  src: url('/fonts/karrik/Karrik-Regular.woff2') format('woff2');
+  font-style: normal;
+  font-weight: normal;
+}
+@font-face {
+  font-family: 'Karrik';
+  src: url('/fonts/karrik/Karrik-Italic.woff2') format('woff2');
+  font-style: italic;
+  font-weight: normal;
+}
 
 /*@font-face {
   font-family: 'Help Me';

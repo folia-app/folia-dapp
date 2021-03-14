@@ -1,30 +1,33 @@
 <template lang="pug">
   .landing-slide-work.absolute.overlay.overflow-hidden
     //- media
-    img.absolute.overlay.object-cover.object-center(v-if="doc.data.teaser_image.url", :src="doc.data.teaser_image.url", :alt="doc.data.teaser_image.alt")
-    video.absolute.overlay.object-cover.object-center.transform.scale-150.origin-center(:src="doc.data.teaser_video.url", muted, ref="video", playsinline, loop, @loadedmetadata="$event => $event.target.playbackRate = 0.17")
+    //- img.absolute.overlay.object-cover.object-center(v-if="doc.data.teaser_image.url", :src="doc.data.teaser_image.url", :alt="doc.data.teaser_image.alt")
+    video.absolute.overlay.object-cover.object-center.transform.scale-150.origin-center(:src="slice.primary.media.url", muted, ref="video", playsinline, loop, style="filter: invert(100%)")
     //- (blur?)
     //- .absolute.overlay(:style="{backdropFilter: `blur(12px)`}")
 
-    countdown-play-btn-overlay.z-10.text-lg(:doc="doc", @released="isReleased = true", :playBtn="false")
+    //- countdown-play-btn-overlay.z-10.text-lg(:doc="doc", @released="isReleased = true", :playBtn="false")
 
     //- bottom info
     .absolute.bottom-0.z-10.w-full.pb-12.md_px-12.xl_pb-16.text-md.lg_text-base.xl_text-lg.flex.flex-wrap.items-end.justiy-center.md_justify-between
       //- title
-      router-link(:to="'/works/' + doc.uid").w-full.md_w-auto.flex.flex-wrap.justify-center.group-off
-        btn.px-10 {{ $store.getters.workId(doc.uid, true) }}
-        .w-full.md_w-0
-        btn.px-10 {{ doc.data.artist.split(',').join(' + ') }}
-        .w-full.md_w-0
-        btn.px-10 {{ doc.data.title }}
-        btn.px-10 {{ doc.data.year }}
+      prismic-link.w-full.md_w-auto.flex.flex-wrap.justify-center.group-off(:field="slice.primary.link", :linkResolver="linkResolver")
+        .w-full.md_w-auto.flex.justify-center(v-for="chunk in slice.primary.title.split(' | ')")
+          btn.px-10(style="backdrop-filter:blur(20px)") {{ chunk }}
+        //-
+          btn.px-10 {{ $store.getters.workId(doc.uid, true) }}
+          .w-full.md_w-0
+          btn.px-10 {{ doc.data.artist.split(',').join(' + ') }}
+          .w-full.md_w-0
+          btn.px-10 {{ doc.data.title }}
+          btn.px-10 {{ doc.data.year }}
 
       //- buy btn
       //- .mx-auto.md_m-0
       //- template(v-if="isSoldOut")
       template(v-if="isSoldOut(work)")
         sold-out-dot.ml-auto.mr-12.md_mr-0
-      template(v-else)
+      template(v-else-if="work")
         button.mx-auto.md_m-0.focus_outline-none(@click="$store.dispatch('buy', doc.uid)", :disabled="!isReleased", :class="{'opacity-50': !isReleased}")
           btn.px-16(:disabled="!isReleased") BUY
 
@@ -42,10 +45,12 @@ import { mapGetters } from 'vuex'
 import Btn from '@/components/Btn'
 import CountdownPlayBtnOverlay from '@/components/CountdownPlayBtnOverlay'
 import SoldOutDot from '@/components/SoldOutDot'
+import linkResolver from '@/plugins/prismic/link-resolver'
 export default {
   name: 'LandingSlideWork',
   components: { Btn, CountdownPlayBtnOverlay, SoldOutDot },
   props: {
+    slice: { type: Object, default: () => ({}) },
     doc: { type: Object, default: undefined }
   },
   data () {
@@ -56,10 +61,12 @@ export default {
   computed: {
     ...mapGetters(['isSoldOut']),
     work () {
-      return this.$store.state.works.find(work => work.id === this.doc.uid)
+      const linkUid = this.slice?.primary.link?.uid
+      return this.$store.state.works.find(work => work.id === linkUid)
     }
   },
   methods: {
+    linkResolver,
     play () {
       return this.$refs.video?.paused && this.$refs.video.play()
     },

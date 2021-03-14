@@ -36,7 +36,7 @@
             //- slides...
             transition-group(:name="home.landing.length > 1 ? 'slide' : 'none'")
               figure.absolute.overlay(v-for="(slice, i) in home.landing", v-show="current === i", :key="i")
-                landing-slide-work(:doc="workDocs.find(doc => doc.uid === slice.primary.link.uid)")
+                landing-slide-work(:slice="slice")
 
           //- dots
           //- ul.absolute.bottom-0.left-0.w-full.flex.items-center.justify-center.pb-6(v-if="slides.length > 1")
@@ -44,13 +44,19 @@
               .w-4.h-2.border-b.border-white(:class="{'bg-white': current === i}")
           //- span.opacity-50 (videos/slideshow)
 
-        section(v-if="home")
+        section.flex.flex-wrap.overflow-hidden(v-if="home")
           //- thumbs...
           //- work-thumb.w-full.md_w-1x2.lg_w-1x3(v-for="(doc, index) in works", :doc="doc", :key="doc.id + n")
           template(v-for="(slice, i) in home.body")
+            //- tiles
+            template(v-if="slice.slice_type === 'tile'")
+              //- items...
+              prismic-link.w-full.sm_w-1x3.bg-yellow.hover_shadow-inner-red.shadow-lg(:field="slice.primary.link", :linkResolver="linkResolver")
+                .pb-full.relative
+                  rich-text.absolute.overlay.p-8.lg_p-12.font-karrik.text-lg.md_text-2xl(:field="slice.primary.title")
             //- slice: works grid
-            template(v-if="slice.slice_type === 'works_grid'")
-              .slice-works-grid.flex.flex-wrap
+            //- template(v-if="slice.slice_type === 'works_grid'")
+              .slice-works-grid.w-full.flex.flex-wrap
                 //- items...
                 router-link.w-full.md_w-1x2.lg_w-1x3.bg-yellow.hover_shadow-inner-red(v-for="item in slice.items", :to="{name: 'work', params: {work: item.work.uid}}")
                   .pb-full.relative
@@ -94,10 +100,12 @@ import WorkView from '@/views/Work'
 import SetView from '@/views/Set'
 import ViewToken from '@/views/ViewToken'
 import LandingSlideWork from '@/components/LandingSlideWork'
+import RichText from '@/components/RichText'
+import linkResolver from '@/plugins/prismic/link-resolver'
 let lastRt
 export default {
   name: 'Index',
-  components: { WorkView, Logo, Info, svgFleuron, Btn, LandingSlideWork, ViewToken, SetView },
+  components: { WorkView, Logo, Info, svgFleuron, Btn, LandingSlideWork, ViewToken, SetView, RichText },
   data () {
     return {
       squish: false,
@@ -129,6 +137,7 @@ export default {
     }
   },
   methods: {
+    linkResolver,
     next () {
       this.current = this.current + 1 === this.workDocs.length ? 0 : this.current + 1
     },

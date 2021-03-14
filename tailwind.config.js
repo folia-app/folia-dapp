@@ -45,6 +45,8 @@ module.exports = {
       base: '1.8rem',
       lg: '2rem',
       xl: '2.1rem',
+      '2xl': '2.4rem',
+      '3xl': '2.8rem',
       '4xl': '3.4rem',
       '5xl': '4rem',
       '6xl': '4.8rem',
@@ -209,6 +211,7 @@ module.exports = {
         // '"Segoe UI Symbol"',
         // '"Noto Color Emoji"',
       ],
+      karrik: ['Karrik', 'system-ui', '"Helvetica"', 'sans-serif'],
       serif: ['Times New Roman', 'serif'], // Georgia', 'Cambria', '"Times New Roman"', 'Times', 'serif'],
       mono: ['Menlo', 'Monaco', 'Consolas', '"Liberation Mono"', '"Courier New"', 'monospace']
     },
