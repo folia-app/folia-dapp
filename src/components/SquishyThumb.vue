@@ -1,16 +1,16 @@
 <template lang="pug">
-  .sliding-thumb.relative.bg-yellow.overflow-hidden.hover_shadow-inner-red
-    //- sizer
-    .pb-full
-    //- image (.bg-gray-900 to prevent shadow poking through...)
-    figure.absolute.overlay-px.z-10.cursor-pointer.bg-gray-900.transition-transform.duration-400.bg-cover.bg-center(:data-dir="rand", :class="{'squish': squish}", @click="squish = !squish")
-      slot(name="media")
-      //- img.absolute.overlay.z-10.object-cover.object-center(:src="doc.data.index_thumbnail.square.url", :alt="doc.data.index_thumbnail.alt")
+  .sliding-thumb.bg-yellow.overflow-hidden.hover_shadow-inner-red
+    //- square sizer
+    .relative.pb-ar-1x1
+      //- image (.bg-gray-900 to prevent shadow poking through...)
+      figure.absolute.overlay-px.z-10.cursor-pointer.bg-gray-900.transition-transform.duration-400.bg-cover.bg-center(:data-dir="rand", :class="{'squish': squish}", @click="squish = !squish")
+        slot(name="media")
+        //- img.absolute.overlay.z-10.object-cover.object-center(:src="doc.data.index_thumbnail.square.url", :alt="doc.data.index_thumbnail.alt")
 
-    header.absolute.overlay.z-0.flex(:class="tableClasses")
-      slot(name="bg")
-      .relative.w-full
-        slot
+      header.absolute.overlay.z-0.flex(:class="tableClasses")
+        slot(name="bg")
+        .relative.w-full
+          slot
         //-
           .flex-1.flex.px-2
             .w-1x2.flex.justify-center.items-center(v-for="artist in doc.data.artist.split(',')") {{ artist }}

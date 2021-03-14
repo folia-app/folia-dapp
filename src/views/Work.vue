@@ -98,7 +98,7 @@
           work-tokens(ref="tokens", :doc="doc", v-if="doc", @buy="buy", :canBuy="!isSoldOut(work)")
 
         //- (collectors)
-        section(v-if="work", v-show="view === 'owners'")
+        section.px-10.lg_px-12(v-if="work && view === 'owners'")
           work-owners(:work="work")
 
     //- close btn
