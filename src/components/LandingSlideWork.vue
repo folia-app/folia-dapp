@@ -1,5 +1,5 @@
 <template lang="pug">
-  .landing-slide-work.absolute.overlay.overflow-hidden
+  .landing-slide-work.absolute.overlay.overflow-hidden.text-md.lg_text-base.xl_text-lg
     //- media
     figure.absolute.overlay(style="filter: invert(100%)")
       //- (image / poster)
@@ -10,9 +10,13 @@
       //- .absolute.overlay(:style="{backdropFilter: `blur(12px)`}")
 
     //- countdown-play-btn-overlay.z-10.text-lg(:doc="doc", @released="isReleased = true", :playBtn="false")
+    .absolute.overlay.flex.items-center.justify-center(v-if="slice.primary.release_time && !isReleased")
+      prismic-link(:field="slice.primary.link", :linkResolver="linkResolver")
+        btn.px-8(style="backdrop-filter: blur(20px)")
+          countdown(:until="slice.primary.release_time", @ended="isReleased = true")
 
     //- bottom info
-    .absolute.bottom-0.z-10.w-full.pb-12.md_px-12.xl_pb-16.text-md.lg_text-base.xl_text-lg.flex.flex-wrap.items-end.justiy-center.md_justify-between
+    .absolute.bottom-0.z-10.w-full.pb-12.md_px-12.xl_pb-16.flex.flex-wrap.items-end.justiy-center.md_justify-between
       //- title
       prismic-link.w-full.md_w-auto.flex.flex-wrap.justify-center.group-off(:field="slice.primary.link", :linkResolver="linkResolver")
         .w-full.md_w-auto.flex.justify-center(v-for="chunk in slice.primary.title.split(' | ')")
@@ -46,12 +50,13 @@
 <script>
 import { mapGetters } from 'vuex'
 import Btn from '@/components/Btn'
-import CountdownPlayBtnOverlay from '@/components/CountdownPlayBtnOverlay'
+// import CountdownPlayBtnOverlay from '@/components/CountdownPlayBtnOverlay'
+import Countdown from '@/components/Countdown'
 import SoldOutDot from '@/components/SoldOutDot'
 import linkResolver from '@/plugins/prismic/link-resolver'
 export default {
   name: 'LandingSlideWork',
-  components: { Btn, CountdownPlayBtnOverlay, SoldOutDot },
+  components: { Btn, Countdown, SoldOutDot },
   props: {
     slice: { type: Object, default: () => ({}) },
     doc: { type: Object, default: undefined }

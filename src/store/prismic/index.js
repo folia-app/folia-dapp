@@ -25,7 +25,7 @@ export default {
 
     async getWork ({ state }, uid) {
       const saved = state.docs.find(doc => doc.uid === uid)
-      return saved || (await prismic(vue.$prismic.Predicates.at('my.work.uid', uid)))?.results[0]
+      return saved || (await prismic(vue.$prismic.Predicates.at('my.work.uid', uid), { fetchLinks: ['set.title'] }))?.results[0]
     }
   }
 }

@@ -3,52 +3,79 @@
     .relative.overflow-y-scroll.h-screen.scrollbars-hidden
       .min-h-screen.flex.flex-col(v-if="doc")
         //- (series header)
-        router-link.bg-white.text-black.p-8.lg_px-12.lg_py-10.flex.justify-between.text-md(v-if="doc.data.set.uid", :to="{name: 'set', params: {set: doc.data.set.uid}}")
+        router-link.bg-gray-900.text-white.p-8.lg_px-12.lg_py-10.flex.justify-between.text-md.hover_bg-white.hover_text-black.focus_text-black.focus_bg-white(v-if="doc.data.set.uid", :to="{name: 'set', params: {set: doc.data.set.uid}}")
           .font-boldff {{ doc.data.set.data.title }}
           //- div Harm van den Dorpel
 
         header.p-8.lg_p-12.flex.items-start
-          .flex-1.text-lg
-            router-link.flex.mb-10(to="/")
+          .flex-1.text-xl
+            router-link.flex.mb-16.text-lg.-ml-1(to="/")
               svg-fleuron.block.mr-2(style="width:0.96em;height:0.96em")
               .leading-none {{ workId(doc.uid, true) }}
             //- div.leading-none {{ workId(doc.uid, true) }} — #[h1.inline {{ doc.data.artist }}] — {{ doc.data.title }} — {{ doc.data.year }}
             div {{ doc.data.title }}
             .font-bold {{ doc.data.artist }}
             rich-text(:field="doc.data.medium")
-            div
-              template(v-if="work") {{ work.printed }}/{{work.editions}} Minted
-              template(v-else) Edition of {{ doc.data.edition }}
-            //- div {{ work ? work.editions : doc.data.edition }}
-            //- div(v-if="work") Available {{ work.editions - work.printed }}
-            //- div {{ work ? work.printed + '/' + work.editions : 'ed. of ' + doc.data.edition }}
-            div {{ work ? weiToETH(work.price) : doc.data.price_eth }} ETH
+            //- (minted + price)
+            template(v-if="!isUnitSale")
+              //- printed/edition
+              div
+                template(v-if="work") {{ work.printed }}/{{work.editions}} Minted
+                template(v-else) Edition of {{ doc.data.edition }}
+              //- price
+              div {{ work ? weiToETH(work.price) : doc.data.price_eth }} ETH
 
-          //- buy btn / sold out dot
-          template(v-if="isSoldOut(work)")
-            sold-out-dot
-          template(v-else)
-            button.block.group.relative.focus_outline-none.-m-2(@click="buy", :disabled="!isReleased", :class="{'opacity-50': !isReleased}")
-              btn.px-16(theme="drkgray", :disabled="!isReleased") BUY
+          //- ...(countdown / bid)
+          template(v-if="isUnitSale")
+            template(v-if="!isReleased")
+              button.focus_outline-none(@click="view = 'tokens'")
+                btn.px-8.text-sm.-mt-4.-mr-4(theme="drkgray", size="small")
+                  countdown.text-white(:until="doc.data.release_time")
+            template(v-else-if="doc.data.auction.length")
+              button.block.group.relative.focus_outline-none.-m-2(@click="view = 'tokens'")
+                btn.px-16(theme="drkgray") BID
+
+          //- ... (sold-out / buy)
+          template(v-if="!isUnitSale")
+            template(v-if="isSoldOut(work)")
+              sold-out-dot
+            template(v-else)
+              button.block.group.relative.focus_outline-none.-m-2(@click="buy", :disabled="!isReleased", :class="{'opacity-50': !isReleased}")
+                btn.px-16(theme="drkgray", :disabled="!isReleased") BUY
               //- span.absolute.overlay.flex.items-center.justify-center.opacity-0.group-hover_opacity-100 BUY
                 //- span.group-hover_opacity-0 {{ work ? weiToETH(work.price) : doc.data.price_eth }} ETH
 
+        nav.px-8.lg_px-12.flex.justify-start.mt-4.mb-12.-ml-2
+          button.focus_outline-none(@click="view = 'tokens'", v-if="isReleased && isVariableEdition")
+            btn.px-12(theme="drkgray", :active="view === 'tokens'") Tokens
+          button.focus_outline-none(@click="view = 'info'")
+            btn.px-12(theme="drkgray", :active="view === 'info'") Info
+          button.focus_outline-none(@click="view = 'tokens'", v-if="isAuction")
+            btn.px-12(theme="drkgray", :active="view === 'tokens'") Auction
+          button.focus_outline-none(@click="view = 'owners'", v-if="(isReleased && work && work.editions < 20) && !isUnitSale && !isVariableEdition")
+            btn.px-12(theme="drkgray", :active="view === 'owners'") Collectors
+          button.focus_outline-none(@click="view = 'details'")
+            btn.px-12(theme="drkgray", :active="view === 'details'") Details
+
         //- (media for singular editions )
-        figure.relative.w-full.sm_w-10x12.lg_pr-16.mb-12.mt-3(v-if="!isVariableEdition || !isReleased")
-          //- (metadata image)
-          template(v-if="isReleased && metadata && metadata.image")
-            img.w-full(:src="metadata.image", @load="imgLoaded = true")
+        //- figure.bg-white.mb-12(v-if="!isVariableEdition")
+          .pb-ar-1x1.relative
+            .absolute.overlay.px-4.flex.items-center.justify-center
+              //- (metadata image)
+              template(v-if="!isVariableEdition")
+                img.w-auto.max-w-full.mx-auto.block(:src="doc.data.teaser_image.url", style="image-rendering: crisp-edges;image-rendering: pixelated;")
           //- (teaser)
-          template(v-if="!imgLoaded")
-            video.w-full.block(:src="doc.data.teaser_video.url", loop, playsinline, muted, autoplay)
-          //- play btn?
-          countdown-play-btn-overlay.text-sm.text-black-a30ff(:doc="doc", :counter="false", size="small", @released="isReleased = true", :btnOverlay="true")
-          //- router-link.absolute.overlay.flex.items-center.justify-center(:to="{name: 'view', params: {work: doc.uid}}")
+          //- template(v-if="!imgLoaded")
+            //- video.w-full.block(:src="doc.data.teaser_video.url", loop, playsinline, muted, autoplay)
+          //- countdown play
+          //- countdown-play-btn-overlay.text-sm.text-black-a30ff(v-if="hasCountdown", :doc="doc", :counter="false", size="small", @released="isReleased = true", :btnOverlay="true")
+          //- play icon
+          //- router-link.absolute.overlay.flex.items-center.justify-center(:to="{name: 'view', params: {work: Number(doc.uid) * 1000000}}")
             <svg class="text-5xl lg_text-6xl xl_text-60 block" style="width:calc(59 / 38 * 1em); height: 1em" viewBox="0 0 59 38" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio>
               <path d="M1 1.49251L57.3157 19L0.999998 36.5075L1 1.49251Z" fill="rgba(255,255,255,0.9)" />
             </svg>
 
-        nav.px-8.lg_px-12.flex.justify-start.mb-12
+        //- nav.px-8.lg_px-12.flex.justify-start.mb-12
           button.focus_outline-none(@click="view = 'tokens'", v-if="isReleased && isVariableEdition")
             btn.px-8.md_px-12(theme="drkgray", :active="view === 'tokens'") Tokens
           button.focus_outline-none(@click="view = 'info'")
@@ -81,9 +108,17 @@
             </svg>
 
         //- (info)
-        section.text-lg.px-10.lg_px-12(v-show="view === 'info'", style="padding-bottom:25vh")
+        section(v-show="view === 'info'", style="padding-bottom:25vh")
           h3.sr-only Info
-          rich-text.children-mt-em.lg_w-10x12(style="max-width:28em;", :field="doc.data.description")
+          //- (media)
+          figure.bg-white.mb-12(v-if="!isVariableEdition")
+            .pb-ar-1x1.relative
+              .absolute.overlay.px-4.flex.items-center.justify-center
+                //- (metadata image)
+                template(v-if="!isVariableEdition")
+                  img.w-auto.max-w-full.mx-auto.block.pointer-events-none(:src="doc.data.teaser_image.url", style="image-rendering: crisp-edges;image-rendering: pixelated;", @contextmenu.prevent)
+          //- info text
+          rich-text.text-lg.px-10.lg_px-12.children-mt-em.lg_w-10x12(style="max-width:28em;", :field="doc.data.description")
 
         //- (details)
         section.text-lg.px-10.lg_px-12(v-show="view === 'details'", style="padding-bottom:25vh")
@@ -114,7 +149,8 @@ import Btn from '@/components/Btn'
 import svgFleuron from '@/components/SVG-Fleuron'
 import WorkOwners from '@/components/WorkOwners'
 import WorkTokens from '@/views/WorkTokens'
-import CountdownPlayBtnOverlay from '@/components/CountdownPlayBtnOverlay'
+import Countdown from '@/components/Countdown'
+// import CountdownPlayBtnOverlay from '@/components/CountdownPlayBtnOverlay'
 import SoldOutDot from '@/components/SoldOutDot'
 export default {
   name: 'Work',
@@ -122,6 +158,7 @@ export default {
   data () {
     return {
       // id: this.$route.params.work,
+      doc: null,
       view: 'info',
       isReleased: false,
       imgLoaded: false
@@ -132,9 +169,9 @@ export default {
     // id () {
     //   return this.$route.params.work
     // },
-    doc () {
-      return this.$store.getters['prismic/works'].find(doc => doc.uid === this.id)
-    },
+    // doc () {
+    //   return this.$store.getters['prismic/works'].find(doc => doc.uid === this.id)
+    // },
     work () {
       return this.$store.state.works.find(work => work.id === this.id)
     },
@@ -156,6 +193,12 @@ export default {
         url = this.metadata.animation_url?.length ? this.metadata.animation_url : this.metadata.image
       }
       return url
+    },
+    isUnitSale () {
+      return this.doc.data.page_layout === 'token-unit-sale'
+    },
+    isAuction () {
+      return this.doc.data.auction?.length
     }
   },
   created () {
@@ -167,8 +210,9 @@ export default {
       await this.$store.dispatch('buy', this.id)
       return this.$refs.tokens?.getTokens() // refresh token list
     },
-    fetchDoc () {
-      this.$store.dispatch('prismic/getWork', this.id)
+    async fetchDoc () {
+      this.doc = await this.$store.dispatch('prismic/getWork', this.id)
+      this.isReleased = !this.doc?.data.release_time ? true : new Date().getTime() >= new Date(this.doc.data.release_time).getTime()
     },
     fetchWork (flush) {
       this.$store.dispatch('getWork', { id: this.id, flush })
@@ -194,7 +238,7 @@ export default {
       }
     }
   },
-  components: { RichText, svgX, Btn, svgFleuron, WorkOwners, CountdownPlayBtnOverlay, SoldOutDot, WorkTokens }
+  components: { RichText, svgX, Btn, svgFleuron, WorkOwners, SoldOutDot, WorkTokens, Countdown }
 }
 </script>
 
