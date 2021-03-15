@@ -48,3 +48,8 @@ button{
   color:inherit;
   letter-spacing: inherit;
 }
+
+.image-render-crisp{
+  image-rendering: crisp-edges;
+  image-rendering: pixelated;
+}

@@ -12,7 +12,7 @@
 
       //- close workpanel
       transition(name="fade")
-        button(v-show="panelOpen", @click="$router.push('/')").absolute.overlay.bg-black.z-10.cursor-pointer.opacity-25.md_opacity-50
+        button.focus_outline-none(v-show="panelOpen", @click="$router.push('/')").absolute.overlay.bg-black.z-10.cursor-pointer.opacity-25.md_opacity-50
 
       //- MAIN
       main.index.relative.min-h-screen.transition.duration-500.transform.origin-left(:class="panelOpen ? panelWidths[1] : ''")

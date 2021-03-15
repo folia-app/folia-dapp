@@ -1,15 +1,22 @@
 <template lang="pug">
   .view-token.absolute.overlay.bg-black
     //- video format
-    figure.absolute.overlay.py-5.md_p-10.lg_p-12.xl_p-24.bg-gray-100.flex(v-show="videoUrl")
-      .relative.w-full
-        img.absolute.overlay.object-contain.object-center(:src="imageUrl")
-        video.absolute.overlay.object-contain.object-center(ref="video", :src="videoUrl", playsinline, @contextmenu.prevent, @click.stop="$event => $event.target.paused ? $event.target.play() : null", @ended="close")
+    template(v-if="videoUrl")
+      figure.absolute.overlay.py-5.md_p-10.lg_p-12.xl_p-24.bg-gray-100.flex(v-show="videoUrl")
+        .relative.w-full
+          img.absolute.overlay.object-contain.object-center(:src="imageUrl")
+          video.absolute.overlay.object-contain.object-center(ref="video", :src="videoUrl", playsinline, @contextmenu.prevent, @click.stop="$event => $event.target.paused ? $event.target.play() : null", @ended="close")
 
-    //- image format
-    figure.absolute.overlay.py-5.md_p-10.lg_p-12.xl_p-24.flex(v-if="!videoUrl && imageUrl")
-      .relative.w-full
-        img.absolute.overlay.object-contain.object-center.opacity-0.transition.duration-200(:src="imageUrl", @load="$event => $event.target.style.opacity = '1'")
+    //- gif format
+    template(v-else-if="imageUrl && imageUrl.toLowerCase().includes('.gif')")
+      figure.absolute.overlay.bg-white.py-5.md_p-10.lg_p-12.xl_p-24.flex.items-center.justify-center
+        img-gif(:src="imageUrl")
+
+    //- image
+    template(v-else-if="imageUrl")
+      figure.absolute.overlay.py-5.md_p-10.lg_p-12.xl_p-24.flex
+        .relative.w-full
+          img.absolute.overlay.object-contain.object-center.opacity-0.transition.duration-200(:src="imageUrl", @load="$event => $event.target.style.opacity = '1'")
 
     //- back btn
     button.absolute.top-0.left-0.h-full.w-1x4.focus_outline-none(@click.stop="close", aria-label="Go back", style="cursor: w-resize")
@@ -17,6 +24,7 @@
 
 <script>
 import { mapState } from 'vuex'
+import ImgGif from '@/components/ImgGif'
 export default {
   name: 'ViewToken',
   props: ['token'],
@@ -93,7 +101,8 @@ export default {
         meta: this.$store.getters.meta({ title: this.metadata.name, descrip: '', img: this.metadata.image })
       }
     }
-  }
+  },
+  components: { ImgGif }
 }
 </script>
 

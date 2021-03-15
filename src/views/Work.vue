@@ -111,12 +111,15 @@
         section(v-show="view === 'info'", style="padding-bottom:25vh")
           h3.sr-only Info
           //- (media)
-          figure.bg-white.mb-12(v-if="!isVariableEdition")
-            .pb-ar-1x1.relative
-              .absolute.overlay.px-4.flex.items-center.justify-center
-                //- (metadata image)
-                template(v-if="!isVariableEdition")
-                  img.w-auto.max-w-full.mx-auto.block.pointer-events-none(:src="doc.data.teaser_image.url", style="image-rendering: crisp-edges;image-rendering: pixelated;", @contextmenu.prevent)
+          figure.mb-12(v-if="!isVariableEdition")
+            router-link.block.pb-ar-1x1.relative(:to="{name: 'view-token', params: { token: Number(doc.uid) * 1000000 + 1 }}")
+              //- (gif)
+              template(v-if="doc.data.teaser_image.url.includes('.gif')")
+                .absolute.overlay.flex.items-center.justify-center.bg-white
+                  img-gif(:src="doc.data.teaser_image.url")
+              //- (image)
+              template(v-else)
+                img.block.w-full(:src="doc.data.teaser_image.url", @contextmenu.prevent)
           //- info text
           rich-text.text-lg.px-10.lg_px-12.children-mt-em.lg_w-10x12(style="max-width:28em;", :field="doc.data.description")
 
@@ -150,6 +153,7 @@ import svgFleuron from '@/components/SVG-Fleuron'
 import WorkOwners from '@/components/WorkOwners'
 import WorkTokens from '@/views/WorkTokens'
 import Countdown from '@/components/Countdown'
+import ImgGif from '@/components/ImgGif'
 // import CountdownPlayBtnOverlay from '@/components/CountdownPlayBtnOverlay'
 import SoldOutDot from '@/components/SoldOutDot'
 export default {
@@ -212,7 +216,9 @@ export default {
     },
     async fetchDoc () {
       this.doc = await this.$store.dispatch('prismic/getWork', this.id)
-      this.isReleased = !this.doc?.data.release_time ? true : new Date().getTime() >= new Date(this.doc.data.release_time).getTime()
+      // is released ?
+      this.isReleased = !this.doc?.data.release_time ? true // no release set
+        : new Date().getTime() >= new Date(this.doc.data.release_time).getTime() // now >= release
     },
     fetchWork (flush) {
       this.$store.dispatch('getWork', { id: this.id, flush })
@@ -238,7 +244,7 @@ export default {
       }
     }
   },
-  components: { RichText, svgX, Btn, svgFleuron, WorkOwners, SoldOutDot, WorkTokens, Countdown }
+  components: { RichText, svgX, Btn, svgFleuron, WorkOwners, SoldOutDot, WorkTokens, Countdown, ImgGif }
 }
 </script>
 

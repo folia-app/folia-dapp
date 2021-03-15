@@ -1,9 +1,9 @@
 <template lang="pug">
   .landing-slide-work.absolute.overlay.overflow-hidden.text-md.lg_text-base.xl_text-lg
     //- media
-    figure.absolute.overlay(style="filter: invert(100%)")
+    figure.absolute.overlay(style="filter: invert(100%) blur(6px)")
       //- (image / poster)
-      img.absolute.overlay.object-cover.object-center(v-if="slice.primary.image && slice.primary.image.url", :src="slice.primary.image.url", :alt="slice.primary.image.alt")
+      img.absolute.overlay.object-cover.object-center.transform.scale-150.origin-center(v-if="slice.primary.image && slice.primary.image.url", :src="slice.primary.image.url", :alt="slice.primary.image.alt")
       //- (video)
       video.absolute.overlay.object-cover.object-center.transform.scale-150.origin-center(v-if="slice.primary.media && slice.primary.media.url", :src="slice.primary.media.url", muted, ref="video", playsinline, loop)
       //- (blur?)
@@ -73,12 +73,15 @@ export default {
     },
     work () {
       return this.$store.state.works.find(work => work.id === this.workId)
+    },
+    canPlay () {
+      return this.$route.name === 'index'
     }
   },
   methods: {
     linkResolver,
     play () {
-      return this.$refs.video?.paused && this.$refs.video.play()
+      return this.$refs.video?.paused && this.canPlay && this.$refs.video.play()
     },
     pause () {
       return this.$refs.video?.pause()
@@ -112,8 +115,7 @@ export default {
       this.getMetadata()
     },
     '$route' (to, from) {
-      const isIndex = to.name === 'index'
-      return isIndex ? this.$refs.video?.play() : this.$refs.video?.pause()
+      return this.canPlay ? this.play() : this.pause()
     }
   }
 }
