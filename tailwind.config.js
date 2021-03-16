@@ -33,6 +33,7 @@ module.exports = {
       32: '8rem',
       40: '10rem',
       48: '12rem',
+      52: '13rem',
       56: '14rem',
       64: '16rem',
       'lh-snug': '1.375em'
@@ -131,6 +132,7 @@ module.exports = {
       xl: '0.75rem',
       '2xl': '1rem',
       '3xl': '1.5rem',
+      '4xl': '2rem',
       full: '9999px'
     },
     borderWidth: {
@@ -214,7 +216,7 @@ module.exports = {
       ],
       karrik: ['Karrik', 'system-ui', '"Helvetica"', 'sans-serif'],
       serif: ['Times New Roman', 'serif'], // Georgia', 'Cambria', '"Times New Roman"', 'Times', 'serif'],
-      mono: ['Menlo', 'Monaco', 'Consolas', '"Liberation Mono"', '"Courier New"', 'monospace']
+      mono: ['monospace']
     },
     fontWeight: {
       hairline: '100',
@@ -292,15 +294,16 @@ module.exports = {
       full: '100%',
       ...breakpoints(theme('screens'))
     }),
-    minHeight: {
+    minHeight: (theme) => ({
       0: '0',
+      ...theme('spacing'),
       '25vw': '25vw',
       '33vw': '33vw',
       '50vw': '50vw',
       '100vw': '100vw',
       full: '100%',
       screen: '100vh'
-    },
+    }),
     minWidth: {
       0: '0',
       full: '100%'
