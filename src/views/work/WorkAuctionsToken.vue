@@ -28,6 +28,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import Btn from '@/components/Btn'
 import Countdown from '@/components/Countdown'
 import ImgGif from '@/components/ImgGif'
@@ -36,10 +37,12 @@ export default {
   props: ['doc'],
   data () {
     return {
-      metadata: null
+      metadata: null,
+      auction: []
     }
   },
   computed: {
+    ...mapState(['reserveAuctionContract']),
     tokenId () {
       return this.$route.params.token
     }
@@ -47,14 +50,22 @@ export default {
   methods: {
     async getMetadata () {
       this.metadata = await this.$store.dispatch('getMetadata', { token: this.tokenId })
+    },
+    async getAuction () {
+      this.auction = await this.$store.dispatch('auctions/get', this.tokenId)
     }
   },
   created () {
     this.getMetadata()
+    this.getAuction()
   },
   watch: {
     tokenId () {
       this.getMetadata()
+      this.getAuction()
+    },
+    reserveAuctionContract () {
+      this.getAuction()
     }
   },
   components: { Btn, ImgGif, Countdown }
