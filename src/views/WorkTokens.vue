@@ -6,7 +6,7 @@
       button.focus_outline-none(v-if="$route.params.token", @click="$router.replace({name: 'work', params: { work: doc.uid }})")
         btn.px-8.md_px-12(theme="drkgray") VIEW ALL
       //- sort
-      button.focus_outline-none.py-2.px-4.lg_mr-6(@click="changeSort", v-else-if="tokensFiltered.length > 10")
+      button.focus_outline-none.py-6.px-4.lg_mr-6(@click="changeSort", v-else-if="tokensFiltered.length > 10")
         //- btn.px-8.bg-black-a30.uppercase.text-md.opacity-50(theme="drkgray") {{ $route.query.sort || 'RECENT' }}
         .border-t.border-r.border-white.transform.h-6.w-6(:class="$route.query.sort ? '-rotate-45 translate-y-1' : 'rotate-135 -translate-y-1'")
 

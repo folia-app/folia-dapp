@@ -1,5 +1,5 @@
 <template lang="pug">
-  span.inline-block(style="min-width:10em; font-family:monospace;font-size: 0.95em")
+  span.inline-block.whitespace-no-wrap(style="min-width:10em; font-family:monospace;font-size: 0.95em")
     template(v-if="msUntil") {{ timeFormatted }}
     template(v-else) - - - -
 </template>

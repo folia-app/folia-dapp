@@ -1,8 +1,8 @@
 <template lang="pug">
   article#info.bg-white.text-black.flex.flex-col.justify-between
-    section.p-12.lg_px-16.lg_py-20
-      .text-red.text-4xl.leading-normal
-        h2.md_w-10x12.text-red
+    section.px-8.py-12.lg_px-16.lg_py-20
+      .text-red.text-2xl.md_text-3xl.lg_text-5xl.leading-normal
+        h2.text-red
           | Folia is a space for exhibiting and collecting #[a.border-b-2.border-current.border-dotted.hover_border-solid(href="https://opensea.io/blog/guides/non-fungible-tokens/" target="_blank") NFTs]
           | #[button.ml-3.inline-block.text-black.py-px.rounded-full.px-3.bg-gray-100.text-xs.hover_bg-gray-200.focus_outline-none(@click="more = true", v-show="!more", style="font-size:0.4em") •••]
 
@@ -18,20 +18,26 @@
               p Any Ethereum app (such as this one) can define its own token to use as currency, in place of <span class="sans">ETH</span>. These tokens conventionally have decimal values, making them <i>fungible</i>. But <i>non-fungible</i> tokens cannot be divided&mdash;and like a coin, can only have a one&nbsp;owner. Making them collectible.
             //- p.mt-1em ...
 
-    footer.flex.items-end.justify-between
-      .flex.flex-wrap.w-3x4.text-xs.p-10
-        a(href="mailto:info@folia.app", target="_blank", rel="noopener")
-          btn.px-10(theme="ltgray") info@folia.app
-        a(href="https://twitter.com/foliafoliafolia", target="_blank", rel="noopener")
-          btn.px-10(theme="ltgray") twitter
-        a(href="https://t.me/folia_app", target="_blank", rel="noopener")
-          btn.px-10(theme="ltgray") telegram
-        a(href="https://discord.gg/8RA49VdraZ", target="_blank", rel="noopener")
-          btn.px-10(theme="ltgray") discord
-        a(href="https://folia.substack.com", target="_blank", rel="noopener")
-          btn.px-10(theme="ltgray") substack
-        a(href="https://github.com/folia-app", target="_blank", rel="noopener noreferrer")
-          btn.px-10(theme="ltgray") github
+    footer.flex.items-end.justify-between.mt-4
+      ul.flex.flex-wrap.w-3x4.text-xs.p-6.pb-10.lg_p-10
+        li.w-full.sm_w-auto.flex
+          a(href="mailto:info@folia.app", target="_blank", rel="noopener")
+            btn.px-10(theme="ltgray") info@folia.app
+        li
+          a(href="https://twitter.com/foliafoliafolia", target="_blank", rel="noopener")
+            btn.px-10(theme="ltgray") twitter
+        li
+          a(href="https://t.me/folia_app", target="_blank", rel="noopener")
+            btn.px-10(theme="ltgray") telegram
+        li
+          a(href="https://discord.gg/8RA49VdraZ", target="_blank", rel="noopener")
+            btn.px-10(theme="ltgray") discord
+        li
+          a(href="https://folia.substack.com", target="_blank", rel="noopener")
+            btn.px-10(theme="ltgray") substack
+        li
+          a(href="https://github.com/folia-app", target="_blank", rel="noopener noreferrer")
+            btn.px-10(theme="ltgray") github
 
       svg-fleuron.text-black.h-12.m-12
 

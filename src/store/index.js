@@ -222,7 +222,7 @@ export default new Vuex.Store({
         const work = await dispatch('getWork', { id: workId, flush: true })
         // !! unavailable
         if (!work.exists) throw new Error(`!! Work ${workId} doesn't exist`)
-        if (Number(work.printed) >= Number(work.editions)) throw new Error(`!! Work ${1} is sold out`)
+        if (Number(work.printed) >= Number(work.editions)) throw new Error(`!! Work ${workId} is sold out`)
         if (work.paused) throw new Error(`!! Work ${workId} is locked. Please wait for release or try again shortly.`)
         // wallet connected ?
         if (!state.address) {

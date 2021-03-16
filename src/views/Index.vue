@@ -44,7 +44,7 @@
               .w-4.h-2.border-b.border-white(:class="{'bg-white': current === i}")
           //- span.opacity-50 (videos/slideshow)
 
-        section.flex.flex-wrap.overflow-hidden(v-if="home")
+        section.flex.flex-col-reverse.sm_flex-row.flex-wrap.overflow-hidden(v-if="home")
           //- thumbs...
           //- work-thumb.w-full.md_w-1x2.lg_w-1x3(v-for="(doc, index) in works", :doc="doc", :key="doc.id + n")
           template(v-for="(slice, i) in home.body")
@@ -53,7 +53,7 @@
               //- items...
               prismic-link.w-full.sm_w-1x3.bg-yellow.hover_shadow-inner-red.shadow-lg(:field="slice.primary.link", :linkResolver="linkResolver")
                 .pb-full.relative
-                  rich-text.absolute.overlay.p-8.lg_p-12.font-karrik.text-2xl.sm_text-lg.md_text-2xl(:field="slice.primary.title")
+                  rich-text.absolute.overlay.p-8.lg_p-12.font-karrik.text-2xl.sm_text-lg.lg_text-2xl(:field="slice.primary.title")
             //- slice: works grid
             //- template(v-if="slice.slice_type === 'works_grid'")
               .slice-works-grid.w-full.flex.flex-wrap
@@ -77,7 +77,7 @@
                     span.hidden.group-hover_inline Coming Soon
 
         //- info
-        info.w-full.min-h-100vw.md_min-h-50vw.lg_min-h-33vw(v-show="infoVisible && workDocs.length > 0")
+        info.w-full.min-h-100vw.sm_min-h-50vw.lg_min-h-33vw(v-show="infoVisible && workDocs.length > 0")
 
     //- video player
     .fixed.overlay.transition.transform.duration-700.origin-right.py-5.md_p-10.lg_p-12.xl_p-24.flex.bg-gray-200(:class="{'pointer-events-none scale-x-0': !viewToken}")

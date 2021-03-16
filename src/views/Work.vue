@@ -7,12 +7,35 @@
           .font-boldff {{ doc.data.set.data.title }}
           //- div Harm van den Dorpel
 
-        header.p-8.lg_p-12.flex.items-start
-          .flex-1.text-xl
+        header.p-8.lg_p-12
+
+          .flex.justify-between.items-start
+            //- no.
             router-link.flex.mb-16.text-lg.-ml-1(to="/")
               svg-fleuron.block.mr-2(style="width:0.96em;height:0.96em")
               .leading-none {{ workId(doc.uid, true) }}
-            //- div.leading-none {{ workId(doc.uid, true) }} — #[h1.inline {{ doc.data.artist }}] — {{ doc.data.title }} — {{ doc.data.year }}
+
+            //- ...(countdown / bid)
+            template(v-if="isUnitSale")
+              template(v-if="!isReleased")
+                button.focus_outline-none(@click="view = 'tokens'")
+                  btn.px-8.text-sm.-mt-2.-mr-4(theme="drkgray", size="small")
+                    countdown.text-white(:until="doc.data.release_time")
+              template(v-else-if="doc.data.auction.length")
+                button.block.group.relative.focus_outline-none.-m-2(@click="view = 'tokens'")
+                  btn.px-16(theme="drkgray") BID
+
+            //- ... (sold-out / buy)
+            template(v-if="!isUnitSale")
+              template(v-if="isSoldOut(work)")
+                sold-out-dot
+              template(v-else)
+                button.block.group.relative.focus_outline-none.-m-2(@click="buy", :disabled="!isReleased", :class="{'opacity-50': !isReleased}")
+                  btn.px-12.md_px-16(theme="drkgray", :disabled="!isReleased") BUY
+                //- span.absolute.overlay.flex.items-center.justify-center.opacity-0.group-hover_opacity-100 BUY
+                  //- span.group-hover_opacity-0 {{ work ? weiToETH(work.price) : doc.data.price_eth }} ETH
+
+          header.text-xl
             div {{ doc.data.title }}
             .font-bold {{ doc.data.artist }}
             rich-text(:field="doc.data.medium")
@@ -25,37 +48,17 @@
               //- price
               div {{ work ? weiToETH(work.price) : doc.data.price_eth }} ETH
 
-          //- ...(countdown / bid)
-          template(v-if="isUnitSale")
-            template(v-if="!isReleased")
-              button.focus_outline-none(@click="view = 'tokens'")
-                btn.px-8.text-sm.-mt-4.-mr-4(theme="drkgray", size="small")
-                  countdown.text-white(:until="doc.data.release_time")
-            template(v-else-if="doc.data.auction.length")
-              button.block.group.relative.focus_outline-none.-m-2(@click="view = 'tokens'")
-                btn.px-16(theme="drkgray") BID
-
-          //- ... (sold-out / buy)
-          template(v-if="!isUnitSale")
-            template(v-if="isSoldOut(work)")
-              sold-out-dot
-            template(v-else)
-              button.block.group.relative.focus_outline-none.-m-2(@click="buy", :disabled="!isReleased", :class="{'opacity-50': !isReleased}")
-                btn.px-16(theme="drkgray", :disabled="!isReleased") BUY
-              //- span.absolute.overlay.flex.items-center.justify-center.opacity-0.group-hover_opacity-100 BUY
-                //- span.group-hover_opacity-0 {{ work ? weiToETH(work.price) : doc.data.price_eth }} ETH
-
         nav.px-8.lg_px-12.flex.justify-start.mt-4.mb-12.-ml-2
           button.focus_outline-none(@click="view = 'tokens'", v-if="isReleased && isVariableEdition")
-            btn.px-12(theme="drkgray", :active="view === 'tokens'") Tokens
+            btn.px-8.md_px-12(theme="drkgray", :active="view === 'tokens'") Tokens
           button.focus_outline-none(@click="view = 'info'")
-            btn.px-12(theme="drkgray", :active="view === 'info'") Info
+            btn.px-8.md_px-12(theme="drkgray", :active="view === 'info'") Info
           button.focus_outline-none(@click="view = 'tokens'", v-if="isAuction")
-            btn.px-12(theme="drkgray", :active="view === 'tokens'") Auction
+            btn.px-8.md_px-12(theme="drkgray", :active="view === 'tokens'") Auction
           button.focus_outline-none(@click="view = 'owners'", v-if="(isReleased && work && work.editions < 20) && !isUnitSale && !isVariableEdition")
-            btn.px-12(theme="drkgray", :active="view === 'owners'") Collectors
+            btn.px-8.md_px-12(theme="drkgray", :active="view === 'owners'") Collectors
           button.focus_outline-none(@click="view = 'details'")
-            btn.px-12(theme="drkgray", :active="view === 'details'") Details
+            btn.px-8.md_px-12(theme="drkgray", :active="view === 'details'") Details
 
         //- (media for singular editions )
         //- figure.bg-white.mb-12(v-if="!isVariableEdition")
