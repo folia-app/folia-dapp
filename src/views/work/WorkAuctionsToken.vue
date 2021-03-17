@@ -15,14 +15,14 @@
         p.p-10 Not found!
 
       //- (auction)
-      template(v-else-if="auction")
+      template(v-else-if="auction && metadata")
         section
           .flex.p-10.flex-row-reverse.-mb-10
             figure.w-1x2.rounded-4xl.overflow-hidden
               router-link.block.pb-full.relative(:to="{name: 'view-token', params: {token: $route.params.token}}")
-                template(v-if="doc.data.teaser_image.url")
-                  .absolute.overlay.p-2.flex.items-center.bg-white(v-if="doc.data.teaser_image.url.includes('.gif')")
-                    img-gif(:src="doc.data.teaser_image.url")
+                template(v-if="metadata.image")
+                  .absolute.overlay.p-2.flex.items-center.bg-white(v-if="metadata.image.includes('.gif')")
+                    img-gif(:src="metadata.image")
 
             .w-1x2.p-8.bg-black-a15.rounded-4xl
               h2.font-bold {{ metadata.name }}
