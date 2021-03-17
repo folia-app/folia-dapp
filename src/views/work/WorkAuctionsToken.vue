@@ -46,12 +46,12 @@
                 .text-sm
                   div Current Bid
                   //- div.truncate {{ auction.bidder }}
-                div.text-2xl.text-right.font-bold.leading-none {{ weiToETH(auction.reservePrice) * 2 }} ETH
+                div.text-2xl.text-right.font-bold.leading-none {{ weiToETH(auction.amount) }} ETH
               .w-1x2.rounded-4xl.bg-black-a30.p-8.flex.flex-col.justify-between.min-h-52
                 div.text-sm Auction Ends
                 div.w-full.flex.items-end.text-2xl
-                  countdown.font-bold.w-full.text-right.leading-none(:until="auctionEndTime", :separator="' '")
-              .w-full.rounded-4xl.bg-black-a15 .p-8.flex.flex-col.justify-between.min-h-52
+                  countdown.font-bold.w-full.text-right.leading-none(:until="auctionEndTimeMs", :separator="' '")
+              .w-full.rounded-4xl.bg-black-a15.p-8.flex.flex-col.justify-between.min-h-52
                 div.text-sm Bidder
                 div.text-2xl.w-full.text-right.leading-none.font-bold
                   | {{ auction.bidder === account ? 'You' : addrShort(auction.bidder) }}
@@ -59,9 +59,9 @@
         //- bid
         .order-last.sticky.bottom-0.left-0.w-full.p-10
           div.flex
-            input.w-full.text-black(v-model="bid", type="number", :min="weiToETH(auction.reservePrice)", required)
+            input.w-full.text-black(v-model="bidETH", type="number", :min="weiToETH(auction.reservePrice)", required)
             div ETH
-          button.block.w-full.focus_outline-none
+          button.block.w-full.focus_outline-none(@click="bid")
             btn(size="large") BID
 </template>
 
@@ -78,17 +78,17 @@ export default {
     return {
       metadata: null,
       auction: null,
-      bid: 0
+      bidETH: 0 //
     }
   },
   computed: {
     ...mapState(['account', 'reserveAuctionContract']),
-    ...mapGetters(['weiToETH', 'addrShort']),
+    ...mapGetters(['weiToETH', 'ethToWei', 'addrShort']),
     tokenId () {
       return this.$route.params.token
     },
-    auctionEndTime () {
-      return this.auction && (new Date().getTime() + this.auction.duration * 1000)
+    auctionEndTimeMs () {
+      return this.auction && ((Number(this.auction.firstBidTime) + Number(this.auction.duration)) * 1000)
     }
   },
   methods: {
@@ -96,12 +96,16 @@ export default {
     async getMetadata () {
       this.metadata = await this.$store.dispatch('getMetadata', { token: this.tokenId })
     },
-    async getAuction () {
+    async getAuction (flush = false) {
       this.auction = null
-      this.auction = await this.$store.dispatch('auctions/get', this.tokenId)
+      this.auction = await this.$store.dispatch('auctions/get', { token: this.tokenId, flush })
       if (this.auction) {
-        this.bid = this.weiToETH(this.auction.reservePrice)
+        this.bidETH = this.weiToETH(this.auction.reservePrice)
       }
+    },
+    async bid () {
+      await this.$store.dispatch('auctions/bid', { token: this.tokenId, wei: this.ethToWei(this.bidETH) })
+      this.getAuction(true)
     }
   },
   created () {
