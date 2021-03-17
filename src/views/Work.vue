@@ -18,11 +18,11 @@
             //- ...(countdown / bid)
             template(v-if="isUnitSale")
               template(v-if="!isReleased")
-                button.focus_outline-none(@click="view = 'tokens'")
+                button.focus_outline-none(@click="view = 'auctions'")
                   btn.px-8.text-sm.-mt-2.-mr-4(theme="drkgray", size="small")
-                    countdown.text-white(:until="doc.data.release_time")
+                    countdown.text-white(:until="doc.data.release_link.data.release_time")
               template(v-else-if="doc.data.auction.length")
-                button.block.group.relative.focus_outline-none.-m-2(@click="view = 'tokens'")
+                button.block.group.relative.focus_outline-none.-m-2(@click="view = 'auctions'")
                   btn.px-16(theme="drkgray") BID
 
             //- ... (sold-out / buy)
@@ -53,73 +53,24 @@
             btn.px-8.md_px-12(theme="drkgray", :active="view === 'tokens'") Tokens
           button.focus_outline-none(@click="view = 'info'")
             btn.px-8.md_px-12(theme="drkgray", :active="view === 'info'") Info
-          button.focus_outline-none(@click="view = 'tokens'", v-if="isAuction")
-            btn.px-8.md_px-12(theme="drkgray", :active="view === 'tokens'") Auction
+          button.focus_outline-none(@click="view = 'auctions'", v-if="isAuction")
+            btn.px-8.md_px-12(theme="drkgray", :active="view === 'auctions'") Auction
           button.focus_outline-none(@click="view = 'owners'", v-if="(isReleased && work && work.editions < 20) && !isUnitSale && !isVariableEdition")
             btn.px-8.md_px-12(theme="drkgray", :active="view === 'owners'") Collectors
           button.focus_outline-none(@click="view = 'details'")
             btn.px-8.md_px-12(theme="drkgray", :active="view === 'details'") Details
-
-        //- (media for singular editions )
-        //- figure.bg-white.mb-12(v-if="!isVariableEdition")
-          .pb-ar-1x1.relative
-            .absolute.overlay.px-4.flex.items-center.justify-center
-              //- (metadata image)
-              template(v-if="!isVariableEdition")
-                img.w-auto.max-w-full.mx-auto.block(:src="doc.data.teaser_image.url", style="image-rendering: crisp-edges;image-rendering: pixelated;")
-          //- (teaser)
-          //- template(v-if="!imgLoaded")
-            //- video.w-full.block(:src="doc.data.teaser_video.url", loop, playsinline, muted, autoplay)
-          //- countdown play
-          //- countdown-play-btn-overlay.text-sm.text-black-a30ff(v-if="hasCountdown", :doc="doc", :counter="false", size="small", @released="isReleased = true", :btnOverlay="true")
-          //- play icon
-          //- router-link.absolute.overlay.flex.items-center.justify-center(:to="{name: 'view', params: {work: Number(doc.uid) * 1000000}}")
-            <svg class="text-5xl lg_text-6xl xl_text-60 block" style="width:calc(59 / 38 * 1em); height: 1em" viewBox="0 0 59 38" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio>
-              <path d="M1 1.49251L57.3157 19L0.999998 36.5075L1 1.49251Z" fill="rgba(255,255,255,0.9)" />
-            </svg>
-
-        //- nav.px-8.lg_px-12.flex.justify-start.mb-12
-          button.focus_outline-none(@click="view = 'tokens'", v-if="isReleased && isVariableEdition")
-            btn.px-8.md_px-12(theme="drkgray", :active="view === 'tokens'") Tokens
-          button.focus_outline-none(@click="view = 'info'")
-            btn.px-8.md_px-12(theme="drkgray", :active="view === 'info'") Info
-          button.focus_outline-none(@click="view = 'owners'", v-if="isReleased && work && work.editions < 20")
-            btn.px-8.md_px-12(theme="drkgray", :active="view === 'owners'") Collectors
-          button.focus_outline-none(@click="view = 'details'")
-            btn.px-8.md_px-12(theme="drkgray", :active="view === 'details'") Details
-
-              //- rich-text.mt-20(style="max-width:32em", :field="doc.data.description")
-          //- .sticky.top-0.left-0.w-full
-            .absolute.top-0.right-0.w-screen.h-screen.flex.p-48
-            router-link.relative.w-full(v-if="doc.data.video.url", :to="{name: 'view', params: {work: doc.uid}}")
-              //- .relative.w-full.origin-center(:style="{transform: 'scale(' + imgScale + ')'}")
-              img.absolute.overlay.object-contain.object-center(:src="doc.data.icon.url")
-
-        //- figure.relative.w-full.sm_w-10x12.lg_pr-16
-          //- (metadata image)
-          template(v-if="isReleased && metadata && metadata.image")
-            img.w-full(:src="metadata.image", @load="imgLoaded = true")
-          //- (teaser)
-          template(v-if="!imgLoaded")
-            video.w-full.block(:src="doc.data.teaser_video.url", loop, playsinline, muted, autoplay)
-
-          //- play btn?
-          countdown-play-btn-overlay.text-sm.text-black-a30ff(:doc="doc", :counter="false", size="small", @released="isReleased = true", :btnOverlay="true")
-          //- router-link.absolute.overlay.flex.items-center.justify-center(:to="{name: 'view', params: {work: doc.uid}}")
-            <svg class="text-5xl lg_text-6xl xl_text-60 block" style="width:calc(59 / 38 * 1em); height: 1em" viewBox="0 0 59 38" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio>
-              <path d="M1 1.49251L57.3157 19L0.999998 36.5075L1 1.49251Z" fill="rgba(255,255,255,0.9)" />
-            </svg>
 
         //- (info)
         section(v-show="view === 'info'", style="padding-bottom:25vh")
           h3.sr-only Info
           //- (media)
           figure.mb-12(v-if="!isVariableEdition")
-            router-link.block.pb-ar-1x1.relative(:to="{name: 'view-token', params: { token: Number(doc.uid) * 1000000 + 1 }}")
+            router-link.block(:to="{name: 'view-token', params: { token: Number(doc.uid) * 1000000 + 1 }}")
               //- (gif)
               template(v-if="doc.data.teaser_image.url.includes('.gif')")
-                .absolute.overlay.flex.items-center.justify-center.bg-white
-                  img-gif(:src="doc.data.teaser_image.url")
+                .pb-ar-1x1.relative
+                  .absolute.overlay.flex.items-center.justify-center.bg-white
+                    img-gif(:src="doc.data.teaser_image.url")
               //- (image)
               template(v-else)
                 img.block.w-full(:src="doc.data.teaser_image.url", @contextmenu.prevent)
@@ -141,6 +92,14 @@
         //- (collectors)
         section.px-10.lg_px-12(v-if="work && view === 'owners'")
           work-owners(:work="work")
+
+        //- auctions
+        section.pb-64(v-if="doc && view === 'auctions'")
+          ul.border-t.border-dotted.border-gray-500(v-if="doc.data.auction.length")
+            li.px-10.lg_px-12.flex.justify-between.items-center.h-40.border-b.border-dotted.border-gray-500.hover_bg-gray-950(v-for="slice in doc.data.auction")
+              h6 FLA-{{ slice.primary.token_id }}
+              btn.px-8.text-sm.pointer-events-none(size="small", theme="drkgray")
+                countdown(:until="slice.primary.release_link1.data.release_time")
 
     //- close btn
     //- button.md_hidden.absolute.top-0.right-0.p-10.focus_outline-none(@click="$router.push('/')", aria-lable="Close")
@@ -220,8 +179,9 @@ export default {
     async fetchDoc () {
       this.doc = await this.$store.dispatch('prismic/getWork', this.id)
       // is released ?
-      this.isReleased = !this.doc?.data.release_time ? true // no release set
-        : new Date().getTime() >= new Date(this.doc.data.release_time).getTime() // now >= release
+      const time = this.doc?.data.release_link?.data?.release_time
+      this.isReleased = !time ? true // no release set
+        : new Date().getTime() >= new Date(time).getTime() // now >= release
     },
     fetchWork (flush) {
       this.$store.dispatch('getWork', { id: this.id, flush })

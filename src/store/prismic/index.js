@@ -19,7 +19,7 @@ export default {
   },
   actions: {
     async getDocs ({ commit }) {
-      const resp = await prismic('', { pageSize: 100, fetchLinks: ['set.title', 'work.title'] })
+      const resp = await prismic('', { pageSize: 100, fetchLinks: ['set.title', 'work.title', 'release.release_time'] })
       commit('setDocs', resp.results)
     },
 
