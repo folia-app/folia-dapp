@@ -66,7 +66,7 @@
           .bg-black-a30.rounded-4xl.p-6.backdrop-blur
             .flex.w-full.group
               btn.flex-1(size="large", theme="darken", @click="$refs.input.focus()")
-                input.w-full.text-center.focus_outline-none(ref="input", v-model="bidETH", type="number", :min="weiToETH(auction.reservePrice)", required, step="0.1", size="1", min="minBidETH")
+                input.w-full.text-center.focus_outline-none(ref="input", v-model="bidETH", type="number", :min="weiToETH(auction.reservePrice)", required, step="0.1", size="1", min="bidStepETH")
               btn.order-last.px-12.pointer-events-none(size="large", theme="darken") ETH
               btn.w-24.hidden.flex.group-hover_flex.justify-center.items-center.hover_bg-gray-a30(size="large", theme="darken", @click="increaseBid") +
               btn.w-24.hidden.flex.group-hover_flex.justify-center.items-center.hover_bg-gray-a30(size="large", theme="darken", @click="decreaseBid")
@@ -90,7 +90,7 @@ export default {
       auction: null,
       bidETH: 0,
       listening: false,
-      minBidETH: 0.1
+      bidStepETH: 0.1
     }
   },
   computed: {
@@ -101,6 +101,15 @@ export default {
     },
     auctionEndTimeMs () {
       return this.auction && ((Number(this.auction.firstBidTime) + Number(this.auction.duration)) * 1000)
+    },
+    minBidETH () {
+      let minBid
+      if (this.auction) {
+        const reserve = Number(this.weiToETH(this.auction.reservePrice))
+        const currentBid = Number(this.weiToETH(this.auction.amount))
+        minBid = currentBid ? Number(currentBid + this.bidStepETH).toFixed(1) : reserve
+      }
+      return minBid
     }
   },
   methods: {
@@ -112,8 +121,7 @@ export default {
     async getAuction (flush = false) {
       this.auction = await this.$store.dispatch('auctions/get', { token: this.tokenId, flush })
       if (this.auction) {
-        const baseBid = Number(this.auction.amount) ? this.auction.amount : this.auction.reservePrice
-        this.bidETH = (Number(this.weiToETH(baseBid)) + 0.11).toFixed(1).toString()
+        this.bidETH = this.minBidETH
         this.listenToContract()
       }
     },
@@ -150,11 +158,16 @@ export default {
     },
 
     increaseBid () {
-      this.bidETH = Number(Number(this.bidETH) + this.minBidETH).toFixed(1)
+      this.bidETH = Number(Number(this.bidETH) + this.bidStepETH).toFixed(1)
     },
     decreaseBid () {
-      const val = Number(this.bidETH - this.minBidETH).toFixed(1)
-      this.bidETH = val < this.minBidETH ? this.minBidETH : val
+      const val = Number(this.bidETH - this.bidStepETH).toFixed(1)
+      if (val < this.minBidETH) {
+        alert(`Minimum bid is ${this.minBidETH}ETH`)
+        this.bidETH = this.minBidETH
+        return
+      }
+      this.bidETH = val
     }
   },
   created () {
