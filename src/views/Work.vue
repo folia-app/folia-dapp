@@ -158,7 +158,7 @@
 
       //- side column (auctions)
       transition(name="work-sidebar")
-        router-view.flex-1x2(name="sidebar", :doc="doc")
+        router-view.flex-1x2.max-w-1x2(name="sidebar", :doc="doc")
       //- .flex-1.h-screen.overflow-y-scroll.scrollbars-hidden(v-if="$route.name === 'work-auction'")
         .h-screen.bg-white
         .h-screen.bg-gray-400

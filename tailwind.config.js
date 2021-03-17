@@ -68,6 +68,7 @@ module.exports = {
       'black-a03': 'rgba(0,0,0,0.03)',
       'black-a15': 'rgba(0,0,0,0.15)',
       'black-a30': 'rgba(0,0,0,0.30)',
+      'black-a45': 'rgba(0,0,0,0.45)',
       paper: 'rgb(248,248,248)',
 
       yellow: 'yellow',
@@ -292,6 +293,7 @@ module.exports = {
       '5xl': '64rem',
       '6xl': '72rem',
       full: '100%',
+      '1x2': '50%',
       ...breakpoints(theme('screens'))
     }),
     minHeight: (theme) => ({

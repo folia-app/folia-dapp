@@ -62,12 +62,17 @@
                 div.text-sm Errors/Help ?
 
         //- bid
-        .order-last.sticky.bottom-0.left-0.w-full.p-10
-          div.flex
-            input.w-full.text-black(v-model="bidETH", type="number", :min="weiToETH(auction.reservePrice)", required, step="0.1")
-            div ETH
-          button.block.w-full.focus_outline-none(@click="bid")
-            btn(size="large") BID
+        .order-last.sticky.bottom-0.left-0.w-full.p-10.text-xl.select-none
+          .bg-black-a30.rounded-4xl.p-6.backdrop-blur
+            .flex.w-full.group
+              btn.flex-1(size="large", theme="darken", @click="$refs.input.focus()")
+                input.w-full.text-center.focus_outline-none(ref="input", v-model="bidETH", type="number", :min="weiToETH(auction.reservePrice)", required, step="0.1", size="1", min="minBidETH")
+              btn.order-last.px-12.pointer-events-none(size="large", theme="darken") ETH
+              btn.w-24.hidden.flex.group-hover_flex.justify-center.items-center.hover_bg-gray-a30(size="large", theme="darken", @click="increaseBid") +
+              btn.w-24.hidden.flex.group-hover_flex.justify-center.items-center.hover_bg-gray-a30(size="large", theme="darken", @click="decreaseBid")
+                .h-px.bg-current(style="width:0.55em")
+            button.block.w-full.focus_outline-none.text-xl.font-bold(@click="bid")
+              btn.tracking-wide(size="large", theme="darkener") BID
 </template>
 
 <script>
@@ -84,7 +89,8 @@ export default {
       metadata: null,
       auction: null,
       bidETH: 0,
-      listening: false
+      listening: false,
+      minBidETH: 0.1
     }
   },
   computed: {
@@ -141,6 +147,14 @@ export default {
       if (event.returnValues?.tokenId === this.tokenId) {
         this.getAuction(true)
       }
+    },
+
+    increaseBid () {
+      this.bidETH = Number(Number(this.bidETH) + this.minBidETH).toFixed(1)
+    },
+    decreaseBid () {
+      const val = Number(this.bidETH - this.minBidETH).toFixed(1)
+      this.bidETH = val < this.minBidETH ? this.minBidETH : val
     }
   },
   created () {

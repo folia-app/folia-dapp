@@ -1,5 +1,5 @@
 <template lang="pug">
-  .rounded-full.text-center.leading-none(:class="clss")
+  .rounded-full.text-center.leading-none(:class="clss", @click="$emit('click')")
     slot
 </template>
 
@@ -15,7 +15,10 @@ export default {
   computed: {
     clss () {
       return {
-        'bg-black-a15 hover_bg-black-a30 focus_bg-black-a30 group-hover_bg-black-a30 transition-background duration-100': this.theme === 'darken',
+        'bg-black-a15 hover_bg-black-a30 focus_bg-black-a30 transition-background duration-100': this.theme === 'darken',
+
+        'bg-black-a30 hover_bg-black-a45 focus_bg-black-a45 transition-background duration-100': this.theme === 'darkener',
+
         // theme: ltgray
         'bg-gray-100 hover_bg-gray-200 focus_bg-gray-200': this.theme === 'ltgray' && !this.active,
         'bg-black text-white': this.theme === 'ltgray' && this.active,
