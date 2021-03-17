@@ -59,7 +59,7 @@ export default new Vuex.Store({
       return prefix ? ('00' + id).slice(-3) // 001
         : id // 1 - for contract communication
     },
-    addrShort: () => (addr) => addr.slice(0, 5) + '...' + addr.slice(-3),
+    addrShort: () => (addr) => addr.slice(0, 6) + '...' + addr.slice(-4),
     contractAddr: (state) => state.foliaContract?._address,
     isSoldOut: () => (work) => {
       return work && Number(work.editions) && Number(work.printed) >= Number(work.editions)

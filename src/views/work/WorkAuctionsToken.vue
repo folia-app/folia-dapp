@@ -53,13 +53,18 @@
                   countdown.font-bold.w-full.text-right.leading-none(:until="auctionEndTimeMs", :separator="' '")
               .w-full.rounded-4xl.bg-black-a15.p-8.flex.flex-col.justify-between.min-h-52
                 div.text-sm Bidder
-                div.text-2xl.w-full.text-right.leading-none.font-bold
-                  | {{ auction.bidder === account ? 'You' : addrShort(auction.bidder) }}
+                //- TODO - opensea link
+                div.text-2xl.w-full.leading-none.font-boldff.flex.justify-end
+                  a(:href="openSeaLink({ account: auction.bidder })", target="_blank", rel="noopener noreferrer")
+                    btn.px-8.-mr-2.-mb-1(size="small")
+                      | {{ auction.bidder === address ? 'You' : addrShort(auction.bidder) }}
+              //- .w-1x2.rounded-4xl.bg-black-a03.p-8.flex.flex-col.justify-between.min-h-52
+                div.text-sm Errors/Help ?
 
         //- bid
         .order-last.sticky.bottom-0.left-0.w-full.p-10
           div.flex
-            input.w-full.text-black(v-model="bidETH", type="number", :min="weiToETH(auction.reservePrice)", required)
+            input.w-full.text-black(v-model="bidETH", type="number", :min="weiToETH(auction.reservePrice)", required, step="0.1")
             div ETH
           button.block.w-full.focus_outline-none(@click="bid")
             btn(size="large") BID
@@ -78,12 +83,13 @@ export default {
     return {
       metadata: null,
       auction: null,
-      bidETH: 0 //
+      bidETH: 0,
+      listening: false
     }
   },
   computed: {
-    ...mapState(['account', 'reserveAuctionContract']),
-    ...mapGetters(['weiToETH', 'ethToWei', 'addrShort']),
+    ...mapState(['address', 'reserveAuctionContract']),
+    ...mapGetters(['weiToETH', 'ethToWei', 'addrShort', 'openSeaLink']),
     tokenId () {
       return this.$route.params.token
     },
@@ -96,16 +102,45 @@ export default {
     async getMetadata () {
       this.metadata = await this.$store.dispatch('getMetadata', { token: this.tokenId })
     },
+
     async getAuction (flush = false) {
-      this.auction = null
       this.auction = await this.$store.dispatch('auctions/get', { token: this.tokenId, flush })
       if (this.auction) {
-        this.bidETH = this.weiToETH(this.auction.reservePrice)
+        const baseBid = Number(this.auction.amount) ? this.auction.amount : this.auction.reservePrice
+        this.bidETH = (Number(this.weiToETH(baseBid)) + 0.11).toFixed(1).toString()
+        this.listenToContract()
       }
     },
+
     async bid () {
       await this.$store.dispatch('auctions/bid', { token: this.tokenId, wei: this.ethToWei(this.bidETH) })
-      this.getAuction(true)
+    },
+
+    listenToContract () {
+      if (this.reserveAuctionContract && !this.listening) {
+        // new bid !
+        this.reserveAuctionContract.events
+          .AuctionBid()
+          .on('data', this.onAuctionEvent)
+          .on('error', (error) => console.error(error))
+
+        // auction ended !
+        this.reserveAuctionContract.events
+          .AuctionEnded()
+          .on('data', this.onAuctionEvent)
+          .on('error', (error) => console.error(error))
+
+        this.listening = true
+        console.log('listening!')
+      }
+    },
+
+    onAuctionEvent (event) {
+      console.log('@auctionEvent', event)
+      // refresh if current auction
+      if (event.returnValues?.tokenId === this.tokenId) {
+        this.getAuction(true)
+      }
     }
   },
   created () {
