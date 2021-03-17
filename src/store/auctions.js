@@ -57,6 +57,11 @@ export default {
         // !! less than current bid
         if (wei <= Number(auction.amount)) throw new Error('!! Your bid must exceed the current bid. Please increase your bid.')
 
+        // not connected ?
+        if (!rootState.address) {
+          await dispatch('connect', null, { root: true })
+        }
+
         // bid !
         await getters.contract.methods
           .createBid(token)
