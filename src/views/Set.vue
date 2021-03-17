@@ -37,12 +37,15 @@
                       img.absolute.o
               //- blocks
               li.flex.flex-wrap.mx-10.border.rounded-3xl.border-gray-400.-mb-px(v-for="(item, i) in items", :class="{'flex-row-reverse': i % 2 === 1}")
-                prismic-link.w-full.p-8.flex.justify-between(:field="item.link", :linkResolver="linkResolver")
-                  h6.text-base {{ item.link.data.title }}
-                  div
-                    span.flex.items-center.text-base
+                prismic-link.w-full.p-8.flex.justify-between.items-start(:field="item.link", :linkResolver="linkResolver")
+                  .flex.items-center
+                    //- span.flex.items-center.text-base.mr-8
                       svg-fleuron.block.mr-2(style="width:0.96em;height:0.96em")
                       span.leading-none.whitespace-no-wrap.text-md.pt-1 {{ $store.getters.workId(item.link.uid, true) }}
+                    h6.text-base {{ item.link.data.title }}
+                  btn.text-sm.-mt-2.-mr-2.px-8.pointer-events-none.bg-gray-800.text-white(size="small", theme="none", v-if="hasRelease(item)")
+                    countdown(:until="item.link.data.release_link.data.release_time")
+
                 prismic-link.w-full.block.px-8.pb-8(:field="item.link", :linkResolver="linkResolver")
                   //- (video)
                   template(v-if="item.thumbnail.link_type === 'Media' && item.thumbnail.kind === 'document'")
@@ -59,11 +62,12 @@
 <script>
 import svgFleuron from '@/components/SVG-Fleuron'
 import Btn from '@/components/Btn'
+import Countdown from '@/components/Countdown'
 import linkResolver from '@/plugins/prismic/link-resolver'
 import RichText from '@/components/RichText'
 export default {
   name: 'Set',
-  components: { svgFleuron, Btn, RichText },
+  components: { svgFleuron, Btn, RichText, Countdown },
   data () {
     return {
       view: 'set',
@@ -76,6 +80,11 @@ export default {
     },
     items () {
       return this.doc?.data.items || []
+    }
+  },
+  methods: {
+    hasRelease (item) {
+      return item?.link?.data?.release_link?.data?.release_time
     }
   },
   metaInfo () {
