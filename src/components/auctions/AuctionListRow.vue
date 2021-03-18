@@ -3,7 +3,7 @@
     h6
       slot
     .flex.text-sm
-      btn.px-8.pointer-events-none(size="small", theme="darken", v-if="auctionIsActive") {{ weiToETH(auction.amount) }} ETH
+      btn.px-8.pointer-events-none(size="small", theme="drkgray", v-if="auctionIsActive") {{ weiToETH(auction.amount) }} ETH
       //- auction ended
       template(v-if="auctionEnded")
         sold-out-dot
@@ -12,7 +12,7 @@
       //- auction active
       template(v-else-if="auctionIsActive")
         btn.px-8.bg-red.pointer-events-none(size="small", theme="none")
-          countdown(:until="auctionEndTimeMs")
+          countdown.ml-2(:until="auctionEndTimeMs", separator=" ")
       //- auction to be released
       template(v-else-if="releaseTime")
         btn.px-8.pointer-events-none(size="small", theme="darken")
@@ -73,7 +73,6 @@ export default {
       }
     },
     onAuctionEvent (event) {
-      console.log('@auctionEvent', event)
       // refresh if current auction
       if (event.returnValues?.tokenId === this.tokenId) {
         this.getAuction(true)

@@ -2,7 +2,7 @@
   article.work-auctions.token.transition-background.duration-500(:class="{'bg-red': auctionEnded !== true, 'bg-gray-800': auctionEnded === true}")
     .h-screen.overflow-y-scroll.scrollbars-hidden.flex.flex-col(v-if="doc", :key="$route.params.token")
       header.p-10.mx-1.flex.justify-between.items-start(role="banner")
-        h2 AUCTION
+        h2 {{ auctionEnded ? 'SOLD' : 'AUCTION' }}
         //- btn.-m-2(size="small")
           countdown
         div FLA-{{$route.params.token}}

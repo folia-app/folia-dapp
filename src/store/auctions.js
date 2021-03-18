@@ -2,7 +2,8 @@ export default {
   namespaced: true,
   state: {
     auctions: [],
-    minBidWei: 1 * 10 ** 17 // 0.1 ETH - refer to contract
+    minBidWei: 1 * 10 ** 17, // 0.1 ETH - refer to contract
+    lowTimeMin: 2
   },
 
   getters: {
@@ -67,22 +68,26 @@ export default {
         // !! auction doesn't exist
         if (!auction.exists) throw new Error(`!! Auction for FLA-${token} doesn't exist.`)
 
-        // TODO auction expired ?
-        // if (Number(auction.amount) && )
-
-        // TODO min bid step (0.1)
-
-        // TODO low time!! tx may fail
+        // !! auction expired
+        if (getters.auctionEnded({ auction })) throw new Error('!! Auction has ended!')
 
         // !! less than reserve price
         if (wei < Number(auction.reservePrice)) throw new Error('!! Your bid is below the minimum. Please increase your bid.')
 
-        // !! less than current bid
-        if (wei <= Number(auction.amount)) throw new Error('!! Your bid must exceed the current bid. Please increase your bid.')
+        // !! min bid step (0.1)
+        if (wei < Number(auction.amount) + state.minBidWei) throw new Error('!! Your bid is below the minimum. Please increase your bid.')
 
-        // not connected ?
+        // connected wallet ?
         if (!rootState.address) {
           await dispatch('connect', null, { root: true })
+        }
+
+        // !! low time confirmation
+        const endingSoon = getters.auctionEndTimeMs({ auction }) - new Date().getTime() <= state.lowTimeMin * 60 * 1000
+        if (endingSoon) {
+          if (!window.confirm('This auction is ending very soon! There is a high chance your bid will result in an error. Continue?')) {
+            throw new Error('User cancelled bid because low time')
+          }
         }
 
         // bid !
