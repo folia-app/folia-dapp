@@ -1,5 +1,5 @@
 <template lang="pug">
-  span.whitespace-no-wrap
+  span.whitespace-no-wrap(:class="[font]")
     template(v-if="msUntil") {{ timeFormatted }}
     template(v-else) - - - -
 </template>
@@ -9,7 +9,8 @@ export default {
   name: 'CountDown',
   props: {
     until: [String, Number],
-    separator: String
+    separator: String,
+    font: { type: String, default: 'font-mono' }
   },
   data () {
     return {

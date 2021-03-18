@@ -22,7 +22,8 @@
                 template(v-if="!isReleased")
                   button.focus_outline-none(@click="view = 'tokens'")
                     btn.px-8.text-sm.-mt-2.-mr-4(theme="drkgray", size="small")
-                      countdown.text-white(:until="doc.data.release_time")
+                      //- countdown.text-white(:until="doc.data.release_time")
+                      countdown.text-white(:until="doc.data.release_link.data.release_time")
                 template(v-else-if="doc.data.auction.length")
                   button.block.group.relative.focus_outline-none.-m-2(@click="view = 'tokens'")
                     btn.px-16(theme="drkgray") BID
@@ -162,6 +163,7 @@
       //- .flex-1.h-screen.overflow-y-scroll.scrollbars-hidden(v-if="$route.name === 'work-auction'")
         .h-screen.bg-white
         .h-screen.bg-gray-400
+
 </template>
 
 <script>
@@ -241,8 +243,9 @@ export default {
         this.$router.replace({ name: 'work-info' })
       }
       // is released ?
-      this.isReleased = !this.doc?.data.release_time ? true // no release set
-        : new Date().getTime() >= new Date(this.doc.data.release_time).getTime() // now >= release
+      const time = this.doc?.data.release_link?.data?.release_time
+      this.isReleased = !time ? true // no release set
+        : new Date().getTime() >= new Date(time).getTime() // now >= release
     },
     fetchWork (flush) {
       this.$store.dispatch('getWork', { id: this.id, flush })

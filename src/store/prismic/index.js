@@ -19,13 +19,13 @@ export default {
   },
   actions: {
     async getDocs ({ commit }) {
-      const resp = await prismic('', { pageSize: 100, fetchLinks: ['set.title', 'work.title'] })
+      const resp = await prismic('', { pageSize: 100, fetchLinks: ['set.title', 'work.title', 'release.release_time', 'work.release_link'] })
       commit('setDocs', resp.results)
     },
 
     async getWork ({ state }, uid) {
       const saved = state.docs.find(doc => doc.uid === uid)
-      return saved || (await prismic(vue.$prismic.Predicates.at('my.work.uid', uid), { fetchLinks: ['set.title'] }))?.results[0]
+      return saved || (await prismic(vue.$prismic.Predicates.at('my.work.uid', uid), { fetchLinks: ['set.title', 'release.release_time'] }))?.results[0]
     }
   }
 }

@@ -10,10 +10,10 @@
       //- .absolute.overlay(:style="{backdropFilter: `blur(12px)`}")
 
     //- countdown-play-btn-overlay.z-10.text-lg(:doc="doc", @released="isReleased = true", :playBtn="false")
-    .absolute.overlay.flex.items-center.justify-center(v-if="slice.primary.release_time && !isReleased")
+    .absolute.overlay.flex.items-center.justify-center(v-if="releaseTime && !isReleased")
       prismic-link(:field="slice.primary.link", :linkResolver="linkResolver")
         btn.px-8(style="backdrop-filter: blur(20px)")
-          countdown(:until="slice.primary.release_time", @ended="isReleased = true")
+          countdown(:until="releaseTime", @ended="isReleased = true")
 
     //- bottom info
     .absolute.bottom-0.z-10.w-full.pb-12.px-8.lg_px-12.xl_pb-16.flex.flex-wrap.items-end.justiy-center.md_justify-between
@@ -76,6 +76,9 @@ export default {
     },
     canPlay () {
       return this.$route.name === 'index'
+    },
+    releaseTime () {
+      return this.slice.primary?.release_link?.data?.release_time
     }
   },
   methods: {

@@ -1,5 +1,5 @@
 <template lang="pug">
-  article.work-auctions.token.bg-red
+  article.work-auctions.token.transition-background.duration-500(:class="{'bg-red': auctionEnded !== true, 'bg-gray-800': auctionEnded === true}")
     .h-screen.overflow-y-scroll.scrollbars-hidden.flex.flex-col(v-if="doc", :key="$route.params.token")
       header.p-10.mx-1.flex.justify-between.items-start(role="banner")
         h2 AUCTION
@@ -44,14 +44,14 @@
             .flex.flex-wrap.px-10
               .w-1x2.rounded-4xl.bg-black-a30.p-8.flex.flex-col.justify-between.min-h-52
                 .text-sm
-                  div Current Bid
+                  div {{ auctionEnded ? 'Sold for' : 'Current Bid' }}
                   //- div.truncate {{ auction.bidder }}
                 div.text-2xl.text-right.font-bold.leading-none {{ weiToETH(auction.amount) }} ETH
-              .w-1x2.rounded-4xl.bg-black-a30.p-8.flex.flex-col.justify-between.min-h-52
-                div.text-sm Auction Ends
+              .w-1x2.rounded-4xl.bg-black-a30.p-8.flex.flex-col.justify-between.min-h-52(v-if="!auctionEnded")
+                div.text-sm {{ auctionEnded ? 'Auction Ended' : 'Auction Ends' }}
                 div.w-full.flex.items-end.text-2xl
-                  countdown.font-bold.w-full.text-right.leading-none(:until="auctionEndTimeMs", :separator="' '")
-              .w-full.rounded-4xl.bg-black-a15.p-8.flex.flex-col.justify-between.min-h-52
+                  countdown.font-bold.w-full.text-right.leading-none(:until="auctionEndTimeMs", :separator="' '", @ended="auctionEnded = true")
+              .flex-1.rounded-4xl.bg-black-a15.p-8.flex.flex-col.justify-between.min-h-52
                 div.text-sm Bidder
                 //- TODO - opensea link
                 div.text-2xl.w-full.leading-none.font-boldff.flex.justify-end
@@ -62,7 +62,7 @@
                 div.text-sm Errors/Help ?
 
         //- bid
-        .order-last.sticky.bottom-0.left-0.w-full.p-10.text-xl.select-none
+        .order-last.sticky.bottom-0.left-0.w-full.p-10.text-xl.select-none(v-if="auctionEnded !== true")
           .bg-black-a30.rounded-4xl.p-6.backdrop-blur
             .flex.w-full.group
               btn.flex-1(size="large", theme="darken", @click="$refs.input.focus()")
@@ -90,7 +90,8 @@ export default {
       auction: null,
       bidETH: 0,
       listening: false,
-      bidStepETH: 0.1
+      bidStepETH: 0.1,
+      auctionEnded: undefined
     }
   },
   computed: {
@@ -122,6 +123,7 @@ export default {
       this.auction = await this.$store.dispatch('auctions/get', { token: this.tokenId, flush })
       if (this.auction) {
         this.bidETH = this.minBidETH
+        this.auctionEnded = this.auctionEndTimeMs < new Date().getTime() * 1000
         this.listenToContract()
       }
     },
