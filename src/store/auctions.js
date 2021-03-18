@@ -8,6 +8,21 @@ export default {
   getters: {
     contract (state, getters, rootState) {
       return rootState.reserveAuctionContract
+    },
+    auctionEnded: (state, getters) => ({ tokenId, auction }) => {
+      auction = auction || state.auctions.find(auc => auc._tokenId === tokenId)
+      const time = getters.auctionEndTimeMs({ auction })
+      // console.log(time, new Date().getTime())
+      return time && time < new Date().getTime()
+    },
+    auctionEndTimeMs: (state) => ({ tokenId, auction }) => {
+      auction = auction || state.auctions.find(auc => auc._tokenId === tokenId)
+      let time
+      if (auction) {
+        time = Number(auction.firstBidTime) + Number(auction.duration) // seconds
+        time = time * 1000 // milliseconds (for counters)
+      }
+      return time
     }
   },
 

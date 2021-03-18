@@ -12,7 +12,7 @@
         p.p-10 Loading...
       //- (not found)
       template(v-else-if="auction && !auction.exists")
-        p.p-10 Not found!
+        p.p-10 Pending
 
       //- (auction)
       template(v-else-if="auction && metadata")
@@ -101,7 +101,8 @@ export default {
       return this.$route.params.token
     },
     auctionEndTimeMs () {
-      return this.auction && ((Number(this.auction.firstBidTime) + Number(this.auction.duration)) * 1000)
+      // return this.auction && ((Number(this.auction.firstBidTime) + Number(this.auction.duration)) * 1000)
+      return this.$store.getters['auctions/auctionEndTimeMs']({ auction: this.auction })
     },
     minBidETH () {
       let minBid
@@ -110,7 +111,7 @@ export default {
         const currentBid = Number(this.weiToETH(this.auction.amount))
         minBid = currentBid ? Number(currentBid + this.bidStepETH).toFixed(1) : reserve
       }
-      return minBid
+      return minBid.toString()
     }
   },
   methods: {
@@ -123,7 +124,7 @@ export default {
       this.auction = await this.$store.dispatch('auctions/get', { token: this.tokenId, flush })
       if (this.auction) {
         this.bidETH = this.minBidETH
-        this.auctionEnded = this.auctionEndTimeMs < new Date().getTime() * 1000
+        this.auctionEnded = this.$store.getters['auctions/auctionEnded']({ auction: this.auction })
         this.listenToContract()
       }
     },
@@ -133,7 +134,7 @@ export default {
     },
 
     listenToContract () {
-      if (this.reserveAuctionContract && !this.listening) {
+      if (this.reserveAuctionContract && !this.listening && !this.auctionEnded) {
         // new bid !
         this.reserveAuctionContract.events
           .AuctionBid()
