@@ -29,14 +29,22 @@
               div.text-xs.mt-2 {{ metadata.description }}
               //- div Reserve Price: {{ weiToETH(auction.reservePrice) }} ETH
 
+          //- (help text)
+          .flex.px-10.cursor-pointer(v-show="helpText", @click="helpText = false")
+            p.w-full.rounded-4xl.bg-black-a30.p-8.min-h-56.text-sm Folia uses a reserve price auction contract. The first bid at the reserve price triggers a 24-hour countdown. Any bids made in the last 15 minutes of the auction will extend the clock by 15 minutes. When time runs out, the highest bidder wins. Bids are held in escrow and will be refunded if a higher bid is made. Minimum bid increase is set at .1ETH.
+
           //- (pre-auction)
           template(v-if="auction.amount === '0'")
-            .flex.px-10.-mt-10
+            .flex.px-10
               .w-1x2.rounded-4xl.bg-black-a30.p-8.flex.flex-col.justify-between.min-h-56
-                div.text-sm Minimum Bid
+                .flex.w-full.justify-between.items-center
+                  div.text-sm Reserve Price
+                  button.text-xs.opacity-75.focus_outline-none.hover_opacity-100.px-4.-mx-4(@click="helpText = !helpText") ?
                 div.text-xl.text-right.font-bold {{ weiToETH(auction.reservePrice) }} ETH
               .w-1x2.rounded-4xl.bg-black-a30.p-8.flex.flex-col.justify-between.min-h-56
-                div.text-sm Auction Duration
+                .flex.w-full.justify-between.items-center
+                  div.text-sm Auction Duration
+                  button.text-xs.opacity-75.focus_outline-none.hover_opacity-100.px-4.-mx-4(@click="helpText = !helpText") ?
                 .text-xl.text-right.font-bold {{ ddhhmmss(auction.duration * 1000, ' ', true) }}
 
           //- (auction active)
@@ -47,8 +55,11 @@
                   div {{ auctionEnded ? 'Sold for' : 'Current Bid' }}
                   //- div.truncate {{ auction.bidder }}
                 div.text-2xl.text-right.font-bold.leading-none {{ weiToETH(auction.amount) }} ETH
+              //- remaining time
               .w-1x2.rounded-4xl.bg-black-a30.p-8.flex.flex-col.justify-between.min-h-52(v-if="!auctionEnded")
-                div.text-sm {{ auctionEnded ? 'Auction Ended' : 'Auction Ends' }}
+                .flex.w-full.justify-between.items-center
+                  div.text-sm {{ auctionEnded ? 'Auction Ended' : 'Auction Ends' }}
+                  button.text-xs.opacity-75.focus_outline-none.hover_opacity-100.px-4.-mx-4(@click="helpText = !helpText") ?
                 div.w-full.flex.items-end.text-2xl
                   countdown.font-bold.w-full.text-right.leading-none(:until="auctionEndTimeMs", :separator="' '", @ended="auctionEnded = true")
               .flex-1.rounded-4xl.bg-black-a15.p-8.flex.flex-col.justify-between.min-h-52
@@ -91,7 +102,8 @@ export default {
       bidETH: 0,
       listening: false,
       bidStepETH: 0.1,
-      auctionEnded: undefined
+      auctionEnded: undefined,
+      helpText: false
     }
   },
   computed: {

@@ -12,9 +12,13 @@ export default {
     },
     auctionEnded: (state, getters) => ({ tokenId, auction }) => {
       auction = auction || state.auctions.find(auc => auc._tokenId === tokenId)
-      const time = getters.auctionEndTimeMs({ auction })
-      // console.log(time, new Date().getTime())
-      return time && time < new Date().getTime()
+      // !! no auction or hasn't started
+      if (!auction || !Number(auction.firstBidTime)) {
+        return false
+      }
+      // compare to now
+      const timeMs = getters.auctionEndTimeMs({ auction })
+      return timeMs && timeMs < new Date().getTime()
     },
     auctionEndTimeMs: (state) => ({ tokenId, auction }) => {
       auction = auction || state.auctions.find(auc => auc._tokenId === tokenId)
@@ -68,6 +72,9 @@ export default {
         // !! auction doesn't exist
         if (!auction.exists) throw new Error(`!! Auction for FLA-${token} doesn't exist.`)
 
+        // !! paused
+        if (auction.paused) throw new Error(`!! Auction for FLA-${token} is locked. Please wait for release or try again shortly.`)
+
         // !! auction expired
         if (getters.auctionEnded({ auction })) throw new Error('!! Auction has ended!')
 
@@ -83,8 +90,9 @@ export default {
         }
 
         // !! low time confirmation
+        const hasStarted = Number(auction.firstBidTime)
         const endingSoon = getters.auctionEndTimeMs({ auction }) - new Date().getTime() <= state.lowTimeMin * 60 * 1000
-        if (endingSoon) {
+        if (hasStarted && endingSoon) {
           if (!window.confirm('This auction is ending very soon! There is a high chance your bid will result in an error. Continue?')) {
             throw new Error('User cancelled bid because low time')
           }
