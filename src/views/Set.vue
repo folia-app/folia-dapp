@@ -36,9 +36,9 @@
                     figure.w-48.h-48.bg-black.ml-auto.relative
                       img.absolute.o
               //- blocks
-              li.flex.flex-wrap.mx-10.border.rounded-3xl.border-gray-400.-mb-px(v-for="(item, i) in items", :class="{'flex-row-reverse': i % 2 === 1}")
+              li.flex.flex-wrap.mx-8.lg_mx-10.border.rounded-3xl.border-gray-400.-mb-px(v-for="(item, i) in items", :class="{'flex-row-reverse': i % 2 === 1}")
                 prismic-link.w-full.px-8.pt-8.flex.flex-wrap.justify-between.items-start(:field="item.link", :linkResolver="linkResolver")
-                  .flex.items-center.mb-6
+                  .flex.items-center.pb-6
                     //- span.flex.items-center.text-base.mr-8
                       svg-fleuron.block.mr-2(style="width:0.96em;height:0.96em")
                       span.leading-none.whitespace-no-wrap.text-md.pt-1 {{ $store.getters.workId(item.link.uid, true) }}
@@ -46,7 +46,7 @@
                   btn.text-sm.-mt-2.-mr-2.px-8.pointer-events-none.bg-gray-800.text-white.ml-auto(size="small", theme="none", v-if="hasRelease(item)")
                     countdown(:until="item.link.data.release_link.data.release_time")
 
-                prismic-link.w-full.block.px-8.pb-8.mt-8(:field="item.link", :linkResolver="linkResolver")
+                prismic-link.w-full.block.px-8.pb-8.pt-8(:field="item.link", :linkResolver="linkResolver")
                   //- (video)
                   template(v-if="item.thumbnail.link_type === 'Media' && item.thumbnail.kind === 'document'")
                     video.w-auto.max-w-full.mx-auto.block.lazyload(:src="item.thumbnail.url", autoplay, muted, loop, playsinline, data-expand="0")
