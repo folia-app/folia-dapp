@@ -9,10 +9,10 @@
 
       //- (loading)
       template(v-if="!auction")
-        p.p-10 Loading...
+        p.p-10 LOADING...
       //- (not found)
       template(v-else-if="auction && !auction.exists")
-        p.p-10 Pending
+        p.p-10 TO BE ANNOUNCED
 
       //- (auction)
       template(v-else-if="auction && metadata")
