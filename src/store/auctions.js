@@ -70,6 +70,10 @@ export default {
     async bid ({ state, getters, dispatch, rootState, rootGetters }, { token, wei }) {
       try {
         const auction = await dispatch('get', { token, flush: true })
+        const globalPaused = await dispatch('getGlobalPaused')
+
+        // !! all auctions paused
+        if (globalPaused) throw new Error('!! Auctions are currently locked. Please wait for release or try again shortly.')
 
         // !! auction doesn't exist
         if (!auction.exists) throw new Error(`!! Auction for FLA-${token} doesn't exist.`)
@@ -118,6 +122,19 @@ export default {
           alert(e.message.replace('!! ', ''))
         }
       }
+    },
+
+    async getGlobalPaused ({ getters }) {
+      let paused
+      try {
+        if (getters.contract) {
+          paused = await getters.contract.methods.globalPaused().call()
+        }
+      } catch (e) {
+        console.error(e)
+      }
+      console.log(paused)
+      return paused
     }
   }
 }
