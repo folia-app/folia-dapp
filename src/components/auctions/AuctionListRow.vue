@@ -17,11 +17,11 @@
           countdown.ml-2(:until="auctionEndTimeMs", separator=" ", @ended="auctionEnded = true")
       //- auction to be released
       template(v-else-if="releaseTime")
-        btn.px-8.pointer-events-none.-mr-4(size="small", theme="drkgray")
-          //- > icon
-          .h-4.w-4.border-t.border-r.transform.rotate-45.border-white(v-if="releaseTimerEnded")
-          //- timer
-          countdown(v-else, :until="releaseTime", @ended="onReleaseTimerEnded", separator=" ")
+        //- chevron
+        .h-4.w-4.border-t.border-r.transform.rotate-45.border-white(v-if="releaseTimerEnded")
+        //- (timer)
+        btn.px-8.pointer-events-none.-mr-4(v-else, size="small", theme="drkgray")
+          countdown(:until="releaseTime", @ended="onReleaseTimerEnded", separator=" ")
 </template>
 
 <script>
