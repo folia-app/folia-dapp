@@ -20,12 +20,12 @@
               //- ...(countdown / bid)
               template(v-if="isUnitSale")
                 template(v-if="!isReleased")
-                  button.focus_outline-none(@click="view = 'tokens'")
+                  button.focus_outline-none(@click="$router.replace({name: 'work-auctions'})")
                     btn.px-8.text-sm.-mt-2.-mr-4(theme="drkgray", size="small")
                       //- countdown.text-white(:until="doc.data.release_time")
-                      countdown.text-white(:until="doc.data.release_link.data.release_time")
+                      countdown.text-white(:until="doc.data.release_link.data.release_time", @ended="isReleased = true")
                 template(v-else-if="doc.data.auction.length")
-                  button.block.group.relative.focus_outline-none.-m-2(@click="view = 'tokens'")
+                  button.block.group.relative.focus_outline-none.-m-2(@click="$router.replace({name: 'work-auctions'})")
                     btn.px-16(theme="drkgray") BID
 
               //- ... (sold-out / buy)
@@ -238,10 +238,7 @@ export default {
     },
     async fetchDoc () {
       this.doc = await this.$store.dispatch('prismic/getWork', this.id)
-      // load "info if non-generative"
-      if (!this.isVariableEdition && this.$route.name === 'work') {
-        this.$router.replace({ name: 'work-info' })
-      }
+      this.goToDefaultTab()
       // is released ?
       const time = this.doc?.data.release_link?.data?.release_time
       this.isReleased = !time ? true // no release set
@@ -249,6 +246,18 @@ export default {
     },
     fetchWork (flush) {
       this.$store.dispatch('getWork', { id: this.id, flush })
+    },
+    goToDefaultTab () {
+      if (this.$route.name === 'work') {
+        // auction ?
+        // if (this.isAuction) {
+        //   return this.$router.replace({ name: 'work-auctions' })
+        // }
+        // load "info if non-generative"
+        if (!this.isVariableEdition) {
+          this.$router.replace({ name: 'work-info' })
+        }
+      }
     }
   },
   watch: {
