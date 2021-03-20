@@ -80,15 +80,20 @@
         .order-last.sticky.bottom-0.left-0.w-full.p-10.text-xl.select-none(v-if="auctionEnded !== true")
           .bg-red.backdrop-blurff.rounded-4xl
             .bg-black-a30.rounded-4xl.p-6
-              .flex.w-full.group
-                button.block.focus_outline-none.text-xl.font-bold(@click="bid")
-                  btn.tracking-wide.px-24(size="large", theme="darkener") BID
-                btn.flex-1(size="large", theme="darken", @click="$refs.input.focus()")
+              .flex.flex-wrap.sm_flex-no-wrap.w-full.group
+                //- input
+                btn.flex-1.px-10(size="large", theme="darken", @click="$refs.input.focus()")
                   input.w-full.text-center.focus_outline-none(ref="input", v-model="bidETH", type="number", :min="weiToETH(auction.reservePrice)", required, step="0.1", size="1", min="bidStepETH")
-                btn.w-24.hidden.flex.group-hover_flex.justify-center.items-center.hover_bg-gray-a30(size="large", theme="darken", @click="increaseBid") +
-                btn.w-24.hidden.flex.group-hover_flex.justify-center.items-center.hover_bg-gray-a30(size="large", theme="darken", @click="decreaseBid")
-                  .h-px.bg-current(style="width:0.55em")
-                btn.px-10.pointer-events-none(size="large", theme="darken") ETH
+                //- ETH
+                btn.w-40.lg_w-48.group-hover_hidden.px-10.pointer-events-none(size="large", theme="darken") ETH
+                //- (+/-)
+                .hidden.group-hover_flex
+                  btn.w-20.lg_w-24.flex.justify-center.items-center.hover_bg-gray-a30(size="large", theme="darken", @click="increaseBid") +
+                  btn.w-20.lg_w-24.flex.justify-center.items-center.hover_bg-gray-a30(size="large", theme="darken", @click="decreaseBid")
+                    .h-px.bg-current(style="width:0.55em")
+                //- bid btn
+                button.w-full.sm_w-auto.sm_flex-1.block.focus_outline-none.text-xl.font-bold(@click="bid")
+                  btn.tracking-wide.px-16(size="large", theme="darkener") BID
 
 </template>
 
