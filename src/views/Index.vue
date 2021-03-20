@@ -48,6 +48,10 @@
           //- thumbs...
           //- work-thumb.w-full.md_w-1x2.lg_w-1x3(v-for="(doc, index) in works", :doc="doc", :key="doc.id + n")
           template(v-for="(slice, i) in home.body")
+            //- auctions
+            template(v-if="slice.slice_type === 'auctions'")
+              slice-auctions.order-last.sm_order-none.w-full(:slice="slice", :active="$route.name === 'index'")
+
             //- tiles
             template(v-if="slice.slice_type === 'tile'")
               //- items...
@@ -102,10 +106,11 @@ import ViewToken from '@/views/ViewToken'
 import LandingSlideWork from '@/components/LandingSlideWork'
 import RichText from '@/components/RichText'
 import linkResolver from '@/plugins/prismic/link-resolver'
+import SliceAuctions from '@/slices/SliceAuctions'
 let lastRt
 export default {
   name: 'Index',
-  components: { WorkView, Logo, Info, svgFleuron, Btn, LandingSlideWork, ViewToken, SetView, RichText },
+  components: { WorkView, Logo, Info, svgFleuron, Btn, LandingSlideWork, ViewToken, SetView, RichText, SliceAuctions },
   data () {
     return {
       squish: false,

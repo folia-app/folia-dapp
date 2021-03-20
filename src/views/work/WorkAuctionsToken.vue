@@ -3,7 +3,7 @@
     .h-screen.overflow-y-scroll.scrollbars-hidden.flex.flex-col(v-if="doc", :key="$route.params.token")
       header.p-10.mx-1.flex.justify-between.items-start(role="banner")
         .flex.items-center
-          button.p-4.-m-4.mr-0.focus_outline-none(@click="$router.push({name: 'work-auctions'})")
+          button.p-4.-m-4.mr-0.focus_outline-none(@click="backBtn")
             .h-3.w-3.border-b.border-l.transform.rotate-45.border-current
           h2 {{ auctionEnded ? 'SOLD' : 'AUCTION' }}
         //- btn.-m-2(size="small")
@@ -66,12 +66,12 @@
                   button.text-xs.opacity-75.focus_outline-none.hover_opacity-100.px-4.-mx-4(@click="helpText = true") ?
                 div.w-full.flex.items-end.text-2xl
                   countdown.font-bold.w-full.text-right.leading-none(:until="auctionEndTimeMs", :separator="' '", @ended="auctionEnded = true")
-              .flex-1.rounded-4xl.bg-black-a15.p-8.flex.justify-between.min-h-52ff(:class="{'flex-col': auctionEnded}")
+              .flex-1.rounded-4xl.bg-black-a15.p-8.flex.justify-between.min-h-52ff(:class="{'flex-col max-w-1x2': auctionEnded}")
                 div.text-sm Bidder
-                //- TODO - opensea link
-                div.text-2xl.w-full.leading-none.font-boldff.flex.justify-end
+                //- bidder link
+                div.w-full.leading-none.flex.justify-end
                   a(:href="openSeaLink({ account: auction.bidder })", target="_blank", rel="noopener noreferrer")
-                    btn.px-8(size="small", :class="{'-m-4': auctionEnded}")
+                    btn.px-8.text-md.lg_text-lg(size="small", :class="{'-m-4': auctionEnded, 'lg_text-2xl': !auctionEnded}")
                       | {{ auction.bidder === address ? 'You' : addrShort(auction.bidder) }}
               //- .w-1x2.rounded-4xl.bg-black-a03.p-8.flex.flex-col.justify-between.min-h-52
                 div.text-sm Errors/Help ?
@@ -96,8 +96,8 @@
 import { mapState, mapGetters } from 'vuex'
 import Btn from '@/components/Btn'
 import Countdown, { ddhhmmss } from '@/components/Countdown'
-
 import ImgGif from '@/components/ImgGif'
+let lastRt
 export default {
   name: 'WorkAuctionsToken',
   props: ['doc'],
@@ -189,7 +189,14 @@ export default {
         return
       }
       this.bidETH = val
+    },
+    backBtn () {
+      return lastRt?.name ? this.$router.go(-1) : this.$router.push({ name: 'work-auctions' })
     }
+  },
+  beforeRouteEnter (to, from, next) {
+    lastRt = from
+    next()
   },
   created () {
     this.getMetadata()

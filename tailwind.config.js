@@ -10,7 +10,7 @@ module.exports = {
   presets: [],
   theme: {
     screens: {
-      sm: '640px',
+      sm: '568px',
       md: '768px',
       lg: '1024px',
       xl: '1440px'
@@ -71,10 +71,6 @@ module.exports = {
       'black-a45': 'rgba(0,0,0,0.45)',
       paper: 'rgb(248,248,248)',
 
-      yellow: 'yellow',
-      red: 'red',
-      'red-duller': '#ce1212', // soldout
-
       gray: {
         50: '#fafafa',
         100: '#f5f5f5',
@@ -87,7 +83,11 @@ module.exports = {
         800: '#262626',
         900: '#171717',
         950: '#0D0D0D'
-      }
+      },
+
+      yellow: 'yellow',
+      red: 'red',
+      'red-duller': '#ce1212' // soldout
     },
     backgroundColor: theme => theme('colors'),
     backgroundImage: {
@@ -325,6 +325,7 @@ module.exports = {
     opacity: {
       0: '0',
       25: '0.25',
+      33: '0.33',
       50: '0.5',
       75: '0.75',
       100: '1'

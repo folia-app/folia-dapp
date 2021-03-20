@@ -1,11 +1,11 @@
 <template lang="pug">
-  .px-10.lg_px-12.flex.justify-between.items-center.h-40
+  .px-10.lg_px-12.flex.flex-wrap.justify-between.items-center.min-h-32.md_min-h-40.py-10
     h6.flex.items-center
       slot
-      svg-eye.ml-6(v-show="$route.params.token === tokenId")
+      svg-eye.ml-6(v-show="$route.params.token === tokenId", v-if="!hideTimers")
       //- .h-4.w-4.rounded-full.bg-white.ml-5
 
-    .flex.text-sm
+    .flex.text-sm.ml-auto(v-if="!hideTimers")
       //- current bid
       btn.px-8.pointer-events-none.text-white(size="small", theme="drkgray", v-if="auctionIsActive") {{ weiToETH(auction.amount) }} ETH
       //- auction ended
@@ -17,11 +17,11 @@
           countdown.ml-2(:until="auctionEndTimeMs", separator=" ", @ended="auctionEnded = true")
       //- auction to be released
       template(v-else-if="releaseTime")
-        btn.px-8.pointer-events-none(size="small", theme="darken")
+        btn.px-8.pointer-events-none.-mr-4(size="small", theme="drkgray")
           //- > icon
           .h-4.w-4.border-t.border-r.transform.rotate-45.border-white(v-if="releaseTimerEnded")
           //- timer
-          countdown(v-else, :until="releaseTime", @ended="onReleaseTimerEnded")
+          countdown(v-else, :until="releaseTime", @ended="onReleaseTimerEnded", separator=" ")
 </template>
 
 <script>
@@ -32,7 +32,7 @@ import SoldOutDot from '@/components/SoldOutDot'
 import svgEye from '@/components/SVG-Eye'
 export default {
   name: 'AuctionListRow',
-  props: ['tokenId', 'releaseTime'],
+  props: ['tokenId', 'releaseTime', 'hideTimers'],
   data () {
     return {
       auction: undefined,
@@ -103,4 +103,12 @@ export default {
 </script>
 
 <style>
+/*.auction-row-timers-leave-active,
+.auction-row-timers-leave-active{
+  transition: opacity 500ms 500s;
+}
+.auction-row-timers-leave-to,
+.auction-row-timers-enter{
+  opacity:0;
+}*/
 </style>
