@@ -6,13 +6,14 @@ import Web3 from 'web3'
 import Web3Modal from 'web3modal'
 import WalletConnectProvider from '@walletconnect/web3-provider'
 import { resizeCloudinary } from '@/components/RespImg'
+import ENS, { getEnsAddress } from '@ensdomains/ensjs'
 
 const networks = {
   mainnet: { id: 1, infura: 'wss://mainnet.infura.io/ws/v3/1363143c08464562ba87cc807ac77020' },
   rinkeby: { id: 4, infura: 'wss://rinkeby.infura.io/ws/v3/1363143c08464562ba87cc807ac77020' }
 }
 
-let web3
+let web3, ens
 let provider = window.ethereum || Web3.currentProvider || Web3.givenProvider
 
 // provider options
@@ -46,15 +47,18 @@ export default new Vuex.Store({
 
     works: [],
     tokens: [],
-    metadatas: []
+    metadatas: [],
+    ensAddressToName: {}
   },
   getters: {
+    ethName: state => (address) => (address in state.ensAddressToName) && state.ensAddressToName[address],
     weiToETH: () => (wei) => web3?.utils.fromWei(wei) ?? '-',
     workId: () => (uid, prefix) => {
       const id = Number(uid) // / 1000000
       return prefix ? ('00' + id).slice(-3) // 001
         : id // 1 - for contract communication
     },
+    ensShort: () => (name) => name.length > 18 ? name.slice(0, 6) + '...' + name.slice(-6) : name,
     addrShort: () => (addr) => addr.slice(0, 6) + '...' + addr.slice(-4),
     contractAddr: (state) => state.foliaContract?._address,
     isSoldOut: () => (work) => {
@@ -101,6 +105,9 @@ export default new Vuex.Store({
     SET_NETWORK (state, id) {
       state.networkId = id
     },
+    SAVE_ENS (state, ens) {
+      Vue.set(state.ensAddressToName, ens.address, ens.name)
+    },
     SAVE_WORK (state, work) {
       const i = state.works.findIndex(svd => svd.id === work.id)
       // remove existing ?
@@ -143,8 +150,20 @@ export default new Vuex.Store({
             web3 = new Web3(provider)
           } else {
             const n = process.env.NODE_ENV === 'development' ? 'rinkeby' : 'mainnet'
-            web3 = new Web3(new Web3.providers.WebsocketProvider(networks[n].infura))
+            const _provider = new Web3.providers.WebsocketProvider(networks[n].infura)
+            web3 = new Web3(_provider)
           }
+        }
+
+        if (!ens) {
+          if (provider) {
+            ens = new ENS({ provider, ensAddress: getEnsAddress('1') })
+          } else {
+            const n = process.env.NODE_ENV === 'development' ? 'rinkeby' : 'mainnet'
+            const _provider = new Web3.providers.WebsocketProvider(networks[n].infura)
+            ens = new ENS({ provider: _provider, ensAddress: getEnsAddress('1') })
+          }
+          console.log({ ens })
         }
 
         // setup contracts
@@ -166,9 +185,11 @@ export default new Vuex.Store({
         // connect and update provider, web3
         provider = await web3Modal.connect()
         web3 = new Web3(provider)
+        ens = new ENS({ provider, ensAddress: getEnsAddress('1') })
         // save account
         const accounts = await web3.eth.getAccounts()
         const address = accounts[0]
+        dispatch('getENSName', address)
         const networkId = await web3.eth.net.getId()
         // const chainId = await web3.eth.chainId(); // not a function??
         commit('SIGN_IN', address)
@@ -200,6 +221,7 @@ export default new Vuex.Store({
           return dispatch('disconnect')
         }
         commit('SIGN_IN', accounts[0])
+        dispatch('getENSName', accounts[0])
       })
 
       // changed network
@@ -214,6 +236,20 @@ export default new Vuex.Store({
         console.error('disconnected?', error)
         dispatch('disconnect')
       })
+    },
+
+    /* get ens name */
+    async getENSName ({ state, commit }, address) {
+      console.log('getENSName')
+      if (!ens) return
+      console.log('getENSName2')
+      if (address in state.ensAddressToName) {
+        return state[address]
+      }
+      console.log('getENSName3')
+      var name = await ens.getName(address)
+      commit('SAVE_ENS', { address, name })
+      return name
     },
 
     /* buy artwork */
@@ -288,11 +324,14 @@ export default new Vuex.Store({
     },
 
     /* get owner by token id */
-    async getNFTOwnerByTokenId ({ state, commit }, tokenId) {
+    async getNFTOwnerByTokenId ({ state, commit, dispatch }, tokenId) {
       try {
         const token = state.tokens.find(token => token[0] === tokenId) || []
         let owner = token && token[1]
-        if (owner) return owner
+        if (owner) {
+          dispatch('getENSName', owner)
+          return owner
+        }
         // get new data
         if (state.foliaContract) {
           owner = await state.foliaContract.methods.ownerOf(tokenId).call()

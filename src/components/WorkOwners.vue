@@ -7,7 +7,7 @@
       a.truncate(:href="openSeaLink({ account: token[1] })", target="_blank", rel="noopener noreferrer")
         btn.px-8.truncate(theme="drkgray")
           template(v-if="token[1] === $store.state.address") You
-          template(v-else) {{ token[1] }}
+          template(v-else) {{ oneName(token[1]) && oneName(token[1]).name || token[1] }}
 </template>
 
 <script>
@@ -24,7 +24,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['openSeaLink']),
+    ...mapGetters(['openSeaLink', 'ethName']),
     tokensSorted () {
       return this.tokens.slice().sort((a, b) => a[0] - b[0])
     },
@@ -37,6 +37,9 @@ export default {
     }
   },
   methods: {
+    oneName (address) {
+      return this.ethName(address)
+    },
     getOwners () {
       const printed = Number(this.work.printed)
       for (let i = printed - 1; i >= 0; i--) {

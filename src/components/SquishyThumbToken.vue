@@ -26,7 +26,7 @@
 
       //- (owner)
       a.absolute.top-0.left-0.py-3.px-4(v-if="owner", :href="openSeaLink({account: owner})", target="_blank", rel="noopener noreferrer", :class="{'opacity-0 group-hover_opacity-100': true || !userIsOwner}")
-        btn.px-5.hover_bg-black-a15(theme="none", size="small") {{ userIsOwner ? 'You' : addrShort(owner) }}
+        btn.px-5.hover_bg-black-a15(theme="none", size="small") {{ ens && ensShort(ens.name) || (userIsOwner ? 'You' : addrShort(owner)) }}
 
       //- ...
       a.absolute.top-0.right-0.py-3.px-4.opacity-0.group-hover_opacity-100(:href="openSeaLink({token: token.tokenId})", target="_blank", rel="noopener noreferrer")
@@ -54,12 +54,18 @@ export default {
     ...mapState({
       userAddress: state => state.address
     }),
-    ...mapGetters(['addrShort', 'openSeaLink']),
+    ...mapGetters(['addrShort', 'openSeaLink', 'ensShort', 'ethName']),
     userIsOwner () {
       return this.userAddress === this.owner
+    },
+    ens () {
+      return this.ethName(this.owner)
     }
   },
   methods: {
+    oneName (address) {
+      return this.ethName(address)
+    },
     resizeCloudinary,
     async fetchOwner () {
       this.owner = await this.$store.dispatch('getNFTOwnerByTokenId', this.token.tokenId)

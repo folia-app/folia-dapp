@@ -28,7 +28,7 @@
               div
                 button.p-10.focus_outline-none(v-if="!address", @click="$store.dispatch('connect')") Connect
                 button.p-10.focus_outline-none.relative.group(v-else, @click="$store.dispatch('disconnect')")
-                  span.group-hover_opacity-0.truncate {{ address.slice(0, 6) + '...' + address.slice(-4) }}
+                  span.group-hover_opacity-0.truncate {{ ens ? ens.name : address.slice(0, 6) + '...' + address.slice(-4) }}
                   span.hidden.group-hover_block.absolute.overlay.text-right.p-10 Disconnect
         //- landing
         section.w-full.bg-black.text-white.relative.flex.items-center.justify-center.font-sans.text-sm.h-90vh.md_h-93vh-off.md_h-screen(:style="{cursor: carouselEnabled > 1 ? 'e-resize' : 'auto'}", @click="carouselEnabled && next()")
@@ -127,13 +127,17 @@ export default {
     }),
     ...mapGetters({
       workDocs: 'prismic/works',
-      workId: 'workId'
+      workId: 'workId',
+      ethName: 'ethName'
     }),
     viewToken () {
       return this.$route.name === 'view-token' ? this.$route.params.token : null
     },
     carouselEnabled () {
       return this.home?.landing.length > 1
+    },
+    ens () {
+      return this.ethName(this.address)
     }
   },
   methods: {
