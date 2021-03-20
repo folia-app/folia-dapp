@@ -63,7 +63,7 @@ export default {
       }
     },
     listenToContract () {
-      if (this.reserveAuctionContract && !this.listening && !this.auctionEnded) {
+      if (this.reserveAuctionContract && !this.listening && this.auctionIsActive) {
         // new bid !
         this.reserveAuctionContract.events
           .AuctionBid()
