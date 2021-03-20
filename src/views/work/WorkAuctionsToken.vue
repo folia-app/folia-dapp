@@ -13,14 +13,16 @@
       //- (loading)
       template(v-if="auction === null")
         p.p-10 LOADING...
+
       //- (not found)
-      template(v-else-if="auction === undefined || (auction && !auction.exists)")
-        p.p-10 NOT FOUND
+      template(v-else-if="auction === undefined")
+        p.p-10
+          button.focus_outline-none(@click="getAuction") REFRESH
 
       //- (auction)
-      template(v-else-if="auction && metadata")
+      template(v-else-if="auction")
         section
-          .flex.px-10.flex-row-reverse
+          .flex.px-10.flex-row-reverse(v-if="metadata")
             figure.w-1x2
               router-link(:to="{name: 'view-token', params: {token: $route.params.token}}")
                 template(v-if="metadata.image")
@@ -140,6 +142,7 @@ export default {
   methods: {
     ddhhmmss,
     async getMetadata () {
+      console.log(this.tokenId)
       this.metadata = await this.$store.dispatch('getMetadata', { token: this.tokenId })
     },
 
