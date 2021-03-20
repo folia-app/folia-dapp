@@ -32,6 +32,10 @@ html{
   }  
 }
 
+.backdrop-blur{
+  backdrop-filter:blur(10px);
+}
+
 
 .children-mt-em > * + *{ margin-top: 1.2em; }
 
@@ -41,12 +45,6 @@ html{
   &:hover, &:focus{
     border-style:solid;
   }
-}
-
-button{
-  font-weight: inherit;
-  color:inherit;
-  letter-spacing: inherit;
 }
 
 .image-render-crisp{

@@ -16,14 +16,17 @@ export default {
     observe () {
       if (window.ResizeObserver) {
         this.resizeObserver = new ResizeObserver(entries => {
-          const outerW = entries[0].contentRect.width
-          const naturalW = this.$refs.img.naturalWidth
+          if (this.$refs.img) {
+            const outerW = entries[0].contentRect.width
+            const naturalW = this.$refs.img.naturalWidth
 
-          if (outerW < naturalW) {
-            // better render at 2 factor scaling
-            this.$refs.img.style.width = naturalW / 2 + 'px'
-          } else {
-            this.$refs.img.style.width = 'auto'
+            if (outerW < naturalW) {
+              const factor = Math.ceil(naturalW / outerW)
+              // better render at 2 factor scaling
+              this.$refs.img.style.width = naturalW / factor + 'px'
+            } else {
+              this.$refs.img.style.width = 'auto'
+            }
           }
         })
         this.resizeObserver.observe(this.$el)

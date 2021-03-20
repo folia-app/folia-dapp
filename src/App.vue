@@ -82,4 +82,31 @@ export default {
   font-family: var(--ff-sans);
   z-index: 1000;
 }
+
+button{
+  font-weight: inherit;
+  color:inherit;
+  letter-spacing: inherit;
+}
+
+input{
+  appearance:none;
+  letter-spacing: inherit;
+  line-height: inherit;
+  color: inherit;
+  background: transparent;
+  &::placeholder{
+    color:inherit;
+  }
+  &::-webkit-outer-spin-button,
+  &::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  /* Firefox */
+  &[type=number] {
+    -moz-appearance: textfield;
+  }
+}
 </style>

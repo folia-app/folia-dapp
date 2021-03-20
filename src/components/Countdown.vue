@@ -1,5 +1,5 @@
 <template lang="pug">
-  span.inline-block.whitespace-no-wrap(style="min-width:10em; font-family:monospace;font-size: 0.95em")
+  span.whitespace-no-wrap(:class="[font]")
     template(v-if="msUntil") {{ timeFormatted }}
     template(v-else) - - - -
 </template>
@@ -8,7 +8,9 @@
 export default {
   name: 'CountDown',
   props: {
-    until: { type: String, default: undefined }
+    until: [String, Number],
+    separator: String,
+    font: { type: String, default: 'font-mono' }
   },
   data () {
     return {
@@ -18,7 +20,7 @@ export default {
   },
   computed: {
     timeFormatted () {
-      return this.msUntil && ddhhmmss(this.msUntil)
+      return this.msUntil && ddhhmmss(this.msUntil, this.separator)
     },
     thenMs () {
       // testing
@@ -27,7 +29,7 @@ export default {
         return new Date().getTime() + Number(testMs)
       }
       if (this.until) {
-        return new Date(this.until).getTime()
+        return isNaN(this.until) ? new Date(this.until).getTime() : this.until
       }
       return undefined
     }
@@ -43,7 +45,7 @@ export default {
         }
         this.msUntil = msUntil
       }
-      this.timer = setTimeout(() => this.play(), 999)
+      this.timer = setTimeout(() => this.play(), 300)
     },
     pause () {
       clearTimeout(this.timer)
@@ -60,7 +62,7 @@ export default {
   }
 }
 
-const ddhhmmss = (milliseconds) => {
+export function ddhhmmss (milliseconds, separator = ' - ', omittSeconds) {
   let hour, minute, seconds
   seconds = Math.floor(milliseconds / 1000)
   minute = Math.floor(seconds / 60)
@@ -70,13 +72,17 @@ const ddhhmmss = (milliseconds) => {
   const day = Math.floor(hour / 24)
   hour = hour % 24
   // const tm = str => str // ('0' + str).slice(-2)
-  return `${day}d - ${hour}h - ${minute}m - ${seconds}s`
-  // return {
-  //     day: day,
-  //     hour: hour,
-  //     minute: minute,
-  //     seconds: seconds
-  // };
+  // return `${day}d - ${hour}h - ${minute}m - ${seconds}s`
+  const time = [
+    [day, 'd'],
+    [hour, 'h'],
+    [minute, 'm'],
+    [seconds, 's']
+  ]
+  return time
+    .filter(val => val[0] > 0 || (val[1] === 's' && !omittSeconds))
+    .map(val => val.join(''))
+    .join(separator)
 }
 </script>
 

@@ -1,11 +1,13 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import prismic from './prismic'
-import { Folia, FoliaController } from 'folia-contracts'
+import { Folia, FoliaController, ReserveAuction } from 'folia-contracts'
 import Web3 from 'web3'
 import Web3Modal from 'web3modal'
 import WalletConnectProvider from '@walletconnect/web3-provider'
 import { resizeCloudinary } from '@/components/RespImg'
+// modules
+import prismic from './prismic'
+import auctions from './auctions'
 
 const networks = {
   mainnet: { id: 1, infura: 'wss://mainnet.infura.io/ws/v3/1363143c08464562ba87cc807ac77020' },
@@ -36,13 +38,14 @@ const web3Modal = new Web3Modal({
 Vue.use(Vuex)
 
 export default new Vuex.Store({
-  modules: { prismic },
+  modules: { prismic, auctions },
   state: {
     address: null,
     networkId: null,
 
     foliaContract: null,
     foliaControllerContract: null,
+    reserveAuctionContract: null,
 
     works: [],
     tokens: [],
@@ -50,6 +53,7 @@ export default new Vuex.Store({
   },
   getters: {
     weiToETH: () => (wei) => web3?.utils.fromWei(wei) ?? '-',
+    ethToWei: () => (eth) => web3?.utils.toWei(eth) ?? '-',
     workId: () => (uid, prefix) => {
       const id = Number(uid) // / 1000000
       return prefix ? ('00' + id).slice(-3) // 001
@@ -116,16 +120,26 @@ export default new Vuex.Store({
     },
     SET_CONTRACTS (state, { web3, networkId }) {
       if (!web3) return new Error('web3 not defined')
-      // controller
-      state.foliaControllerContract = new web3.eth.Contract(
-        FoliaController.abi,
-        FoliaController.networks[networkId].address
-      )
       // folia
       state.foliaContract = new web3.eth.Contract(
         Folia.abi,
         Folia.networks[networkId].address
       )
+      console.log('folia addr', Folia.networks[networkId].address)
+      // controller
+      state.foliaControllerContract = new web3.eth.Contract(
+        FoliaController.abi,
+        FoliaController.networks[networkId].address
+      )
+      console.log('controller addr', FoliaController.networks[networkId].address)
+      // auctions
+      if (ReserveAuction.networks[networkId]) {
+        state.reserveAuctionContract = new web3.eth.Contract(
+          ReserveAuction.abi,
+          ReserveAuction.networks[networkId].address
+        )
+        console.log('auction addr', ReserveAuction.networks[networkId].address)
+      }
     }
   },
   actions: {

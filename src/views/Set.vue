@@ -37,16 +37,18 @@
                       img.absolute.o
               //- blocks
               li.flex.flex-wrap.mx-8.lg_mx-10.border.rounded-3xl.border-gray-400.-mb-px(v-for="(item, i) in items", :class="{'flex-row-reverse': i % 2 === 1}")
-                prismic-link.w-full.px-8.pt-8.flex.flex-wrap.justify-between.items-start(:field="item.link", :linkResolver="linkResolver")
+                prismic-link.w-full.px-6.sm_px-8.pt-8.flex.flex-wrap.justify-between.items-start(:field="item.link", :linkResolver="linkResolver")
                   .flex.items-center.pb-6
                     //- span.flex.items-center.text-base.mr-8
                       svg-fleuron.block.mr-2(style="width:0.96em;height:0.96em")
                       span.leading-none.whitespace-no-wrap.text-md.pt-1 {{ $store.getters.workId(item.link.uid, true) }}
-                    h6.text-base {{ item.link.data.title }}
-                  btn.text-sm.-mt-2.-mr-2.px-8.pointer-events-none.bg-gray-800.text-white.ml-auto(size="small", theme="none", v-if="hasRelease(item)")
-                    countdown(:until="item.link.data.release_link.data.release_time")
+                    h6.text-sm.sm_text-base {{ item.link.data.title }}
+                  btn.text-xs.sm_text-sm.-mt-2.-mr-2.sm_-mr-5.px-6.sm_px-8.pointer-events-none.bg-gray-800.text-white.ml-auto(size="small", theme="none", :key="loaded", v-if="hasRelease(item)")
+                    countdown(v-if="!isReleased(item)", :until="item.link.data.release_link.data.release_time", @ended="refresh", separator=" ")
+                    //- TOD0 - revise this text after harm
+                    template(v-else) AUCTION
 
-                prismic-link.w-full.block.px-8.pb-8(:field="item.link", :linkResolver="linkResolver")
+                prismic-link.w-full.block.px-8.pb-8.pt-8(:field="item.link", :linkResolver="linkResolver")
                   //- (video)
                   template(v-if="item.thumbnail.link_type === 'Media' && item.thumbnail.kind === 'document'")
                     video.w-auto.max-w-full.mx-auto.block.lazyload(:src="item.thumbnail.url", autoplay, muted, loop, playsinline, data-expand="0")
@@ -71,6 +73,7 @@ export default {
   data () {
     return {
       view: 'set',
+      loaded: new Date().getTime(),
       linkResolver
     }
   },
@@ -85,6 +88,13 @@ export default {
   methods: {
     hasRelease (item) {
       return item?.link?.data?.release_link?.data?.release_time
+    },
+    isReleased (item) {
+      const time = item?.link?.data?.release_link?.data?.release_time
+      return !time || new Date(time).getTime >= new Date().getTime()
+    },
+    refresh () {
+      this.loaded = new Date().getTime()
     }
   },
   metaInfo () {

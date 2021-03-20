@@ -5,7 +5,7 @@
     .relative.transform.transition-transform.origin-left.duration-700(:class="{'scale-x-0': viewToken}")
       //- (WORK PANEL)
       .sticky.z-20.top-0.right-0.w-full.h-0
-        .absolute.top-0.right-0.transition.duration-500.transform.origin-right.bg-black.min-h-screen(:class="[panelWidths[0], {'scale-x-0': !panelOpen}]")
+        .absolute.top-0.right-0.transition-all.duration-500.transform.origin-right.bg-black.min-h-screen(:class="[panelWidths[0], {'scale-x-0': !panelOpen}]")
           transition-group(name="pagesfade")
             set-view(v-if="$route.name === 'set'", key="set")
             work-view(v-else-if="activeWork", :id="activeWork", :key="activeWork")
@@ -48,6 +48,10 @@
           //- thumbs...
           //- work-thumb.w-full.md_w-1x2.lg_w-1x3(v-for="(doc, index) in works", :doc="doc", :key="doc.id + n")
           template(v-for="(slice, i) in home.body")
+            //- auctions
+            template(v-if="slice.slice_type === 'auctions'")
+              slice-auctions.order-last.sm_order-none.w-full(:slice="slice", :active="$route.name === 'index'")
+
             //- tiles
             template(v-if="slice.slice_type === 'tile'")
               //- items...
@@ -102,10 +106,11 @@ import ViewToken from '@/views/ViewToken'
 import LandingSlideWork from '@/components/LandingSlideWork'
 import RichText from '@/components/RichText'
 import linkResolver from '@/plugins/prismic/link-resolver'
+import SliceAuctions from '@/slices/SliceAuctions'
 let lastRt
 export default {
   name: 'Index',
-  components: { WorkView, Logo, Info, svgFleuron, Btn, LandingSlideWork, ViewToken, SetView, RichText },
+  components: { WorkView, Logo, Info, svgFleuron, Btn, LandingSlideWork, ViewToken, SetView, RichText, SliceAuctions },
   data () {
     return {
       squish: false,
@@ -149,7 +154,8 @@ export default {
     },
     setPanelWidths () {
       const work = this.workDocs.find(doc => doc.uid === this.$route.params.work)
-      const isWide = work?.data.page_layout === 'generative'
+      const isGenerative = work?.data.page_layout === 'generative'
+      const isWide = isGenerative || this.$route.meta.panelWide
       // [workPanel, body]
       let widths = ['w-full sm_w-3x4 lg_w-1x2', 'scale-x-0 sm_scale-x-25 lg_scale-x-50']
       if (isWide) {

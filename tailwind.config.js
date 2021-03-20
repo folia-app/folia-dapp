@@ -10,7 +10,7 @@ module.exports = {
   presets: [],
   theme: {
     screens: {
-      sm: '640px',
+      sm: '568px',
       md: '768px',
       lg: '1024px',
       xl: '1440px'
@@ -33,6 +33,7 @@ module.exports = {
       32: '8rem',
       40: '10rem',
       48: '12rem',
+      52: '13rem',
       56: '14rem',
       64: '16rem',
       'lh-snug': '1.375em'
@@ -67,11 +68,8 @@ module.exports = {
       'black-a03': 'rgba(0,0,0,0.03)',
       'black-a15': 'rgba(0,0,0,0.15)',
       'black-a30': 'rgba(0,0,0,0.30)',
+      'black-a45': 'rgba(0,0,0,0.45)',
       paper: 'rgb(248,248,248)',
-
-      yellow: 'yellow',
-      red: 'red',
-      'red-duller': '#ce1212', // soldout
 
       gray: {
         50: '#fafafa',
@@ -85,7 +83,11 @@ module.exports = {
         800: '#262626',
         900: '#171717',
         950: '#0D0D0D'
-      }
+      },
+
+      yellow: 'yellow',
+      red: 'red',
+      'red-duller': '#ce1212' // soldout
     },
     backgroundColor: theme => theme('colors'),
     backgroundImage: {
@@ -131,6 +133,7 @@ module.exports = {
       xl: '0.75rem',
       '2xl': '1rem',
       '3xl': '1.5rem',
+      '4xl': '2rem',
       full: '9999px'
     },
     borderWidth: {
@@ -171,6 +174,8 @@ module.exports = {
     },
     flex: {
       1: '1 1 0%',
+      '1x2': '0 0 50%',
+      full: '1 0 100%',
       auto: '1 1 auto',
       initial: '0 1 auto',
       none: 'none'
@@ -213,7 +218,7 @@ module.exports = {
       ],
       karrik: ['Karrik', 'system-ui', '"Helvetica"', 'sans-serif'],
       serif: ['Times New Roman', 'serif'], // Georgia', 'Cambria', '"Times New Roman"', 'Times', 'serif'],
-      mono: ['Menlo', 'Monaco', 'Consolas', '"Liberation Mono"', '"Courier New"', 'monospace']
+      mono: ['monospace']
     },
     fontWeight: {
       hairline: '100',
@@ -289,17 +294,19 @@ module.exports = {
       '5xl': '64rem',
       '6xl': '72rem',
       full: '100%',
+      '1x2': '50%',
       ...breakpoints(theme('screens'))
     }),
-    minHeight: {
+    minHeight: (theme) => ({
       0: '0',
+      ...theme('spacing'),
       '25vw': '25vw',
       '33vw': '33vw',
       '50vw': '50vw',
       '100vw': '100vw',
       full: '100%',
       screen: '100vh'
-    },
+    }),
     minWidth: {
       0: '0',
       full: '100%'
@@ -318,6 +325,7 @@ module.exports = {
     opacity: {
       0: '0',
       25: '0.25',
+      33: '0.33',
       50: '0.5',
       75: '0.75',
       100: '1'
