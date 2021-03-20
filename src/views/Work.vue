@@ -17,8 +17,13 @@
                 svg-fleuron.block.mr-2(style="width:0.96em;height:0.96em")
                 .leading-none {{ workId(doc.uid, true) }}
 
+              //- enquire btn
+              template(v-if="doc.data.enquire_button")
+                a.block.group.relative.focus_outline-none.-m-2(:href="`mailto:info@folia.app?subject=${doc.data.artist} - ${doc.data.title}`", target="_blank", rel="noopener noreferrer")
+                  btn.px-10.text-md(theme="drkgray") ENQUIRE
+
               //- ...(countdown / bid)
-              template(v-if="isUnitSale")
+              template(v-else-if="isUnitSale")
                 template(v-if="!isReleased")
                   button.focus_outline-none(@click="$router.replace({name: 'work-auctions'})")
                     btn.px-8.text-sm.-mt-2.-mr-4(theme="drkgray", size="small")
