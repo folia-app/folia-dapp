@@ -88,9 +88,9 @@
                 btn.w-40.lg_w-48.group-hover_hidden.px-10.pointer-events-none(size="large", theme="darken") ETH
                 //- (+/-)
                 .hidden.group-hover_flex
-                  btn.w-20.lg_w-24.flex.justify-center.items-center.hover_bg-gray-a30(size="large", theme="darken", @click="increaseBid") +
                   btn.w-20.lg_w-24.flex.justify-center.items-center.hover_bg-gray-a30(size="large", theme="darken", @click="decreaseBid")
                     .h-px.bg-current(style="width:0.55em")
+                  btn.w-20.lg_w-24.flex.justify-center.items-center.hover_bg-gray-a30(size="large", theme="darken", @click="increaseBid") +
                 //- bid btn
                 button.w-full.sm_w-auto.sm_flex-1.block.focus_outline-none.text-xl.font-bold(@click="bid")
                   btn.tracking-wide.px-16(size="large", theme="darkener") BID
