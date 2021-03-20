@@ -1,8 +1,8 @@
 <template lang="pug">
   .px-10.lg_px-12.flex.justify-between.items-center.h-40
     h6.flex.items-center
-      svg-eye.mr-6(v-if="$route.params.token === tokenId")
       slot
+      svg-eye.ml-6(v-show="$route.params.token === tokenId")
       //- .h-4.w-4.rounded-full.bg-white.ml-5
 
     .flex.text-sm
@@ -11,8 +11,6 @@
       //- auction ended
       template(v-if="auctionEnded")
         sold-out-dot
-        //- btn.px-8(size="small", theme="drkgray")
-          span.uppercase SOLD
       //- auction active
       template(v-else-if="auctionIsActive")
         btn.px-8.bg-red.pointer-events-none(size="small", theme="none")
@@ -20,7 +18,10 @@
       //- auction to be released
       template(v-else-if="releaseTime")
         btn.px-8.pointer-events-none(size="small", theme="darken")
-          countdown(:until="releaseTime")
+          //- > icon
+          .h-4.w-4.border-t.border-r.transform.rotate-45.border-white(v-if="releaseTimerEnded")
+          //- timer
+          countdown(v-else, :until="releaseTime", @ended="onReleaseTimerEnded")
 </template>
 
 <script>
@@ -36,7 +37,8 @@ export default {
     return {
       auction: undefined,
       listening: false,
-      auctionEnded: false
+      auctionEnded: false,
+      releaseTimerEnded: false
     }
   },
   computed: {
@@ -82,6 +84,10 @@ export default {
       if (event.returnValues?.tokenId === this.tokenId) {
         this.getAuction(true)
       }
+    },
+    onReleaseTimerEnded () {
+      this.releaseTimerEnded = true
+      this.getAuction()
     }
   },
   watch: {
