@@ -133,7 +133,6 @@ export default {
       } catch (e) {
         console.error(e)
       }
-      console.log(paused)
       return paused
     }
   }
