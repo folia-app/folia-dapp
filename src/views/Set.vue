@@ -44,9 +44,10 @@
                       span.leading-none.whitespace-no-wrap.text-md.pt-1 {{ $store.getters.workId(item.link.uid, true) }}
                     h6.text-sm.sm_text-base {{ item.link.data.title }}
                   btn.text-xs.sm_text-sm.-mt-2.-mr-2.sm_-mr-5.px-6.sm_px-8.pointer-events-none.bg-gray-800.text-white.ml-auto(size="small", theme="none", :key="loaded", v-if="hasRelease(item)")
-                    countdown(v-if="!isReleased(item)", :until="item.link.data.release_link.data.release_time", @ended="refresh", separator=" ")
+                    //- countdown(v-if="!isReleased(item)", :until="item.link.data.release_link.data.release_time", @ended="refresh", separator=" ")
                     //- TOD0 - revise this text after harm
-                    template(v-else) AUCTION
+                    //- template(v-else) AUCTION
+                    | AUCTION
 
                 prismic-link.w-full.block.px-8.pb-8.pt-8(:field="item.link", :linkResolver="linkResolver")
                   //- (video)
