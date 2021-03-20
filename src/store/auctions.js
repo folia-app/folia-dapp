@@ -38,26 +38,28 @@ export default {
   },
 
   actions: {
-    async get ({ state, getters, commit }, { token, flush = false }) {
+    async get ({ state, getters, commit }, { token }) {
       try {
         // saved ?
         let auction = state.auctions.find(auc => auc._tokenId === token)
+        // auction ended? use saved
+        if (getters.auctionEnded({ auction })) {
+          return auction
+        }
         // ...fetch
-        if (!auction || flush) {
-          // !! contract missing
-          if (!getters.contract) {
-            console.warn('contract not set')
-            return auction
-          }
-          // fetch...
-          auction = await getters.contract.methods.auctions(token).call()
+        // !! contract missing
+        if (!getters.contract) {
+          console.warn('contract not set')
+          return auction
+        }
+        // fetch...
+        auction = await getters.contract.methods.auctions(token).call()
+        // save
+        if (auction) {
+          // format
+          auction = { _tokenId: token, ...auction }
           // save
-          if (auction) {
-            // format
-            auction = { _tokenId: token, ...auction }
-            // save
-            commit('SAVE_AUCTION', auction)
-          }
+          commit('SAVE_AUCTION', auction)
         }
         return auction
       } catch (e) {
@@ -65,7 +67,7 @@ export default {
       }
     },
 
-    async bid ({ state, getters, dispatch, rootState }, { token, wei }) {
+    async bid ({ state, getters, dispatch, rootState, rootGetters }, { token, wei }) {
       try {
         const auction = await dispatch('get', { token, flush: true })
 
@@ -81,8 +83,10 @@ export default {
         // !! less than reserve price
         if (wei < Number(auction.reservePrice)) throw new Error('!! Your bid is below the minimum. Please increase your bid.')
 
-        // !! min bid step (0.1)
-        if (wei < Number(auction.amount) + state.minBidWei) throw new Error('!! Your bid is below the minimum. Please increase your bid.')
+        // !! bid below minimum
+        const minWei = Number(auction.amount) + state.minBidWei
+        const minETH = rootGetters.weiToETH(minWei.toString())
+        if (wei < minWei) throw new Error(`!! Minimum bid is ${minETH} ETH. Please increase your bid.`)
 
         // connected wallet ?
         if (!rootState.address) {

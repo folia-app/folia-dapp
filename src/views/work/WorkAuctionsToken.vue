@@ -11,11 +11,11 @@
         div FLA-{{$route.params.token}}
 
       //- (loading)
-      template(v-if="!auction")
+      template(v-if="auction === null")
         p.p-10 LOADING...
       //- (not found)
-      template(v-else-if="auction && !auction.exists")
-        p.p-10 TO BE ANNOUNCED
+      template(v-else-if="auction === undefined || (auction && !auction.exists)")
+        p.p-10 NOT FOUND
 
       //- (auction)
       template(v-else-if="auction && metadata")
@@ -26,7 +26,7 @@
                 template(v-if="metadata.image")
                   .pb-full.relative.bg-white.rounded-4xl.overflow-hidden
                     .absolute.overlay.p-2.flex.items-center.bg-white(v-if="metadata.image.includes('.gif')")
-                      img-gif(:src="metadata.image")
+                      img-gif(:src="metadata.image", :key="metadata.image")
 
             .w-1x2.p-8.bg-black-a15.rounded-4xl
               h2.font-bold {{ metadata.name }}
@@ -43,12 +43,12 @@
               .w-1x2.rounded-4xl.bg-black-a30.p-8.flex.flex-col.justify-between.min-h-56
                 .flex.w-full.justify-between.items-center
                   div.text-sm Reserve Price
-                  button.text-xs.opacity-75.focus_outline-none.hover_opacity-100.px-4.-mx-4(@click="helpText = !helpText") ?
+                  button.text-xs.opacity-75.focus_outline-none.hover_opacity-100.px-4.-mx-4(@click="helpText = true") ?
                 div.text-xl.text-right.font-bold {{ weiToETH(auction.reservePrice) }} ETH
               .w-1x2.rounded-4xl.bg-black-a30.p-8.flex.flex-col.justify-between.min-h-56
                 .flex.w-full.justify-between.items-center
                   div.text-sm Auction Duration
-                  button.text-xs.opacity-75.focus_outline-none.hover_opacity-100.px-4.-mx-4(@click="helpText = !helpText") ?
+                  button.text-xs.opacity-75.focus_outline-none.hover_opacity-100.px-4.-mx-4(@click="helpText = true") ?
                 .text-xl.text-right.font-bold {{ ddhhmmss(auction.duration * 1000, ' ', true) }}
 
           //- (auction active)
@@ -63,15 +63,15 @@
               .w-1x2.rounded-4xl.bg-black-a30.p-8.flex.flex-col.justify-between.min-h-52(v-if="!auctionEnded")
                 .flex.w-full.justify-between.items-center
                   div.text-sm {{ auctionEnded ? 'Auction Ended' : 'Auction Ends' }}
-                  button.text-xs.opacity-75.focus_outline-none.hover_opacity-100.px-4.-mx-4(@click="helpText = !helpText") ?
+                  button.text-xs.opacity-75.focus_outline-none.hover_opacity-100.px-4.-mx-4(@click="helpText = true") ?
                 div.w-full.flex.items-end.text-2xl
                   countdown.font-bold.w-full.text-right.leading-none(:until="auctionEndTimeMs", :separator="' '", @ended="auctionEnded = true")
-              .flex-1.rounded-4xl.bg-black-a15.p-8.flex.flex-colff.justify-between.min-h-52ff
+              .flex-1.rounded-4xl.bg-black-a15.p-8.flex.justify-between.min-h-52ff(:class="{'flex-col': auctionEnded}")
                 div.text-sm Bidder
                 //- TODO - opensea link
                 div.text-2xl.w-full.leading-none.font-boldff.flex.justify-end
                   a(:href="openSeaLink({ account: auction.bidder })", target="_blank", rel="noopener noreferrer")
-                    btn.px-8.-mr-2.-mb-1(size="small")
+                    btn.px-8(size="small", :class="{'-m-4': auctionEnded}")
                       | {{ auction.bidder === address ? 'You' : addrShort(auction.bidder) }}
               //- .w-1x2.rounded-4xl.bg-black-a03.p-8.flex.flex-col.justify-between.min-h-52
                 div.text-sm Errors/Help ?
@@ -138,8 +138,8 @@ export default {
       this.metadata = await this.$store.dispatch('getMetadata', { token: this.tokenId })
     },
 
-    async getAuction (flush = false) {
-      this.auction = await this.$store.dispatch('auctions/get', { token: this.tokenId, flush })
+    async getAuction () {
+      this.auction = await this.$store.dispatch('auctions/get', { token: this.tokenId })
       if (this.auction) {
         this.bidETH = this.minBidETH
         this.auctionEnded = this.$store.getters['auctions/auctionEnded']({ auction: this.auction })
@@ -174,7 +174,7 @@ export default {
       console.log('@auctionEvent', event)
       // refresh if current auction
       if (event.returnValues?.tokenId === this.tokenId) {
-        this.getAuction(true)
+        this.getAuction()
       }
     },
 
@@ -184,7 +184,7 @@ export default {
     decreaseBid () {
       const val = Number(this.bidETH - this.bidStepETH).toFixed(1)
       if (val < this.minBidETH) {
-        alert(`Minimum bid is ${this.minBidETH}ETH`)
+        alert(`Minimum bid is ${this.minBidETH} ETH`)
         this.bidETH = this.minBidETH
         return
       }

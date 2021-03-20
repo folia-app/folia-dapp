@@ -1,9 +1,13 @@
 <template lang="pug">
-  .px-10.lg_px-12.flex.justify-between.items-center.h-40(:class="{'bg-gray-950': $route.params.token === tokenId }")
-    h6
+  .px-10.lg_px-12.flex.justify-between.items-center.h-40
+    h6.flex.items-center
+      svg-eye.mr-6(v-if="$route.params.token === tokenId")
       slot
+      //- .h-4.w-4.rounded-full.bg-white.ml-5
+
     .flex.text-sm
-      btn.px-8.pointer-events-none(size="small", theme="drkgray", v-if="auctionIsActive") {{ weiToETH(auction.amount) }} ETH
+      //- current bid
+      btn.px-8.pointer-events-none.text-white(size="small", theme="drkgray", v-if="auctionIsActive") {{ weiToETH(auction.amount) }} ETH
       //- auction ended
       template(v-if="auctionEnded")
         sold-out-dot
@@ -12,7 +16,7 @@
       //- auction active
       template(v-else-if="auctionIsActive")
         btn.px-8.bg-red.pointer-events-none(size="small", theme="none")
-          countdown.ml-2(:until="auctionEndTimeMs", separator=" ")
+          countdown.ml-2(:until="auctionEndTimeMs", separator=" ", @ended="auctionEnded = true")
       //- auction to be released
       template(v-else-if="releaseTime")
         btn.px-8.pointer-events-none(size="small", theme="darken")
@@ -24,6 +28,7 @@ import { mapState, mapGetters } from 'vuex'
 import Countdown from '@/components/Countdown'
 import Btn from '@/components/Btn'
 import SoldOutDot from '@/components/SoldOutDot'
+import svgEye from '@/components/SVG-Eye'
 export default {
   name: 'AuctionListRow',
   props: ['tokenId', 'releaseTime'],
@@ -87,7 +92,7 @@ export default {
   created () {
     this.getAuction()
   },
-  components: { Btn, Countdown, SoldOutDot }
+  components: { Btn, Countdown, SoldOutDot, svgEye }
 }
 </script>
 

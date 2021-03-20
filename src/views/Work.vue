@@ -2,7 +2,7 @@
   article.work.w-full.text-white
     .flex.w-full
       //- main / left col
-      .flex-1.relative.h-screen.overflow-y-scroll.scrollbars-hidden.transition.duration-500(:class="{'opacity-0 lg_opacity-100': $route.name === 'work-auctions-token'}")
+      .flex-1.relative.h-screen.overflow-y-scroll.scrollbars-hidden.transition.duration-500(:class="{'opacity-0 md_opacity-100': $route.name === 'work-auctions-token'}")
         .min-h-screen.flex.flex-col(v-if="doc")
           //- (series header)
           router-link.bg-gray-900.text-white.p-8.lg_px-12.lg_py-10.flex.justify-between.text-md.hover_bg-white.hover_text-black.focus_text-black.focus_bg-white(v-if="doc.data.set.uid", :to="{name: 'set', params: {set: doc.data.set.uid}}")
@@ -159,7 +159,7 @@
 
       //- side column (auctions)
       transition(name="work-sidebar")
-        router-view.flex-full.lg_flex-1x2.lg_max-w-1x2(name="sidebar", :doc="doc")
+        router-view.flex-full.md_flex-1x2.md_max-w-1x2(name="sidebar", :doc="doc")
       //- .flex-1.h-screen.overflow-y-scroll.scrollbars-hidden(v-if="$route.name === 'work-auction'")
         .h-screen.bg-white
         .h-screen.bg-gray-400

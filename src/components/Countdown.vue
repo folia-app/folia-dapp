@@ -45,7 +45,7 @@ export default {
         }
         this.msUntil = msUntil
       }
-      this.timer = setTimeout(() => this.play(), 999)
+      this.timer = setTimeout(() => this.play(), 300)
     },
     pause () {
       clearTimeout(this.timer)

@@ -138,8 +138,8 @@ export default new Vuex.Store({
           ReserveAuction.abi,
           ReserveAuction.networks[networkId].address
         )
+        console.log('auction addr', ReserveAuction.networks[networkId].address)
       }
-      console.log('auction addr', ReserveAuction.networks[networkId].address)
     }
   },
   actions: {
