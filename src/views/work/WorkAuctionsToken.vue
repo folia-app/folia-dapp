@@ -2,7 +2,10 @@
   article.work-auctions.token.transition-background.duration-500(:class="{'bg-red': auctionEnded !== true, 'bg-gray-800': auctionEnded === true}")
     .h-screen.overflow-y-scroll.scrollbars-hidden.flex.flex-col(v-if="doc", :key="$route.params.token")
       header.p-10.mx-1.flex.justify-between.items-start(role="banner")
-        h2 {{ auctionEnded ? 'SOLD' : 'AUCTION' }}
+        .flex.items-center
+          button.p-4.-m-4.mr-0.focus_outline-none(@click="$router.push({name: 'work-auctions'})")
+            .h-4.w-4.border-b.border-l.transform.rotate-45.border-current
+          h2 {{ auctionEnded ? 'SOLD' : 'AUCTION' }}
         //- btn.-m-2(size="small")
           countdown
         div FLA-{{$route.params.token}}
@@ -17,12 +20,13 @@
       //- (auction)
       template(v-else-if="auction && metadata")
         section
-          .flex.p-10.flex-row-reverse.-mb-10
-            figure.w-1x2.rounded-4xl.overflow-hidden
-              router-link.block.pb-full.relative(:to="{name: 'view-token', params: {token: $route.params.token}}")
+          .flex.px-10.flex-row-reverse
+            figure.w-1x2
+              router-link(:to="{name: 'view-token', params: {token: $route.params.token}}")
                 template(v-if="metadata.image")
-                  .absolute.overlay.p-2.flex.items-center.bg-white(v-if="metadata.image.includes('.gif')")
-                    img-gif(:src="metadata.image")
+                  .pb-full.relative.bg-white.rounded-4xl.overflow-hidden
+                    .absolute.overlay.p-2.flex.items-center.bg-white(v-if="metadata.image.includes('.gif')")
+                      img-gif(:src="metadata.image")
 
             .w-1x2.p-8.bg-black-a15.rounded-4xl
               h2.font-bold {{ metadata.name }}
@@ -74,16 +78,17 @@
 
         //- bid
         .order-last.sticky.bottom-0.left-0.w-full.p-10.text-xl.select-none(v-if="auctionEnded !== true")
-          .bg-black-a30.rounded-4xl.p-6.backdrop-blur
-            .flex.w-full.group
-              btn.flex-1(size="large", theme="darken", @click="$refs.input.focus()")
-                input.w-full.text-center.focus_outline-none(ref="input", v-model="bidETH", type="number", :min="weiToETH(auction.reservePrice)", required, step="0.1", size="1", min="bidStepETH")
-              btn.order-last.px-12.pointer-events-none(size="large", theme="darken") ETH
-              btn.w-24.hidden.flex.group-hover_flex.justify-center.items-center.hover_bg-gray-a30(size="large", theme="darken", @click="increaseBid") +
-              btn.w-24.hidden.flex.group-hover_flex.justify-center.items-center.hover_bg-gray-a30(size="large", theme="darken", @click="decreaseBid")
-                .h-px.bg-current(style="width:0.55em")
-            button.block.w-full.focus_outline-none.text-xl.font-bold(@click="bid")
-              btn.tracking-wide(size="large", theme="darkener") BID
+          .bg-red.backdrop-blurff.rounded-4xl
+            .bg-black-a30.rounded-4xl.p-6
+              .flex.w-full.group
+                btn.flex-1(size="large", theme="darken", @click="$refs.input.focus()")
+                  input.w-full.text-center.focus_outline-none(ref="input", v-model="bidETH", type="number", :min="weiToETH(auction.reservePrice)", required, step="0.1", size="1", min="bidStepETH")
+                btn.order-last.px-12.pointer-events-none(size="large", theme="darken") ETH
+                btn.w-24.hidden.flex.group-hover_flex.justify-center.items-center.hover_bg-gray-a30(size="large", theme="darken", @click="increaseBid") +
+                btn.w-24.hidden.flex.group-hover_flex.justify-center.items-center.hover_bg-gray-a30(size="large", theme="darken", @click="decreaseBid")
+                  .h-px.bg-current(style="width:0.55em")
+              button.block.w-full.focus_outline-none.text-xl.font-bold(@click="bid")
+                btn.tracking-wide(size="large", theme="darkener") BID
 </template>
 
 <script>

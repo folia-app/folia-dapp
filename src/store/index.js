@@ -133,13 +133,12 @@ export default new Vuex.Store({
       )
       console.log('controller addr', FoliaController.networks[networkId].address)
       // auctions
-      // TEMPORARY RINKEBY OVERWRITE FOR TESTING
-      // ReserveAuction.networks[4].address = '0xF1154A0572574070EdFB850B28Dd02EA817d93ba'.toLowerCase()
-      //
-      state.reserveAuctionContract = new web3.eth.Contract(
-        ReserveAuction.abi,
-        ReserveAuction.networks[networkId].address
-      )
+      if (ReserveAuction.networks[networkId]) {
+        state.reserveAuctionContract = new web3.eth.Contract(
+          ReserveAuction.abi,
+          ReserveAuction.networks[networkId].address
+        )
+      }
       console.log('auction addr', ReserveAuction.networks[networkId].address)
     }
   },

@@ -175,6 +175,7 @@ module.exports = {
     flex: {
       1: '1 1 0%',
       '1x2': '0 0 50%',
+      full: '1 0 100%',
       auto: '1 1 auto',
       initial: '0 1 auto',
       none: 'none'
