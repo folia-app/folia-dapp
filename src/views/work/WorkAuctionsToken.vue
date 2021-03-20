@@ -2,8 +2,8 @@
   article.work-auctions.token.transition-background.duration-500(:class="{'bg-red': auctionEnded !== true, 'bg-gray-800': auctionEnded === true}")
     .h-screen.overflow-y-scroll.scrollbars-hidden.flex.flex-col(v-if="doc", :key="$route.params.token")
       header.p-10.mx-1.flex.justify-between.items-start(role="banner")
-        .flex.items-center
-          button.p-4.-m-4.mr-0.focus_outline-none(@click="backBtn")
+        button.flex.items-center(@click="backBtn")
+          .p-4.-m-4.mr-0.focus_outline-none
             .h-3.w-3.border-b.border-l.transform.rotate-45.border-current
           h2 {{ auctionEnded ? 'SOLD' : 'AUCTION' }}
         //- btn.-m-2(size="small")
