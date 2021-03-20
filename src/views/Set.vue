@@ -43,8 +43,10 @@
                       svg-fleuron.block.mr-2(style="width:0.96em;height:0.96em")
                       span.leading-none.whitespace-no-wrap.text-md.pt-1 {{ $store.getters.workId(item.link.uid, true) }}
                     h6.text-base {{ item.link.data.title }}
-                  btn.text-sm.-mt-2.-mr-2.px-8.pointer-events-none.bg-gray-800.text-white.ml-auto(size="small", theme="none", v-if="hasRelease(item)")
-                    countdown(:until="item.link.data.release_link.data.release_time")
+                  btn.text-sm.-mt-2.-mr-2.px-8.pointer-events-none.bg-gray-800.text-white.ml-auto(size="small", theme="none", :key="loaded", v-if="hasRelease(item)")
+                    countdown(v-if="!isReleased(item)", :until="item.link.data.release_link.data.release_time", @ended="refresh")
+                    //- TOD0 - revise this text after harm
+                    template(v-else) AUCTION
 
                 prismic-link.w-full.block.px-8.pb-8.pt-8(:field="item.link", :linkResolver="linkResolver")
                   //- (video)
@@ -71,6 +73,7 @@ export default {
   data () {
     return {
       view: 'set',
+      loaded: new Date().getTime(),
       linkResolver
     }
   },
@@ -85,6 +88,13 @@ export default {
   methods: {
     hasRelease (item) {
       return item?.link?.data?.release_link?.data?.release_time
+    },
+    isReleased (item) {
+      const time = item?.link?.data?.release_link?.data?.release_time
+      return !time || new Date(time).getTime >= new Date().getTime()
+    },
+    refresh () {
+      this.loaded = new Date().getTime()
     }
   },
   metaInfo () {
