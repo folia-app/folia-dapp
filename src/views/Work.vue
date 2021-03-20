@@ -278,10 +278,16 @@ export default {
 <style scoped>
 .work-sidebar-enter-active,
 .work-sidebar-leave-active{
-  transition: flex-basis 500ms;
+  transition: all 500ms;
+  /*transition: flex-basis 500ms;*/
+  /*transition: all 500ms;*/
+  transform-origin: right top;
 }
 .work-sidebar-enter,
 .work-sidebar-leave-to{
-  flex-basis:0%;
+  max-width: 0;
+  /*opacity:0;*/
+  /*flex-basis:0%;*/
+  /*transform: scale(0,1);*/
 }
 </style>

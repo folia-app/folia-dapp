@@ -4,7 +4,7 @@
       header.p-10.mx-1.flex.justify-between.items-start(role="banner")
         .flex.items-center
           button.p-4.-m-4.mr-0.focus_outline-none(@click="$router.push({name: 'work-auctions'})")
-            .h-4.w-4.border-b.border-l.transform.rotate-45.border-current
+            .h-3.w-3.border-b.border-l.transform.rotate-45.border-current
           h2 {{ auctionEnded ? 'SOLD' : 'AUCTION' }}
         //- btn.-m-2(size="small")
           countdown
@@ -66,7 +66,7 @@
                   button.text-xs.opacity-75.focus_outline-none.hover_opacity-100.px-4.-mx-4(@click="helpText = !helpText") ?
                 div.w-full.flex.items-end.text-2xl
                   countdown.font-bold.w-full.text-right.leading-none(:until="auctionEndTimeMs", :separator="' '", @ended="auctionEnded = true")
-              .flex-1.rounded-4xl.bg-black-a15.p-8.flex.flex-col.justify-between.min-h-52
+              .flex-1.rounded-4xl.bg-black-a15.p-8.flex.flex-colff.justify-between.min-h-52ff
                 div.text-sm Bidder
                 //- TODO - opensea link
                 div.text-2xl.w-full.leading-none.font-boldff.flex.justify-end
@@ -81,14 +81,15 @@
           .bg-red.backdrop-blurff.rounded-4xl
             .bg-black-a30.rounded-4xl.p-6
               .flex.w-full.group
+                button.block.focus_outline-none.text-xl.font-bold(@click="bid")
+                  btn.tracking-wide.px-24(size="large", theme="darkener") BID
                 btn.flex-1(size="large", theme="darken", @click="$refs.input.focus()")
                   input.w-full.text-center.focus_outline-none(ref="input", v-model="bidETH", type="number", :min="weiToETH(auction.reservePrice)", required, step="0.1", size="1", min="bidStepETH")
-                btn.order-last.px-12.pointer-events-none(size="large", theme="darken") ETH
                 btn.w-24.hidden.flex.group-hover_flex.justify-center.items-center.hover_bg-gray-a30(size="large", theme="darken", @click="increaseBid") +
                 btn.w-24.hidden.flex.group-hover_flex.justify-center.items-center.hover_bg-gray-a30(size="large", theme="darken", @click="decreaseBid")
                   .h-px.bg-current(style="width:0.55em")
-              button.block.w-full.focus_outline-none.text-xl.font-bold(@click="bid")
-                btn.tracking-wide(size="large", theme="darkener") BID
+                btn.px-10.pointer-events-none(size="large", theme="darken") ETH
+
 </template>
 
 <script>
