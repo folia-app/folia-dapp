@@ -7777,9 +7777,9 @@ folder-walker@^3.2.0:
   dependencies:
     from2 "^2.1.0"
 
-"folia-contracts@github:folia-app/folia-contracts#068db2f65e84a5be6c5e09ec0f882151bf721490":
+"folia-contracts@github:folia-app/folia-contracts#e9287e775335af97274ddf01b5b2f8507878cb07":
   version "1.0.0"
-  resolved "https://codeload.github.com/folia-app/folia-contracts/tar.gz/068db2f65e84a5be6c5e09ec0f882151bf721490"
+  resolved "https://codeload.github.com/folia-app/folia-contracts/tar.gz/e9287e775335af97274ddf01b5b2f8507878cb07"
 
 follow-redirects@^1.0.0:
   version "1.13.1"
