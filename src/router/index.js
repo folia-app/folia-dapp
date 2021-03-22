@@ -53,7 +53,7 @@ export default new Router({
           component: () => import(/* webpackChunkName: "work" */ '../views/work/WorkDetails.vue')
         },
         {
-          path: 'owners',
+          path: 'collectors',
           name: 'work-owners',
           meta: { layout: 'panel' },
           component: () => import(/* webpackChunkName: "work" */ '../views/work/WorkOwners.vue')

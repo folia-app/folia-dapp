@@ -38,6 +38,7 @@ export default {
   },
   methods: {
     getOwners () {
+      // TODO - make this not based on printed since direct-minting currently ignores...
       const printed = Number(this.work.printed)
       for (let i = printed - 1; i >= 0; i--) {
         if (!this.tokensSorted[i]) {
