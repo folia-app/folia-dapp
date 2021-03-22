@@ -38,7 +38,7 @@ export default {
   },
 
   actions: {
-    async get ({ state, getters, commit }, { token }) {
+    async get ({ state, getters, commit, dispatch }, { token }) {
       try {
         // saved ?
         let auction = state.auctions.find(auc => auc._tokenId === token)
@@ -50,7 +50,7 @@ export default {
         // !! contract missing
         if (!getters.contract) {
           console.warn('contract not set')
-          return auction
+          return null // default/loading state in component
         }
         // fetch...
         auction = await getters.contract.methods.auctions(token).call()
@@ -63,7 +63,13 @@ export default {
         }
         return auction
       } catch (e) {
-        console.error(e)
+        console.error('@getAuction', e)
+
+        // MetaMask / Infura bonked - https://github.com/MetaMask/metamask-extension/issues/7234
+        if (e.code === -32000 && e.message === 'header not found') {
+          console.log('retrying...')
+          return dispatch('get', { token })
+        }
       }
     },
 

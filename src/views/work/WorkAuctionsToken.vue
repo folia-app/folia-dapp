@@ -130,7 +130,7 @@ export default {
       return this.$store.getters['auctions/auctionEndTimeMs']({ auction: this.auction })
     },
     minBidETH () {
-      let minBid
+      let minBid = '0'
       if (this.auction) {
         const reserve = Number(this.weiToETH(this.auction.reservePrice))
         const currentBid = Number(this.weiToETH(this.auction.amount))
@@ -142,7 +142,6 @@ export default {
   methods: {
     ddhhmmss,
     async getMetadata () {
-      console.log(this.tokenId)
       this.metadata = await this.$store.dispatch('getMetadata', { token: this.tokenId })
     },
 

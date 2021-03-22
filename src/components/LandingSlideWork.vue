@@ -69,10 +69,11 @@ export default {
   computed: {
     ...mapGetters(['isSoldOut']),
     workId () {
-      return this.slice?.primary.link?.uid
+      const link = this.slice?.primary?.link
+      return link?.type === 'work' ? link.uid : undefined
     },
     work () {
-      return this.$store.state.works.find(work => work.id === this.workId)
+      return this.workId && this.$store.state.works.find(work => work.id === this.workId)
     },
     canPlay () {
       return this.$route.name === 'index'
