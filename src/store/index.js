@@ -279,6 +279,10 @@ export default new Vuex.Store({
       try {
         token = token || Number(work) * 1000000
         work = work || Math.floor(Number(token) / 1000000)
+
+        // !! is not a number
+        if (isNaN(token)) throw new Error(`Token ID is not a number: ${token}`)
+
         // return saved ?
         const saved = state.metadatas.find(metadata => metadata._token === token)
         const now = new Date().getTime()
@@ -288,7 +292,8 @@ export default new Vuex.Store({
           return saved
         }
         // fetch new
-        const url = `/.netlify/functions/metadata/${token}?network=${state.networkId}`
+        const params = state.networkId ? `?network=${state.networkId}` : ''
+        const url = `/.netlify/functions/metadata/${token}${params}`
         let metadata = await fetch(url).then(resp => resp.json())
         if (metadata && metadata.name) {
           metadata = { _work: work, _token: token, ...metadata }

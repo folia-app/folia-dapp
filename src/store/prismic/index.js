@@ -10,6 +10,12 @@ export default {
   getters: {
     works (state) {
       return state.docs.filter(doc => doc.type === 'work')
+    },
+    isReleased: (state) => ({ uid, doc }) => {
+      doc = doc || state.docs.find(doc => doc.uid === uid)
+      const time = doc?.data?.release_link?.data?.release_time
+      return !time ? true
+        : new Date(time).getTime() < new Date().getTime()
     }
   },
   mutations: {

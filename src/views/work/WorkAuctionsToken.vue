@@ -13,14 +13,16 @@
       //- (loading)
       template(v-if="auction === null")
         p.p-10 LOADING...
+
       //- (not found)
-      template(v-else-if="auction === undefined || (auction && !auction.exists)")
-        p.p-10 NOT FOUND
+      template(v-else-if="auction === undefined")
+        p.p-10
+          button.focus_outline-none(@click="getAuction") REFRESH
 
       //- (auction)
-      template(v-else-if="auction && metadata")
+      template(v-else-if="auction")
         section
-          .flex.px-10.flex-row-reverse
+          .flex.px-10.flex-row-reverse(v-if="metadata")
             figure.w-1x2
               router-link(:to="{name: 'view-token', params: {token: $route.params.token}}")
                 template(v-if="metadata.image")
@@ -128,7 +130,7 @@ export default {
       return this.$store.getters['auctions/auctionEndTimeMs']({ auction: this.auction })
     },
     minBidETH () {
-      let minBid
+      let minBid = '0'
       if (this.auction) {
         const reserve = Number(this.weiToETH(this.auction.reservePrice))
         const currentBid = Number(this.weiToETH(this.auction.amount))
@@ -144,6 +146,7 @@ export default {
     },
 
     async getAuction () {
+      this.auction = null // "Loading..."
       this.auction = await this.$store.dispatch('auctions/get', { token: this.tokenId })
       if (this.auction) {
         this.bidETH = this.minBidETH

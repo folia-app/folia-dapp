@@ -6,7 +6,7 @@
       //- (WORK PANEL)
       .sticky.z-20.top-0.right-0.w-full.h-0
         .absolute.top-0.right-0.transition-all.duration-500.transform.origin-right.bg-black.min-h-screen(:class="[panelWidths[0], {'scale-x-0': !panelOpen}]")
-          transition-group(name="pagesfade")
+          transition-group(name="pagesfade", @before-enter="setPanelWidths")
             set-view(v-if="$route.name === 'set'", key="set")
             work-view(v-else-if="activeWork", :id="activeWork", :key="activeWork")
 
@@ -31,10 +31,10 @@
                   span.group-hover_opacity-0.truncate {{ address.slice(0, 6) + '...' + address.slice(-4) }}
                   span.hidden.group-hover_block.absolute.overlay.text-right.p-10 Disconnect
         //- landing
-        section.w-full.bg-black.text-white.relative.flex.items-center.justify-center.font-sans.text-sm.h-90vh.md_h-93vh-off.md_h-screen(:style="{cursor: carouselEnabled > 1 ? 'e-resize' : 'auto'}", @click="carouselEnabled && next()")
+        section.w-full.bg-black.text-white.relative.flex.items-center.justify-center.font-sans.text-sm.h-90vh.md_h-93vh-off.md_h-screen(:style="{cursor: carouselEnabled ? 'e-resize' : 'auto'}", @click="carouselEnabled && nextSlide()")
           template(v-if="home")
             //- slides...
-            transition-group(:name="home.landing.length > 1 ? 'slide' : 'none'")
+            transition-group(:name="carouselEnabled ? 'slide' : 'none'")
               figure.absolute.overlay(v-for="(slice, i) in home.landing", v-show="current === i", :key="i")
                 landing-slide-work(:slice="slice")
 
@@ -44,10 +44,14 @@
               .w-4.h-2.border-b.border-white(:class="{'bg-white': current === i}")
           //- span.opacity-50 (videos/slideshow)
 
-        section.flex.flex-col-reverse.sm_flex-row.flex-wrap.overflow-hidden(v-if="home")
+        section.flex.flex-col-reverse.sm_flex-row.flex-wrap.overflow-hidden.bg-red(v-if="home")
           //- thumbs...
           //- work-thumb.w-full.md_w-1x2.lg_w-1x3(v-for="(doc, index) in works", :doc="doc", :key="doc.id + n")
           template(v-for="(slice, i) in home.body")
+            //- auctions
+            template(v-if="slice.slice_type === 'announcement'")
+              slice-announcement.w-full(:slice="slice")
+
             //- auctions
             template(v-if="slice.slice_type === 'auctions'")
               slice-auctions.order-last.sm_order-none.w-full(:slice="slice", :active="$route.name === 'index'")
@@ -107,10 +111,11 @@ import LandingSlideWork from '@/components/LandingSlideWork'
 import RichText from '@/components/RichText'
 import linkResolver from '@/plugins/prismic/link-resolver'
 import SliceAuctions from '@/slices/SliceAuctions'
+import SliceAnnouncement from '@/slices/SliceAnnouncement'
 let lastRt
 export default {
   name: 'Index',
-  components: { WorkView, Logo, Info, svgFleuron, Btn, LandingSlideWork, ViewToken, SetView, RichText, SliceAuctions },
+  components: { WorkView, Logo, Info, svgFleuron, Btn, LandingSlideWork, ViewToken, SetView, RichText, SliceAuctions, SliceAnnouncement },
   data () {
     return {
       squish: false,
@@ -153,9 +158,14 @@ export default {
       return lastRt?.name ? this.$router.go(-1) : this.$router.push('/')
     },
     setPanelWidths () {
-      const work = this.workDocs.find(doc => doc.uid === this.$route.params.work)
-      const isGenerative = work?.data.page_layout === 'generative'
-      const isWide = isGenerative || this.$route.meta.panelWide
+      let isWide = this.$route.meta.panelWide
+      if (!isWide) {
+        const doc = this.workDocs.find(doc => doc.uid === this.$route.params.work)
+        const isGenerative = doc?.data.page_layout === 'generative'
+        // const isReleased = this.$store.getters['prismic/isReleased']({ doc })
+        isWide = isGenerative // && isReleased
+      }
+
       // [workPanel, body]
       let widths = ['w-full sm_w-3x4 lg_w-1x2', 'scale-x-0 sm_scale-x-25 lg_scale-x-50']
       if (isWide) {
@@ -172,6 +182,9 @@ export default {
       document.body.style.overflow = ''
       this.panelOpen = false
       setTimeout(() => this.setPanelWidths(), 700) // after transition
+    },
+    nextSlide () {
+      this.current = this.current + 1 === this.home.landing.length ? 0 : this.current + 1
     }
   },
   beforeRouteEnter (to, from, next) {

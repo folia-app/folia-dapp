@@ -1,24 +1,25 @@
 <template lang="pug">
   .landing-slide-work.absolute.overlay.overflow-hidden.text-md.lg_text-base.xl_text-lg
     //- media
-    figure.absolute.overlay(style="filter: invert(100%) blur(6px)")
+    figure.absolute.overlay
       //- (image / poster)
-      img.absolute.overlay.object-cover.object-center.transform.scale-150.origin-center(v-if="slice.primary.image && slice.primary.image.url", :src="slice.primary.image.url", :alt="slice.primary.image.alt")
+      img.absolute.overlay.object-cover.object-center(v-if="slice.primary.image && slice.primary.image.url", :src="slice.primary.image.url", :alt="slice.primary.image.alt", :style="slice.primary.style_inline")
       //- (video)
-      video.absolute.overlay.object-cover.object-center.transform.scale-150.origin-center(v-if="slice.primary.media && slice.primary.media.url", :src="slice.primary.media.url", muted, ref="video", playsinline, loop)
+      video.absolute.overlay.object-cover.object-center(v-if="slice.primary.media && slice.primary.media.url", :src="slice.primary.media.url", muted, ref="video", playsinline, loop, :style="slice.primary.style_inline")
       //- (blur?)
       //- .absolute.overlay(:style="{backdropFilter: `blur(12px)`}")
 
+    //- (countdown)
     //- countdown-play-btn-overlay.z-10.text-lg(:doc="doc", @released="isReleased = true", :playBtn="false")
     .absolute.overlay.flex.items-center.justify-center(v-if="releaseTime && !isReleased")
-      prismic-link(:field="slice.primary.link", :linkResolver="linkResolver")
+      prismic-link(:field="slice.primary.link", :linkResolver="linkResolver", @click.native.stop)
         btn.px-8(style="backdrop-filter: blur(20px)")
           countdown(:until="releaseTime", @ended="isReleased = true")
 
     //- bottom info
     .absolute.bottom-0.z-10.w-full.pb-12.px-8.lg_px-12.xl_pb-16.flex.flex-wrap.items-end.justiy-center.md_justify-between
       //- title
-      prismic-link.w-full.md_w-auto.flex.flex-wrap.justify-center.group-off(:field="slice.primary.link", :linkResolver="linkResolver")
+      prismic-link.w-full.md_w-auto.flex.flex-wrap.justify-center.group-off(:field="slice.primary.link", :linkResolver="linkResolver", @click.native.stop)
         .w-full.md_w-auto.flex.justify-center(v-for="chunk in slice.primary.title.split(' | ')")
           btn.px-10(style="backdrop-filter:blur(20px)") {{ chunk }}
         //-
@@ -35,7 +36,7 @@
       template(v-if="isSoldOut(work)")
         sold-out-dot.ml-auto.mr-12.md_mr-0
       template(v-else-if="work")
-        button.mx-auto.md_m-0.focus_outline-none(@click="$store.dispatch('buy', doc.uid)", :disabled="!isReleased", :class="{'opacity-50': !isReleased}")
+        button.mx-auto.md_m-0.focus_outline-none(@click.stop="$store.dispatch('buy', doc.uid)", :disabled="!isReleased", :class="{'opacity-50': !isReleased}")
           btn.px-16(:disabled="!isReleased") BUY
 
       //- .group
@@ -69,10 +70,11 @@ export default {
   computed: {
     ...mapGetters(['isSoldOut']),
     workId () {
-      return this.slice?.primary.link?.uid
+      const link = this.slice?.primary?.link
+      return link?.type === 'work' ? link.uid : undefined
     },
     work () {
-      return this.$store.state.works.find(work => work.id === this.workId)
+      return this.workId && this.$store.state.works.find(work => work.id === this.workId)
     },
     canPlay () {
       return this.$route.name === 'index'
