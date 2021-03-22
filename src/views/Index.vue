@@ -50,7 +50,7 @@
           template(v-for="(slice, i) in home.body")
             //- auctions
             template(v-if="slice.slice_type === 'announcement'")
-              slice-announcement(:slice="slice")
+              slice-announcement.w-full(:slice="slice")
 
             //- auctions
             template(v-if="slice.slice_type === 'auctions'")
