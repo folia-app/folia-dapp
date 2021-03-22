@@ -17,31 +17,31 @@
                 svg-fleuron.block.mr-2(style="width:0.96em;height:0.96em")
                 .leading-none {{ workId(doc.uid, true) }}
 
-              //- enquire btn
+              //- ...enquire btn
               template(v-if="doc.data.enquire_button")
                 a.block.group.relative.focus_outline-none.-m-2(:href="`mailto:info@folia.app?subject=${doc.data.artist} - ${doc.data.title}`", target="_blank", rel="noopener noreferrer")
                   btn.px-10.text-md(theme="drkgray") ENQUIRE
 
-              //- ...(countdown / bid)
+              //- ...not released
+              template(v-else-if="!isReleased")
+                button.focus_outline-none(@click="$router.replace({name: 'work-auctions'})", :disabled="!isUnitSale", :class="{'pointer-events-none': !isUnitSale}")
+                  btn.px-8.text-sm.-mt-2.-mr-4(theme="drkgray", size="small")
+                    countdown.text-white(:until="doc.data.release_link.data.release_time", @ended="isReleased = true", separator=" ")
+
+              //- ...bid
               template(v-else-if="isUnitSale")
-                template(v-if="!isReleased")
-                  button.focus_outline-none(@click="$router.replace({name: 'work-auctions'})")
-                    btn.px-8.text-sm.-mt-2.-mr-4(theme="drkgray", size="small")
-                      //- countdown.text-white(:until="doc.data.release_time")
-                      countdown.text-white(:until="doc.data.release_link.data.release_time", @ended="isReleased = true")
-                template(v-else-if="doc.data.auction.length")
+                template(v-if="doc.data.auction.length")
                   button.block.group.relative.focus_outline-none.-m-2(@click="$router.replace({name: 'work-auctions'})")
                     btn.px-16(theme="drkgray") BID
 
-              //- ... (sold-out / buy)
-              template(v-if="!isUnitSale")
-                template(v-if="isSoldOut(work)")
-                  sold-out-dot
-                template(v-else)
-                  button.block.group.relative.focus_outline-none.-m-2(@click="buy", :disabled="!isReleased", :class="{'opacity-50': !isReleased}")
-                    btn.px-12.md_px-16(theme="drkgray", :disabled="!isReleased") BUY
-                  //- span.absolute.overlay.flex.items-center.justify-center.opacity-0.group-hover_opacity-100 BUY
-                    //- span.group-hover_opacity-0 {{ work ? weiToETH(work.price) : doc.data.price_eth }} ETH
+              //- ...sold-out
+              template(v-else-if="isSoldOut(work)")
+                sold-out-dot
+
+              //- ...buy
+              template(v-else)
+                button.block.group.relative.focus_outline-none.-m-2(@click="buy", :disabled="!isReleased", :class="{'opacity-50': !isReleased}")
+                  btn.px-12.md_px-16(theme="drkgray", :disabled="!isReleased") BUY
 
             header.text-xl
               div {{ doc.data.title }}
@@ -50,7 +50,7 @@
               //- (minted + price)
               template(v-if="!isUnitSale")
                 //- printed/edition
-                div
+                div(v-if="isReleased")
                   template(v-if="work") {{ work.printed }}/{{work.editions}} Minted
                   template(v-else) Edition of {{ doc.data.edition }}
                 //- price
@@ -118,7 +118,7 @@
                 <path d="M1 1.49251L57.3157 19L0.999998 36.5075L1 1.49251Z" fill="rgba(255,255,255,0.9)" />
               </svg>
 
-          router-view(:doc="doc", :isVariableEdition="isVariableEdition", :work="work")
+          router-view(:doc="doc", :isVariableEdition="isVariableEdition", :work="work", :isReleased="isReleased")
 
           //- (info)
           //- section(v-show="view === 'info'", style="padding-bottom:25vh")
@@ -204,7 +204,8 @@ export default {
     //   return this.$store.getters['prismic/works'].find(doc => doc.uid === this.id)
     // },
     work () {
-      return this.$store.state.works.find(work => work.id === this.id)
+      const work = this.$store.state.works.find(work => work.id === this.id)
+      return work?.exists ? work : null
     },
     metadata () {
       return this.$store.state.metadatas.find(metadata => metadata._work === this.id)
@@ -236,6 +237,8 @@ export default {
     this.fetchDoc()
     this.fetchWork()
   },
+  mounted () {
+  },
   methods: {
     async buy () {
       await this.$store.dispatch('buy', this.id)
@@ -258,8 +261,9 @@ export default {
         // if (this.isAuction) {
         //   return this.$router.replace({ name: 'work-auctions' })
         // }
-        // load "info if non-generative"
-        if (!this.isVariableEdition) {
+
+        // fwd to /info
+        if (!this.isVariableEdition || (this.isVariableEdition && !this.isReleased)) {
           this.$router.replace({ name: 'work-info' })
         }
       }
@@ -273,6 +277,9 @@ export default {
         }
         this.fetchWork(true)
       }
+    },
+    '$route' (to, from) {
+      this.goToDefaultTab()
     }
   },
   metaInfo () {
