@@ -246,11 +246,8 @@ export default {
     },
     async fetchDoc () {
       this.doc = await this.$store.dispatch('prismic/getWork', this.id)
+      this.isReleased = this.$store.getters['prismic/isReleased']({ doc: this.doc })
       this.goToDefaultTab()
-      // is released ?
-      const time = this.doc?.data.release_link?.data?.release_time
-      this.isReleased = !time ? true // no release set
-        : new Date().getTime() >= new Date(time).getTime() // now >= release
     },
     fetchWork (flush) {
       this.$store.dispatch('getWork', { id: this.id, flush })
