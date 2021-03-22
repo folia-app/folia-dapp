@@ -146,6 +146,7 @@ export default {
     },
 
     async getAuction () {
+      this.auction = null // "Loading..."
       this.auction = await this.$store.dispatch('auctions/get', { token: this.tokenId })
       if (this.auction) {
         this.bidETH = this.minBidETH

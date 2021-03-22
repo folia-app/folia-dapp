@@ -66,10 +66,12 @@ export default {
         console.error('@getAuction', e)
 
         // MetaMask / Infura bonked - https://github.com/MetaMask/metamask-extension/issues/7234
-        if (e.code === -32000 && e.message === 'header not found') {
-          console.log('retrying...')
-          return dispatch('get', { token })
-        }
+        // if (e.code === -32000 && e.message === 'header not found') {
+        //   // state.retryCalls.push({ token, code: e.code })
+        //   console.log('retrying in 500ms...')
+        //   await new Promise((res) => setTimeout(() => (res), 500)) // wait 500ms
+        //   return dispatch('get', { token })
+        // }
       }
     },
 
