@@ -103,6 +103,8 @@ export default {
       try {
         const auction = await dispatch('get', { token, flush: true })
         const globalPaused = await dispatch('getGlobalPaused')
+        const web3 = await dispatch('getWeb3', null, { root: true })
+        const bn = mixed => new web3.utils.BN(mixed)
 
         // !! all auctions paused
         if (globalPaused) throw new Error('!! Auctions are currently locked. Please wait for release or try again shortly.')
@@ -117,17 +119,23 @@ export default {
         if (getters.auctionEnded({ auction })) throw new Error('!! Auction has ended!')
 
         // !! less than reserve price
-        if (wei < Number(auction.reservePrice)) throw new Error('!! Your bid is below the minimum. Please increase your bid.')
+        const belowReserve = bn(wei).lt(bn(auction.reservePrice))
+        if (belowReserve) throw new Error('!! Your bid is below the minimum. Please increase your bid.')
 
         // !! bid below minimum
         const minWei = Number(auction.amount) + state.minBidWei
         const minETH = rootGetters.weiToETH(minWei.toString())
-        if (wei < minWei) throw new Error(`!! Minimum bid is ${minETH} ETH. Please increase your bid.`)
+        if (bn(wei).lt(minWei)) throw new Error(`!! Minimum bid is ${minETH} ETH. Please increase your bid.`)
 
         // connected wallet ?
         if (!rootState.address) {
           await dispatch('connect', null, { root: true })
         }
+
+        // !! not enough ETH
+        const balance = await rootGetters.userBalance()
+        const insufficientFunds = bn(balance).lt(bn(wei))
+        if (insufficientFunds) throw new Error('!! Insufficient funds!')
 
         // !! low time confirmation
         const hasStarted = Number(auction.firstBidTime)

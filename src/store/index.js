@@ -60,6 +60,7 @@ export default new Vuex.Store({
         : id // 1 - for contract communication
     },
     addrShort: () => (addr) => addr.slice(0, 6) + '...' + addr.slice(-4),
+    userBalance: (state) => (addr) => web3?.eth.getBalance(addr || state.address) || 0, // wei
     contractAddr: (state) => state.foliaContract?._address,
     isSoldOut: () => (work) => {
       return work && Number(work.editions) && Number(work.printed) >= Number(work.editions)
@@ -172,6 +173,11 @@ export default new Vuex.Store({
       } catch (e) {
         console.error('@init', e)
       }
+    },
+
+    getWeb3 () {
+      // TODO better handler for this
+      return web3
     },
 
     /* connect wallet */
