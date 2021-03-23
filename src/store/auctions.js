@@ -1,3 +1,6 @@
+import debounce from 'lodash/debounce'
+const deployBlock = 12088025
+
 export default {
   namespaced: true,
   state: {
@@ -12,6 +15,8 @@ export default {
     },
     auctionEnded: (state, getters) => ({ tokenId, auction }) => {
       auction = auction || state.auctions.find(auc => auc._tokenId === tokenId)
+      // ended ?
+      if (auction?.winner) return true
       // !! no auction or hasn't started
       if (!auction || !Number(auction.firstBidTime)) {
         return false
@@ -33,7 +38,18 @@ export default {
 
   mutations: {
     SAVE_AUCTION (state, auction) {
-      state.auctions.push(auction)
+      // remove old if updating existing
+      const i = state.auctions.findIndex(auc => auc._tokenId === auction._tokenId)
+      if (i > -1) {
+        state.auctions.splice(i, 1) // remove
+      }
+      // add active acutions to the front for prioritized look-up
+      state.auctions.unshift(auction)
+    },
+
+    SAVE_AUCTIONS_ENDED (state, auctions) {
+      // add ended auctions to end
+      state.auctions = state.auctions.concat(auctions)
     }
   },
 
@@ -54,13 +70,21 @@ export default {
         }
         // fetch...
         auction = await getters.contract.methods.auctions(token).call()
-        // save
-        if (auction) {
+
+        // format + save
+        if (auction && auction.exists) {
           // format
           auction = { _tokenId: token, ...auction }
           // save
           commit('SAVE_AUCTION', auction)
         }
+
+        // maybe ended ?
+        if (auction && !auction.exists) {
+          const ended = await dispatch('getAuctionsEnded')
+          auction = ended.find(auc => auc._tokenId === token)
+        }
+
         return auction
       } catch (e) {
         console.error('@getAuction', e)
@@ -142,7 +166,22 @@ export default {
         console.error(e)
       }
       return paused
-    }
+    },
+
+    getAuctionsEnded: debounce(async function ({ getters, commit }) {
+      try {
+        let auctions = []
+        if (getters.contract) {
+          const events = await getters.contract.getPastEvents('AuctionEnded', { fromBlock: deployBlock })
+          // format
+          auctions = events.map(({ returnValues }) => ({ _tokenId: returnValues.tokenId, ...returnValues }))
+          commit('SAVE_AUCTIONS_ENDED', auctions)
+        }
+        return auctions
+      } catch (e) {
+        console.error(e)
+      }
+    }, 5000, { leading: true, trailing: false })
   }
 }
 

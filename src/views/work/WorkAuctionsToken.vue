@@ -69,12 +69,12 @@
                 div.w-full.flex.items-end.text-2xl
                   countdown.font-bold.w-full.text-right.leading-none(:until="auctionEndTimeMs", :separator="' '", @ended="auctionEnded = true")
               .flex-1.rounded-4xl.bg-black-a15.p-8.flex.justify-between.min-h-52ff(:class="{'flex-col max-w-1x2': auctionEnded}")
-                div.text-sm Bidder
+                div.text-sm {{ auction.winner ? 'Winner' : 'Bidder' }}
                 //- bidder link
                 div.w-full.leading-none.flex.justify-end
-                  a(:href="openSeaLink({ account: auction.bidder })", target="_blank", rel="noopener noreferrer")
+                  a(:href="openSeaLink({ account: auction.bidder || auction.winner })", target="_blank", rel="noopener noreferrer")
                     btn.px-8.text-md.lg_text-lg(size="small", :class="{'-m-4': auctionEnded, 'lg_text-2xl': !auctionEnded}")
-                      | {{ auction.bidder === address ? 'You' : addrShort(auction.bidder) }}
+                      | {{ auction.bidder === address ? 'You' : addrShort(auction.bidder || auction.winner) }}
               //- .w-1x2.rounded-4xl.bg-black-a03.p-8.flex.flex-col.justify-between.min-h-52
                 div.text-sm Errors/Help ?
 
@@ -149,9 +149,11 @@ export default {
       this.auction = null // "Loading..."
       this.auction = await this.$store.dispatch('auctions/get', { token: this.tokenId })
       if (this.auction) {
-        this.bidETH = this.minBidETH
         this.auctionEnded = this.$store.getters['auctions/auctionEnded']({ auction: this.auction })
-        this.listenToContract()
+        if (!this.auctionEnded) {
+          this.bidETH = this.minBidETH
+          this.listenToContract()
+        }
       }
     },
 

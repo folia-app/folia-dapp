@@ -7,24 +7,25 @@
 
     .flex.items-center.text-sm.ml-auto(v-if="!hideTimers")
       //- price
-      btn.px-8.pointer-events-none.text-white(size="small", theme="drkgray", v-if="auction")
+      btn.px-8.pointer-events-none.text-white(size="small", theme="drkgray", v-if="auction && !auctionEnded")
         //- current bid
+        //- template(v-if="auction.winner") {{ weiToETH(auction.amount) }} ETH
         template(v-if="auctionIsActive") {{ weiToETH(auction.amount) }} ETH
-        template(v-else) {{ weiToETH(auction.reservePrice) }} ETH
+        template(v-else-if="auction.reservePrice") {{ weiToETH(auction.reservePrice) }} ETH
       //- auction ended
       template(v-if="auctionEnded")
-        sold-out-dot
+        sold-out-dot.ml-6
       //- auction active
       template(v-else-if="auctionIsActive")
         btn.px-8.bg-red.pointer-events-none(size="small", theme="none")
           countdown.ml-2(:until="auctionEndTimeMs", separator=" ", @ended="auctionEnded = true")
       //- auction to be released
-      template(v-else-if="releaseTime")
-        //- chevron
-        .h-4.w-4.border-t.border-r.transform.rotate-45.border-white.ml-6(v-if="releaseTimerEnded")
-        //- (timer)
-        btn.px-8.pointer-events-none.-mr-4(v-else, size="small", theme="drkgray")
-          countdown(:until="releaseTime", @ended="onReleaseTimerEnded", separator=" ")
+      //- template(v-else-if="releaseTime")
+      //- chevron
+      .h-4.w-4.border-t.border-r.transform.rotate-45.border-white.ml-6(v-if="releaseTimerEnded")
+      //- (timer)
+      btn.px-8.pointer-events-none.-mr-4(v-else, size="small", theme="drkgray")
+        countdown(:until="releaseTime", @ended="onReleaseTimerEnded", separator=" ")
 </template>
 
 <script>
