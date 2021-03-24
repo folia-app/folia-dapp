@@ -30,7 +30,7 @@
                     .absolute.overlay.p-2.flex.items-center.bg-white(v-if="metadata.image.includes('.gif')")
                       img-gif(:src="metadata.image", :key="metadata.image")
 
-            .w-2x3.lg_w-1x2.p-7.lg_p-8.bg-black-a15.rounded-4xl
+            .w-2x3.sm_w-1x2.p-7.lg_p-8.bg-black-a15.rounded-4xl
               h2.font-bold {{ metadata.name }}
               div.text-xs.mt-2 {{ metadata.description }}
               //- div Reserve Price: {{ weiToETH(auction.reservePrice) }} ETH
