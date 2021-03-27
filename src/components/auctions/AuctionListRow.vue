@@ -1,31 +1,35 @@
 <template lang="pug">
-  .px-10.lg_px-12.flex.flex-wrap.justify-between.items-center.min-h-32.md_min-h-40.py-10
+  router-link.block.hover_bg-gray-950.px-10.lg_px-12.flex.flex-wrap.justify-between.items-center.min-h-32.md_min-h-40.py-10(:to="{name: 'work-auctions-token', params: { work: tokenId[0], token: tokenId }}", :class="{'opacity-50 pointer-events-none': locked}")
     h6.flex.items-center
       slot
       svg-eye.ml-6(v-show="$route.params.token === tokenId", v-if="!hideTimers")
       //- .h-4.w-4.rounded-full.bg-white.ml-5
 
-    .flex.items-center.text-sm.ml-auto(v-if="!hideTimers")
-      //- price
-      btn.px-8.pointer-events-none.text-white(size="small", theme="drkgray", v-if="auction && !auctionEnded")
-        //- current bid
-        //- template(v-if="auction.winner") {{ weiToETH(auction.amount) }} ETH
-        template(v-if="auctionIsActive") {{ weiToETH(auction.amount) }} ETH
-        template(v-else-if="auction.reservePrice") {{ weiToETH(auction.reservePrice) }} ETH
-      //- auction ended
-      template(v-if="auctionEnded")
-        sold-out-dot.ml-6
-      //- auction active
-      template(v-else-if="auctionIsActive")
-        btn.px-8.bg-red.pointer-events-none(size="small", theme="none")
-          countdown.ml-2(:until="auctionEndTimeMs", separator=" ", @ended="auctionEnded = true")
-      //- auction to be released
-      //- template(v-else-if="releaseTime")
-      //- chevron
-      .h-4.w-4.border-t.border-r.transform.rotate-45.border-white.ml-6(v-if="releaseTimerEnded")
-      //- (timer)
-      btn.px-8.pointer-events-none.-mr-4(v-else, size="small", theme="drkgray")
-        countdown(:until="releaseTime", @ended="onReleaseTimerEnded", separator=" ")
+    .flex.items-center.text-sm.ml-auto
+      template(v-if="locked")
+        //-
+        btn.px-8.pointer-events-none.text-white.uppercase(size="small", theme="drkgray") {{ locked }}
+      template(v-else-if="!hideTimers")
+        //- price
+        btn.px-8.pointer-events-none.text-white(size="small", theme="drkgray", v-if="auction && !auctionEnded")
+          //- current bid
+          //- template(v-if="auction.winner") {{ weiToETH(auction.amount) }} ETH
+          template(v-if="auctionIsActive") {{ weiToETH(auction.amount) }} ETH
+          template(v-else-if="auction.reservePrice") {{ weiToETH(auction.reservePrice) }} ETH
+        //- auction ended
+        template(v-if="auctionEnded")
+          sold-out-dot.ml-6
+        //- auction active
+        template(v-else-if="auctionIsActive")
+          btn.px-8.bg-red.pointer-events-none(size="small", theme="none")
+            countdown.ml-2(:until="auctionEndTimeMs", separator=" ", @ended="auctionEnded = true")
+        //- auction to be released
+        //- template(v-else-if="releaseTime")
+        //- chevron
+        .h-4.w-4.border-t.border-r.transform.rotate-45.border-white.ml-6(v-if="releaseTimerEnded")
+        //- (timer)
+        btn.px-8.pointer-events-none.-mr-4(v-else, size="small", theme="drkgray")
+          countdown(:until="releaseTime", @ended="onReleaseTimerEnded", separator=" ")
 </template>
 
 <script>
@@ -36,7 +40,7 @@ import SoldOutDot from '@/components/SoldOutDot'
 import svgEye from '@/components/SVG-Eye'
 export default {
   name: 'AuctionListRow',
-  props: ['tokenId', 'releaseTime', 'hideTimers'],
+  props: ['tokenId', 'releaseTime', 'hideTimers', 'locked'],
   data () {
     return {
       auction: undefined,
