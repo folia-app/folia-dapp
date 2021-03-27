@@ -5,7 +5,7 @@ import Eth from 'web3-eth'
 require('dotenv').config()
 require('encoding') // netlify build error / missing package??
 const ignoreRelease = process.env.VUE_APP_DEV_IGNORE_RELEASES === 'true'
-// const ignoreIsOwned = process.env.VUE_APP_DEV_IGNORE_IS_OWNED === 'true'
+const ignoreIsOwned = process.env.VUE_APP_DEV_IGNORE_IS_OWNED === 'true'
 
 let foliaContract
 
@@ -29,15 +29,15 @@ exports.handler = async function (event, context) {
     // (test data || main data)
     const work = works[prefix + workNamespace] || works['FLA' + workNamespace]
     // find token
-    // const token = work && work.tokens[tokenId]
+    const token = work && work.tokens[tokenId]
 
     // !! token must exist in work.tokens list
-    // if (!token) {
-    //   return {
-    //     statusCode: 404,
-    //     body: JSON.stringify({ message: 'Not Found' })
-    //   }
-    // }
+    if (!token) {
+      return {
+        statusCode: 404,
+        body: JSON.stringify({ message: 'Not Found' })
+      }
+    }
 
     // !! not released yet
     const now = new Date().getTime()
@@ -57,25 +57,18 @@ exports.handler = async function (event, context) {
       }
     }
 
-    // token exists / owned ?
-    const owner = await getNFTOwnerByTokenId(tokenId, networkId)
-    if (!owner) {
-      return {
-        statusCode: 404,
-        body: JSON.stringify({ message: 'Not found' })
+    // !! generative && not owned / minted yet
+    if (work.generative) {
+      const owner = await getNFTOwnerByTokenId(tokenId, networkId)
+      if (!owner && !ignoreIsOwned) {
+        return {
+          statusCode: 200,
+          body: JSON.stringify({
+            message: 'Not yet minted'
+          })
+        }
       }
     }
-
-    // !! generative && not owned / minted yet
-    // const owner = await getNFTOwnerByTokenId(tokenId, networkId)
-    // if (work.generative && !owner && !ignoreIsOwned) {
-    //   return {
-    //     statusCode: 200,
-    //     body: JSON.stringify({
-    //       message: 'Not yet minted'
-    //     })
-    //   }
-    // }
 
     // the sauce
     const metadata = {
