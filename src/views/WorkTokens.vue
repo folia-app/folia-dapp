@@ -17,7 +17,7 @@
       div(v-if="canBuy")
         .relative.pb-full.overflow-hidden
           //- (teaser video as background)
-          video.absolute.overlay.object-cover.object-contain.opacity-25.transform.scale-180(:src="doc.data.teaser_video.url", loop, playsinline, muted, autoplay, @loadedmetadata="$event => $event.target.playbackRate = 0.25")
+          //- video.absolute.overlay.object-cover.object-contain.opacity-25(:src="doc.data.teaser_video.url", loop, playsinline, muted, autoplay, style="filter:blur(8px)")
           //- buy btn
           button.absolute.overlay.flex.items-center.justify-center.pb-6.pr-6(@click="$emit('buy')", style="mix-blend-mode:difference")
             <svg style="width:50%" viewBox="0 0 96 96" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio>
