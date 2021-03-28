@@ -1,5 +1,8 @@
 <template lang="pug">
   article.work.w-full.text-white
+    //- token viewer
+    //- .fixed.overlay.z-50.bg-black(v-if="$route.name === 'work-token'")
+
     .flex.w-full
       //- main / left col
       .flex-1.relative.h-screen.overflow-y-scroll.scrollbars-hidden.transition.duration-500(:class="{'opacity-0 md_opacity-33 md_hover_opacity-100': $route.name === 'work-auctions-token'}")
@@ -82,8 +85,6 @@ import RichText from '@/components/RichText'
 import svgX from '@/components/SVG-X'
 import Btn from '@/components/Btn'
 import svgFleuron from '@/components/SVG-Fleuron'
-import WorkOwners from '@/components/WorkOwners'
-import WorkTokens from '@/views/WorkTokens'
 import Countdown from '@/components/Countdown'
 import ImgGif from '@/components/ImgGif'
 // import CountdownPlayBtnOverlay from '@/components/CountdownPlayBtnOverlay'
@@ -194,7 +195,7 @@ export default {
       }
     }
   },
-  components: { RichText, svgX, Btn, svgFleuron, WorkOwners, SoldOutDot, WorkTokens, Countdown, ImgGif }
+  components: { RichText, svgX, Btn, svgFleuron, SoldOutDot, Countdown, ImgGif }
 }
 </script>
 

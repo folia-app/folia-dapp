@@ -78,8 +78,12 @@ export default {
     open () {
       this.opened = true
       this.fetchOwner()
+      this.onMouseleave() // cancel hover
     },
     onMouseenter () {
+      // cancel if opened
+      if (this.opened) return this.onMouseleave()
+      // load iframe
       this.hoverTmout = setTimeout(() => {
         this.hover = true
       }, 300)

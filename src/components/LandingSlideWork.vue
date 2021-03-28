@@ -36,7 +36,7 @@
       template(v-if="isSoldOut(work)")
         sold-out-dot.ml-auto.mr-12.md_mr-0
       template(v-else-if="work")
-        button.mx-auto.md_m-0.focus_outline-none(@click.stop="$store.dispatch('buy', doc.uid)", :disabled="!isReleased", :class="{'opacity-50': !isReleased}")
+        button.mx-auto.md_m-0.focus_outline-none(@click.stop="buy", :disabled="!isReleased", :class="{'opacity-50': !isReleased}")
           btn.px-16(:disabled="!isReleased") BUY
 
       //- .group
@@ -49,7 +49,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 import Btn from '@/components/Btn'
 // import CountdownPlayBtnOverlay from '@/components/CountdownPlayBtnOverlay'
 import Countdown from '@/components/Countdown'
@@ -68,13 +68,14 @@ export default {
     }
   },
   computed: {
+    ...mapState(['foliaControllerContract']),
     ...mapGetters(['isSoldOut']),
     workId () {
       const link = this.slice?.primary?.link
       return link?.type === 'work' ? link.uid : undefined
     },
     work () {
-      return this.workId && this.$store.state.works.find(work => work.id === this.workId)
+      return this.$store.state.works.find(work => work.id === this.workId)
     },
     canPlay () {
       return this.$route.name === 'index'
@@ -103,7 +104,12 @@ export default {
       }
     },
     getWork () {
-      return !isNaN(this.workId) && this.$store.dispatch('getWork', { id: this.workId })
+      console.log(this.workId, this.work)
+      return !this.work && this.$store.dispatch('getWork', { id: this.workId, flush: true })
+    },
+    async buy () {
+      this.$router.push({ name: 'work', params: { work: this.workId } })
+      await this.$store.dispatch('buy', this.workId)
     }
   },
 
@@ -121,6 +127,9 @@ export default {
     },
     '$route' (to, from) {
       return this.canPlay ? this.play() : this.pause()
+    },
+    foliaControllerContract () {
+      this.getWork()
     }
   }
 }

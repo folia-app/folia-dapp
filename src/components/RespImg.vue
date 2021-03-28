@@ -35,14 +35,10 @@ export default {
     //   return this.image?.dimensions || { height: this.image?.height, width: this.image?.width }
     // }
   },
-  created () {
-    console.time('thumb:' + this.src)
-  },
   mounted () {
     this.dims = { height: this.$el.offsetHeight, width: this.$el.offsetWidth }
     // optimized image size, based on el width (must be rendered)
     this.thumb = this.resize(this.src, [this.$el.offsetWidth])
-    console.timeEnd('thumb:' + this.src)
   }
 }
 

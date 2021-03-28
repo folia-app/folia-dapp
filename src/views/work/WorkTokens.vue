@@ -88,7 +88,7 @@ export default {
       }
     },
     listenToContract () {
-      if (this.foliaControllerContract && !this.listening && this.canBuy) {
+      if (!this.listening && this.foliaControllerContract && this.canBuy) {
         this.foliaControllerContract.events
           .editionBought()
           .on('data', this.onEditionBought)
@@ -127,6 +127,9 @@ export default {
       this.getTokens()
     },
     foliaControllerContract () {
+      this.listenToContract()
+    },
+    canBuy () {
       this.listenToContract()
     }
   },
