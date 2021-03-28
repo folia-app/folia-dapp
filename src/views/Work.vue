@@ -273,6 +273,9 @@ export default {
         }
         this.fetchWork(true)
       }
+    },
+    '$route' (to, from) {
+      this.goToDefaultTab()
     }
   },
   metaInfo () {
