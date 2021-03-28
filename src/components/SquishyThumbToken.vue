@@ -2,7 +2,7 @@
   squishy-thumb.squishy-thumb-token.transition.duration-200(@open="open", :style="{background: userIsOwner && '#ffeb00'}")
 
     //- media
-    div(slot="media", @mouseenter="onMouseenter", @mouseleave="onMouseleave")
+    div(slot="media", @mouseleave="onMouseleave", @mousemove="onMousemove")
       //- image
       resp-img.transition-opacity.duration-500(:bg="true", :image="{src: token.image}", :class="{'opacity-0': hover && token.drc}")
       //- iframe ?
@@ -91,6 +91,11 @@ export default {
     onMouseleave () {
       this.hover = this.iframeLoaded = false
       clearTimeout(this.hoverTmout)
+    },
+    onMousemove () {
+      // cancel until they actually stop for long enough
+      clearTimeout(this.hoverTmout)
+      this.onMouseenter()
     }
   },
   components: { Btn, SquishyThumb, svgEye, RespImg }
