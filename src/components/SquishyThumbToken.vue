@@ -8,7 +8,7 @@
       //- iframe ?
       template(v-if="token.drc && hover")
         .absolute.overlay(:class="{'cursor-wait': !iframeLoaded}")
-          iframe.absolute.overlay.pointer-events-none.transition-opacity.duration-500(:src="`http://localhost:1234?drc=${encodeURIComponent(token.drc)}`", @load="iframeLoaded = true", :class="{'opacity-0': !iframeLoaded}")
+          iframe.absolute.overlay.pointer-events-none.transition-opacity.duration-500(:src="`https://programmatic-puppet.netlify.app?drc=${encodeURIComponent(token.drc)}`", @load="iframeLoaded = true", :class="{'opacity-0': !iframeLoaded}")
 
     //- img.absolute.overlay.object-contain.object-center.transition.duration-300.opacity-0.lazyload(slot="media", :srcset="`${resizeCloudinary(token.image, [414], false)} 414w,${resizeCloudinary(token.image, [640], false)} 1920w, ${resizeCloudinary(token.image, [960], false)}`", @load="$event => $event.target.style.opacity = 1")
 
