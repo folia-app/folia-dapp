@@ -14,12 +14,12 @@
     //- grid
     .w-full.grid(:class="[gridCols]")
       //- buy block
-      div(v-if="canBuy")
+      //- div(v-if="canBuy")
         .relative.pb-full.overflow-hidden
           //- (teaser video as background)
           video.absolute.overlay.object-cover.object-contain.opacity-25(:src="doc.data.teaser_video.url", loop, playsinline, muted, autoplay)
           //- buy btn
-          button.absolute.overlay.flex.items-center.justify-center.pb-6.pr-6.hover_bg-gray-a15(@click="$emit('buy')", style="mix-blend-mode:difference")
+          button.absolute.overlay.flex.items-center.justify-center.pb-6.pr-6.focus_outline-none(@click="$emit('buy')", style="mix-blend-mode:difference;backdrop-filter:blur(10px)")
             <svg style="width:50%" viewBox="0 0 96 96" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio>
               <line x1="10.165" y1="10.1227" x2="94.7885" y2="94.7462" stroke="rgb(255,255,255,0.8)" stroke-width="0.75" />
               <line x1="54.9753" y1="10.8298" x2="10.165" y2="55.6401" stroke="rgb(255,255,255,0.8)" stroke-width="0.75" />

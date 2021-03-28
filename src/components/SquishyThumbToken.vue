@@ -1,8 +1,16 @@
 <template lang="pug">
   squishy-thumb.squishy-thumb-token.transition.duration-200(@open="open", :style="{background: userIsOwner && '#ffeb00'}")
-    //- image
-    //- resp-img(slot="media", :bg="true", :image="{src: token.image}", :lazy="false")
-    img.absolute.overlay.object-contain.object-center.transition.duration-300.opacity-0.lazyload(slot="media", :srcset="`${resizeCloudinary(token.image, [414], false)} 414w,${resizeCloudinary(token.image, [640], false)} 1920w, ${resizeCloudinary(token.image, [960], false)}`", @load="$event => $event.target.style.opacity = 1")
+
+    //- media
+    div(slot="media", @mouseenter="onMouseenter", @mouseleave="onMouseleave")
+      //- image
+      resp-img.transition-opacity.duration-500(:bg="true", :image="{src: token.image}", :class="{'opacity-0': hover && token.drc}")
+      //- iframe ?
+      template(v-if="token.drc && hover")
+        .absolute.overlay(:class="{'cursor-wait': !iframeLoaded}")
+          iframe.absolute.overlay.pointer-events-none.transition-opacity.duration-500(:src="`http://localhost:1234?drc=${encodeURIComponent(token.drc)}`", @load="iframeLoaded = true", :class="{'opacity-0': !iframeLoaded}")
+
+    //- img.absolute.overlay.object-contain.object-center.transition.duration-300.opacity-0.lazyload(slot="media", :srcset="`${resizeCloudinary(token.image, [414], false)} 414w,${resizeCloudinary(token.image, [640], false)} 1920w, ${resizeCloudinary(token.image, [960], false)}`", @load="$event => $event.target.style.opacity = 1")
 
     //- inner content
     .absolute.overlay.flex.items-center.justify-center.group(v-if="opened")
@@ -38,8 +46,8 @@
 import { mapState, mapGetters } from 'vuex'
 import SquishyThumb from '@/components/SquishyThumb'
 import Btn from '@/components/Btn'
-// import RespImg from '@/components/RespImg'
-import { resizeCloudinary } from '@/components/RespImg'
+import RespImg, { resizeCloudinary } from '@/components/RespImg'
+
 import svgEye from '@/components/SVG-Eye'
 export default {
   name: 'SquishyThumbToken',
@@ -47,7 +55,10 @@ export default {
   data () {
     return {
       owner: '',
-      opened: false
+      opened: false,
+      hover: false,
+      iframeLoaded: false,
+      hoverTmout: null
     }
   },
   computed: {
@@ -67,9 +78,18 @@ export default {
     open () {
       this.opened = true
       this.fetchOwner()
+    },
+    onMouseenter () {
+      this.hoverTmout = setTimeout(() => {
+        this.hover = true
+      }, 300)
+    },
+    onMouseleave () {
+      this.hover = this.iframeLoaded = false
+      clearTimeout(this.hoverTmout)
     }
   },
-  components: { Btn, SquishyThumb, svgEye }
+  components: { Btn, SquishyThumb, svgEye, RespImg }
 }
 </script>
 

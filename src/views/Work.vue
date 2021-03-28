@@ -118,7 +118,7 @@
                 <path d="M1 1.49251L57.3157 19L0.999998 36.5075L1 1.49251Z" fill="rgba(255,255,255,0.9)" />
               </svg>
 
-          router-view(:doc="doc", :isVariableEdition="isVariableEdition", :work="work", :isReleased="isReleased", :canBuy="canBuy")
+          router-view(:doc="doc", :isVariableEdition="isVariableEdition", :work="work", :isReleased="isReleased", :canBuy="canBuy", @buy="buy")
 
           //- (info)
           //- section(v-show="view === 'info'", style="padding-bottom:25vh")
