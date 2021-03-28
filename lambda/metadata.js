@@ -82,7 +82,7 @@ exports.handler = async function (event, context) {
       // description: doc.data.description[0].text ?? '',
 
       // all assets related to the work (posterity)
-      directory: work.directory,
+      directory: token.directory || work.directory,
 
       // opensea
       external_url: process.env.VUE_APP_CANONICAL_DOMAIN + '/works/' + workId + '/' + tokenId,
@@ -120,6 +120,10 @@ exports.handler = async function (event, context) {
       animation_url_optim: asset(work, tokenId, 'animation_url_optim'),
 
       youtube_url: '',
+
+      // 3d models
+      obj: asset(work, tokenId, 'obj'),
+      drc: asset(work, tokenId, 'drc'),
 
       // sha hashes for posterity
       sha256: work.sha256 || {}
