@@ -1,3 +1,6 @@
+import debounce from 'lodash/debounce'
+const deployBlock = 12088025
+
 export default {
   namespaced: true,
   state: {
@@ -12,6 +15,8 @@ export default {
     },
     auctionEnded: (state, getters) => ({ tokenId, auction }) => {
       auction = auction || state.auctions.find(auc => auc._tokenId === tokenId)
+      // ended ?
+      if (auction?.winner) return true
       // !! no auction or hasn't started
       if (!auction || !Number(auction.firstBidTime)) {
         return false
@@ -33,7 +38,18 @@ export default {
 
   mutations: {
     SAVE_AUCTION (state, auction) {
-      state.auctions.push(auction)
+      // remove old if updating existing
+      const i = state.auctions.findIndex(auc => auc._tokenId === auction._tokenId)
+      if (i > -1) {
+        state.auctions.splice(i, 1) // remove
+      }
+      // add active acutions to the front for prioritized look-up
+      state.auctions.unshift(auction)
+    },
+
+    SAVE_AUCTIONS_ENDED (state, auctions) {
+      // add ended auctions to end
+      state.auctions = state.auctions.concat(auctions)
     }
   },
 
@@ -54,13 +70,21 @@ export default {
         }
         // fetch...
         auction = await getters.contract.methods.auctions(token).call()
-        // save
-        if (auction) {
+
+        // format + save
+        if (auction && auction.exists) {
           // format
           auction = { _tokenId: token, ...auction }
           // save
           commit('SAVE_AUCTION', auction)
         }
+
+        // maybe ended ?
+        if (auction && !auction.exists) {
+          const ended = await dispatch('getAuctionsEnded')
+          auction = ended.find(auc => auc._tokenId === token)
+        }
+
         return auction
       } catch (e) {
         console.error('@getAuction', e)
@@ -79,6 +103,8 @@ export default {
       try {
         const auction = await dispatch('get', { token, flush: true })
         const globalPaused = await dispatch('getGlobalPaused')
+        const web3 = await dispatch('getWeb3', null, { root: true })
+        const bn = mixed => new web3.utils.BN(mixed)
 
         // !! all auctions paused
         if (globalPaused) throw new Error('!! Auctions are currently locked. Please wait for release or try again shortly.')
@@ -93,17 +119,23 @@ export default {
         if (getters.auctionEnded({ auction })) throw new Error('!! Auction has ended!')
 
         // !! less than reserve price
-        if (wei < Number(auction.reservePrice)) throw new Error('!! Your bid is below the minimum. Please increase your bid.')
+        const belowReserve = bn(wei).lt(bn(auction.reservePrice))
+        if (belowReserve) throw new Error('!! Your bid is below the minimum. Please increase your bid.')
 
         // !! bid below minimum
         const minWei = Number(auction.amount) + state.minBidWei
         const minETH = rootGetters.weiToETH(minWei.toString())
-        if (wei < minWei) throw new Error(`!! Minimum bid is ${minETH} ETH. Please increase your bid.`)
+        if (bn(wei).lt(minWei)) throw new Error(`!! Minimum bid is ${minETH} ETH. Please increase your bid.`)
 
         // connected wallet ?
         if (!rootState.address) {
           await dispatch('connect', null, { root: true })
         }
+
+        // !! not enough ETH
+        const balance = await rootGetters.userBalance()
+        const insufficientFunds = bn(balance).lt(bn(wei))
+        if (insufficientFunds) throw new Error('!! Insufficient funds!')
 
         // !! low time confirmation
         const hasStarted = Number(auction.firstBidTime)
@@ -142,7 +174,22 @@ export default {
         console.error(e)
       }
       return paused
-    }
+    },
+
+    getAuctionsEnded: debounce(async function ({ getters, commit }) {
+      try {
+        let auctions = []
+        if (getters.contract) {
+          const events = await getters.contract.getPastEvents('AuctionEnded', { fromBlock: deployBlock })
+          // format
+          auctions = events.map(({ returnValues }) => ({ _tokenId: returnValues.tokenId, ...returnValues }))
+          commit('SAVE_AUCTIONS_ENDED', auctions)
+        }
+        return auctions
+      } catch (e) {
+        console.error(e)
+      }
+    }, 5000, { leading: true, trailing: false })
   }
 }
 

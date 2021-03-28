@@ -26,12 +26,13 @@ exports.handler = async function (event, context) {
     // find work
 
     const prefix = networkId === '4' ? 'TEST' : 'FLA'
-    // console.log(prefix, networkId, typeof networkId)
     // (test data || main data)
     const work = works[prefix + workNamespace] || works['FLA' + workNamespace]
+    // find token
+    const token = work && work.tokens[tokenId]
 
-    // !! not found
-    if (!work) {
+    // !! token must exist in work.tokens list
+    if (!token) {
       return {
         statusCode: 404,
         body: JSON.stringify({ message: 'Not Found' })
@@ -57,13 +58,15 @@ exports.handler = async function (event, context) {
     }
 
     // !! generative && not owned / minted yet
-    const owner = await getNFTOwnerByTokenId(tokenId, networkId)
-    if (work.generative && !owner && !ignoreIsOwned) {
-      return {
-        statusCode: 200,
-        body: JSON.stringify({
-          message: 'Not yet minted'
-        })
+    if (work.generative) {
+      const owner = await getNFTOwnerByTokenId(tokenId, networkId)
+      if (!owner && !ignoreIsOwned) {
+        return {
+          statusCode: 200,
+          body: JSON.stringify({
+            message: 'Not yet minted'
+          })
+        }
       }
     }
 
@@ -71,14 +74,15 @@ exports.handler = async function (event, context) {
     const metadata = {
       // both opensea and rarebits
       name: work.titlePattern.replace('{{no}}', printNo(work, tokenId)),
-      owner: owner,
+
+      // owner: owner,
       // name: `${doc.data.artist}, "${doc.data.title}", ${doc.data.year} (${printNo}/${doc.data.edition})`,
 
       description: work.description, // by token ID?
       // description: doc.data.description[0].text ?? '',
 
       // all assets related to the work (posterity)
-      directory: work.directory,
+      directory: token.directory || work.directory,
 
       // opensea
       external_url: process.env.VUE_APP_CANONICAL_DOMAIN + '/works/' + workId + '/' + tokenId,
@@ -116,6 +120,10 @@ exports.handler = async function (event, context) {
       animation_url_optim: asset(work, tokenId, 'animation_url_optim'),
 
       youtube_url: '',
+
+      // 3d models
+      obj: asset(work, tokenId, 'obj'),
+      drc: asset(work, tokenId, 'drc'),
 
       // sha hashes for posterity
       sha256: work.sha256 || {}

@@ -15,11 +15,6 @@ export default {
     '2000 Cliparts.mp4': '29ed225866542050c2dc75c98f3bc6dd5440fac165529133ef0f42f03b58b930'
   },
   tokens: {
-    7000001: asset,
-    7000002: asset,
-    7000003: asset,
-    7000004: asset,
-    7000005: asset,
     7000006: asset,
     7000007: asset
   }

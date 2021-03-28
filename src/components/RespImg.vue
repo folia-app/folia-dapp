@@ -50,7 +50,7 @@ export default {
 export function optimImgSize (length) {
   const sizes = [360, 480, 640, 1024, 1280, 1600, 2048, 3072, 4096]
   const dpx = window.devicePixelRatio || 1
-  length = length * dpx * 0.75 // less density optically ok ? (target 80%)
+  length = length * dpx * 0.9 // less density optically ok ? (target 80%)
   // find optimal
   return sizes.find(sz => length <= sz) || sizes[sizes.length - 1]
 }

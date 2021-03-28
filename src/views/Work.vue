@@ -118,7 +118,7 @@
                 <path d="M1 1.49251L57.3157 19L0.999998 36.5075L1 1.49251Z" fill="rgba(255,255,255,0.9)" />
               </svg>
 
-          router-view(:doc="doc", :isVariableEdition="isVariableEdition", :work="work", :isReleased="isReleased")
+          router-view(:doc="doc", :isVariableEdition="isVariableEdition", :work="work", :isReleased="isReleased", :canBuy="canBuy", @buy="buy")
 
           //- (info)
           //- section(v-show="view === 'info'", style="padding-bottom:25vh")
@@ -213,9 +213,9 @@ export default {
     isVariableEdition () {
       return this.doc.data.page_layout === 'generative'
     },
-    // canBuy () {
-    //   return this.work && (Number(this.work.printed) < Number(this.work.editions))
-    // },
+    canBuy () {
+      return this.work && (Number(this.work.printed) < Number(this.work.editions))
+    },
     // isSoldOut () {
     //   return this.work && (Number(this.work.printed) >=)
     // },
@@ -260,7 +260,7 @@ export default {
         // }
 
         // fwd to /info
-        if (!this.isVariableEdition || (this.isVariableEdition && !this.isReleased)) {
+        if (!this.isVariableEdition || (this.isVariableEdition && this.isReleased === false)) {
           this.$router.replace({ name: 'work-info' })
         }
       }

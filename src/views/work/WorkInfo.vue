@@ -4,7 +4,7 @@
     //- (media)
 
     //- (teaser video - non-release + generatative)
-    figure.mb-12(v-if="!isReleased && isVariableEdition")
+    figure.mb-12(v-if="isReleased === false && isVariableEdition")
       video.w-full.block(:src="video", loop, muted, autoplay, playsinline)
 
     //- singular works
