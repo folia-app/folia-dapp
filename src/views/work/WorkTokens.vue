@@ -13,22 +13,22 @@
 
     //- grid
     .w-full.grid(:class="[gridCols]")
+      //- tokens...
+      squishy-thumb-token(v-for="(token, i) in tokensFiltered", :token="token", :key="token.image")
+
       //- buy block
-      //- div(v-if="canBuy")
-        .relative.pb-full.overflow-hidden
+      div(v-if="canBuy")
+        .relative.pb-full.overflow-hidden.bg-gray-900
           //- (teaser video as background)
-          video.absolute.overlay.object-cover.object-contain.opacity-25(:src="doc.data.teaser_video.url", loop, playsinline, muted, autoplay)
+          video.absolute.overlay.object-cover.object-contain.opacity-25(:src="doc.data.teaser_video.url", loop, playsinline, muted, autoplay, v-if="work.printed === '0'")
           //- buy btn
-          button.absolute.overlay.flex.items-center.justify-center.pb-6.pr-6.focus_outline-none(@click="$emit('buy')", style="mix-blend-mode:difference;backdrop-filter:blur(10px)")
+          button.absolute.overlay.flex.items-center.justify-center.pb-6.pr-6.focus_outline-none(@click="$emit('buy')", :style="work.printed === '0' && 'mix-blend-mode:difference;backdrop-filter:blur(10px)'")
             <svg style="width:50%" viewBox="0 0 96 96" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio>
               <line x1="10.165" y1="10.1227" x2="94.7885" y2="94.7462" stroke="rgb(255,255,255,0.8)" stroke-width="0.75" />
               <line x1="54.9753" y1="10.8298" x2="10.165" y2="55.6401" stroke="rgb(255,255,255,0.8)" stroke-width="0.75" />
               <line x1="32.8277" y1="64.3025" x2="32.8277" y2="0.931187" stroke="rgb(255,255,255,0.8)" stroke-width="0.75" />
               <line x1="0.530937" y1="32.8311" x2="63.9023" y2="32.8311" stroke="rgb(255,255,255,0.8)" stroke-width="0.75" />
             </svg>
-
-      //- tokens...
-      squishy-thumb-token(v-for="(token, i) in tokensFiltered", :token="token", :key="token.image")
 
     //- lazyloader
     observer.w-full(:style="{height: '200vh', marginTop: tokensFiltered.length > 12 ? '-50vh' : '0'}", :threshold="0.01", @visible="loadTokens", v-if="tokens && limit < tokens.length")
@@ -43,6 +43,7 @@ export default {
   name: 'WorkTokens',
   props: {
     doc: { type: Object, default: undefined },
+    work: Object,
     canBuy: { type: Boolean, default: false }
   },
   data () {
