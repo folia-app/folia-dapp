@@ -37,7 +37,7 @@
         sold-out-dot.ml-auto.mr-12.md_mr-0
       template(v-else-if="work")
         button.mx-auto.md_m-0.focus_outline-none(@click.stop="buy", :disabled="!isReleased", :class="{'opacity-50': !isReleased}")
-          btn.px-16(:disabled="!isReleased") BUY
+          btn.px-16(:disabled="!isReleased", style="backdrop-filter:blur(20px)") BUY
 
       //- .group
         span.group-hover_hidden.block.h-8.w-8.rounded-full.bg-red-duller

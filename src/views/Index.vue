@@ -50,7 +50,7 @@
               .w-4.h-2.border-b.border-white(:class="{'bg-white': current === i}")
           //- span.opacity-50 (videos/slideshow)
 
-        section.flex.flex-col-reverse.sm_flex-row.flex-wrap.overflow-hidden.bg-yellow(v-if="home")
+        section.flex.flex-wrap.overflow-hidden.bg-yellow(v-if="home")
           //- thumbs...
           //- work-thumb.w-full.md_w-1x2.lg_w-1x3(v-for="(doc, index) in works", :doc="doc", :key="doc.id + n")
           template(v-for="(slice, i) in home.body")
@@ -60,7 +60,7 @@
 
             //- auctions
             template(v-if="slice.slice_type === 'auctions'")
-              slice-auctions.order-last.sm_order-none.w-full(:slice="slice", :active="$route.name === 'index'")
+              slice-auctions.w-full(:slice="slice", :active="$route.name === 'index'")
 
             //- tiles
             template(v-if="slice.slice_type === 'tile'")

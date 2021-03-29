@@ -13,22 +13,23 @@
     //- inner content
     .absolute.overlay.flex.items-center.justify-center.group(v-if="opened")
       //- No. (centered) / token link
-      a(:href="openSeaLink({token: token.tokenId})", target="_blank", rel="noopener noreferrer")
+      a.absolute.top-0.left-0.py-3.px-4(:href="openSeaLink({token: token.tokenId})", target="_blank", rel="noopener noreferrer")
           btn.lg_px-6.lg_hover_bg-black-a15(theme="none", size="small") {{ token.tokenId.slice(-3) }}
 
       //- owner
-      a.absolute.top-0.left-0.py-3.px-4(v-if="owner", :href="openSeaLink({account: owner})", target="_blank", rel="noopener noreferrer", :class="{'opacity-0ff group-hover_opacity-100': true || !userIsOwner}")
+      a(v-if="owner", :href="openSeaLink({account: owner})", target="_blank", rel="noopener noreferrer", :class="{'opacity-0ff group-hover_opacity-100': true || !userIsOwner}")
         btn.lg_px-5.lg_hover_bg-black-a15(theme="none", size="small") {{ userIsOwner ? 'You' : addrShort(owner) }}
 
       //- open viewer (inner)
       button.absolute.bottom-0.right-0.lg_py-3.lg_px-4.focus_outline-none(@click="openViewer")
-        btn.px-6.lg_hover_bg-black-a15(size="small", theme="none")
+        btn.px-6.lg_hover_bg-black-a15.flex.items-center(size="small", theme="none")
+          span.mr-3.pt-1.text-xs(v-if="token.drc") 3D
           svg-eye
 
     //- open viewer (outer)
-    button.absolute.z-20.bottom-0.right-0.lg_py-3.lg_px-4.lg_opacity-0.lg_group-hover_opacity-100.focus_outline-none(slot="outer", @click="openViewer", v-show="!opened")
+    button.absolute.z-20.bottom-0.right-0.lg_py-3.lg_px-4.lg_opacity-0.lg_group-hover_opacity-100.focus_outline-none(slot="outer", @click="openViewer", v-show="!opened", :class="{'opacity-0': !token.drc}")
       btn.px-6.lg_hover_bg-black-a15.flex.items-center.text-white(size="small", theme="none")
-        //- span.mr-3.pt-1(v-if="token.drc") 3D
+        span.mr-3.pt-1.text-xs(v-if="token.drc") 3D
         svg-eye
 </template>
 
