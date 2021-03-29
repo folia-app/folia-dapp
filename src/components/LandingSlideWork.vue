@@ -104,7 +104,6 @@ export default {
       }
     },
     getWork () {
-      console.log(this.workId, this.work)
       return !this.work && this.$store.dispatch('getWork', { id: this.workId, flush: true })
     },
     async buy () {

@@ -56,10 +56,10 @@ export default {
     ...mapState(['networkId', 'foliaControllerContract']),
     tokensFiltered () {
       // filter by one?
-      const id = this.$route.params.token
-      if (id) {
-        return this.tokens?.filter(tkn => tkn.tokenId === id)
-      }
+      // const id = this.$route.params.token
+      // if (id) {
+      //   return this.tokens?.filter(tkn => tkn.tokenId === id)
+      // }
 
       // ...else
       let tokens = this.tokens?.slice() || []

@@ -1,5 +1,5 @@
 <template lang="pug">
-  article.work.w-full.text-white
+  article.work.w-full.text-white.relative
     //- token viewer
     //- .fixed.overlay.z-50.bg-black(v-if="$route.name === 'work-token'")
 

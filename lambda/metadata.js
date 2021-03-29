@@ -124,6 +124,7 @@ exports.handler = async function (event, context) {
       // 3d models
       obj: asset(work, tokenId, 'obj'),
       drc: asset(work, tokenId, 'drc'),
+      iframe: asset(work, tokenId, 'iframe'),
 
       // sha hashes for posterity
       sha256: work.sha256 || {}
