@@ -12,23 +12,23 @@
         .border-t.border-r.border-white.transform.h-6.w-6(:class="$route.query.sort ? '-rotate-45 translate-y-1' : 'rotate-135 -translate-y-1'")
 
     //- grid
-    .w-full.grid.grid-cols-2.md_grid-cols-3.xl_grid-cols-4
-      //- buy block
-      div(v-if="canBuy")
-        .relative.pb-full.overflow-hidden
-          //- (teaser video as background)
-          video.absolute.overlay.object-cover.object-contain.opacity-25.transform.scale-180(:src="doc.data.teaser_video.url", loop, playsinline, muted, autoplay, @loadedmetadata="$event => $event.target.playbackRate = 0.25")
-          //- buy btn
-          button.absolute.overlay.flex.items-center.justify-center.pb-6.pr-6(@click="$emit('buy')", style="mix-blend-mode:difference")
-            <svg style="width:50%" viewBox="0 0 96 96" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio>
-              <line x1="10.165" y1="10.1227" x2="94.7885" y2="94.7462" stroke="rgb(255,255,255,0.8)"/>
-              <line x1="54.9753" y1="10.8298" x2="10.165" y2="55.6401" stroke="rgb(255,255,255,0.8)"/>
-              <line x1="32.8277" y1="64.3025" x2="32.8277" y2="0.931187" stroke="rgb(255,255,255,0.8)"/>
-              <line x1="0.530937" y1="32.8311" x2="63.9023" y2="32.8311" stroke="rgb(255,255,255,0.8)"/>
-            </svg>
-
+    .w-full.grid(:class="[gridCols]")
       //- tokens...
       squishy-thumb-token(v-for="(token, i) in tokensFiltered", :token="token", :key="token.image")
+
+      //- buy block
+      div(v-if="canBuy")
+        .relative.pb-full.overflow-hidden.bg-gray-900
+          //- (teaser video as background)
+          video.absolute.overlay.object-cover.object-contain.opacity-25(:src="doc.data.teaser_video.url", loop, playsinline, muted, autoplay, v-if="work.printed === '0'")
+          //- buy btn
+          button.absolute.overlay.flex.items-center.justify-center.pb-6.pr-6.focus_outline-none(@click="$emit('buy')", :style="work.printed === '0' && 'mix-blend-mode:difference;backdrop-filter:blur(10px)'")
+            <svg style="width:50%" viewBox="0 0 96 96" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio>
+              <line x1="10.165" y1="10.1227" x2="94.7885" y2="94.7462" stroke="rgb(255,255,255,0.8)" stroke-width="0.75" />
+              <line x1="54.9753" y1="10.8298" x2="10.165" y2="55.6401" stroke="rgb(255,255,255,0.8)" stroke-width="0.75" />
+              <line x1="32.8277" y1="64.3025" x2="32.8277" y2="0.931187" stroke="rgb(255,255,255,0.8)" stroke-width="0.75" />
+              <line x1="0.530937" y1="32.8311" x2="63.9023" y2="32.8311" stroke="rgb(255,255,255,0.8)" stroke-width="0.75" />
+            </svg>
 
     //- lazyloader
     observer.w-full(:style="{height: '200vh', marginTop: tokensFiltered.length > 12 ? '-50vh' : '0'}", :threshold="0.01", @visible="loadTokens", v-if="tokens && limit < tokens.length")
@@ -43,6 +43,7 @@ export default {
   name: 'WorkTokens',
   props: {
     doc: { type: Object, default: undefined },
+    work: Object,
     canBuy: { type: Boolean, default: false }
   },
   data () {
@@ -56,10 +57,10 @@ export default {
     ...mapState(['networkId', 'foliaControllerContract']),
     tokensFiltered () {
       // filter by one?
-      const id = this.$route.params.token
-      if (id) {
-        return this.tokens?.filter(tkn => tkn.tokenId === id)
-      }
+      // const id = this.$route.params.token
+      // if (id) {
+      //   return this.tokens?.filter(tkn => tkn.tokenId === id)
+      // }
 
       // ...else
       let tokens = this.tokens?.slice() || []
@@ -70,6 +71,10 @@ export default {
       // limited ?
       tokens = tokens.slice(0, this.limit)
       return tokens
+    },
+    gridCols () {
+      return this.doc.data?.grid === '2 cols' ? 'grid-cols-1 md_grid-cols-2 xl_grid-cols-3'
+        : 'grid-cols-2 md_grid-cols-3 xl_grid-cols-4'
     }
   },
   methods: {
@@ -84,7 +89,7 @@ export default {
       }
     },
     listenToContract () {
-      if (this.foliaControllerContract && !this.listening && this.canBuy) {
+      if (!this.listening && this.foliaControllerContract && this.canBuy) {
         this.foliaControllerContract.events
           .editionBought()
           .on('data', this.onEditionBought)
@@ -123,6 +128,9 @@ export default {
       this.getTokens()
     },
     foliaControllerContract () {
+      this.listenToContract()
+    },
+    canBuy () {
       this.listenToContract()
     }
   },

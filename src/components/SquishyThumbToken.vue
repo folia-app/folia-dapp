@@ -1,45 +1,43 @@
 <template lang="pug">
-  squishy-thumb.squishy-thumb-token.transition.duration-200(@open="open", :style="{background: userIsOwner && '#ffeb00'}")
-    //- image
-    //- resp-img(slot="media", :bg="true", :image="{src: token.image}", :lazy="false")
-    img.absolute.overlay.object-contain.object-center.transition.duration-300.opacity-0.lazyload(slot="media", :srcset="`${resizeCloudinary(token.image, [414], false)} 414w,${resizeCloudinary(token.image, [640], false)} 1920w, ${resizeCloudinary(token.image, [960], false)}`", @load="$event => $event.target.style.opacity = 1")
+  squishy-thumb.squishy-thumb-token.transition.duration-200.group.text-xs.md_text-md(ref="thumb", @open="open", :style="{background: userIsOwner && '#ffeb00'}", @mediaClick="onMediaClick")
+
+    //- media
+    div(slot="media")
+      //- image
+      resp-img.transition-opacity.duration-500(:bg="true", :image="{src: token.image}", :class="{'opacity-0ff': hover && token.drc}")
+      //- iframe ?
+      //- template(v-if="token.drc && hover")
+        .absolute.overlay(:class="{'cursor-wait': !iframeLoaded}")
+          iframe.absolute.overlay.pointer-events-none.transition-opacity.duration-500(:src="`https://programmatic-puppet.netlify.app?drc=${encodeURIComponent(token.drc)}`", @load="iframeLoaded = true", :class="{'opacity-0': !iframeLoaded}")
 
     //- inner content
     .absolute.overlay.flex.items-center.justify-center.group(v-if="opened")
-      //- No.
-      //- a.absolute.bottom-0.right-0.px-4.py-3.opacity-0.group-hover_opacity-100(:href="openSeaLink({token: token.tokenId})", target="_blank", rel="noopener noreferrer")
-        btn.px-8.hover_bg-black-a15(theme="none", size="small") {{ token.tokenId.slice(-3) }}
-      router-link.absolute.overlay.flex.justify-center.items-center(:to="{name: 'view-token', params: {token: token.tokenId}}")
-        //- btn.px-8.hover_bg-black-a15(theme="none", size="small") {{ token.tokenId.slice(-3) }}
-        | {{ token.tokenId.slice(-3) }}
+      //- No. (centered) / token link
+      a.absolute.top-0.left-0.py-3.px-4(:href="openSeaLink({token: token.tokenId})", target="_blank", rel="noopener noreferrer")
+          btn.lg_px-6.lg_hover_bg-black-a15(theme="none", size="small") {{ token.tokenId.slice(-3) }}
 
-        //- eyeball icon
-        .absolute.bottom-0.right-0.py-3.px-3.opacity-0.group-hover_opacity-100()
-          btn.px-4.hover_bg-black-a15(size="small", theme="none")
-            svg-eye
-            //- <svg style="display:block;width:3rem" viewBox="0 0 512 512" xmlns:xlink="http://www.w3.org/1999/xlink" preserveAspectRatio>
-            //-   <g fill="currentColor">
-            //-     <path d="m34,256l26.2,26.2c108,108 283.7,108 391.7,0l26.1-26.2-26.2-26.2c-108-108-283.7-108-391.7,0l-26.1,26.2zm222,126.2c-75.8,0-151.6-28.9-209.3-86.6l-32.9-32.9c-3.7-3.7-3.7-9.7 0-13.5l32.9-32.9c115.4-115.4 303.2-115.4 418.6,0l32.9,32.9c3.7,3.7 3.7,9.7 0,13.5l-32.9,32.9c-57.7,57.7-133.5,86.6-209.3,86.6z"/>
-            //-     <path d="m256,183.5c-40,0-72.5,32.5-72.5,72.5s32.5,72.5 72.5,72.5c40,0 72.5-32.5 72.5-72.5s-32.5-72.5-72.5-72.5zm0,164c-50.5,0-91.5-41.1-91.5-91.5 0-50.5 41.1-91.5 91.5-91.5s91.5,41.1 91.5,91.5c0,50.5-41,91.5-91.5,91.5z"/>
-            //-   </g>
-            //- </svg>
+      //- open viewer (inner)
+      button.focus_outline-none(@click="openViewer")
+        btn.px-6.lg_hover_bg-black-a15.flex.items-center(size="small", theme="none")
+          span.mr-3.pt-1.text-xs(v-if="token.drc") 3D
+          svg-eye
 
-      //- (owner)
-      a.absolute.top-0.left-0.py-3.px-4(v-if="owner", :href="openSeaLink({account: owner})", target="_blank", rel="noopener noreferrer", :class="{'opacity-0 group-hover_opacity-100': true || !userIsOwner}")
-        btn.px-5.hover_bg-black-a15(theme="none", size="small") {{ userIsOwner ? 'You' : addrShort(owner) }}
+      //- owner
+      a.absolute.bottom-0.right-0.lg_py-3.lg_px-4(v-if="owner", :href="openSeaLink({account: owner})", target="_blank", rel="noopener noreferrer", :class="{'opacity-0ff group-hover_opacity-100': true || !userIsOwner}")
+        btn.lg_px-5.lg_hover_bg-black-a15(theme="none", size="small") {{ userIsOwner ? 'You' : addrShort(owner) }}
 
-      //- ...
-      a.absolute.top-0.right-0.py-3.px-4.opacity-0.group-hover_opacity-100(:href="openSeaLink({token: token.tokenId})", target="_blank", rel="noopener noreferrer")
-        //- button.ml-3.inline-block.text-black.py-px.rounded-full.px-3.text-sm.focus_outline-none.hover_bg-black-a15(theme="none", size="small") ...
-        btn.px-4.hover_bg-black-a15(theme="none", size="small") ...
+    //- open viewer (outer)
+    button.absolute.z-20.bottom-0.right-0.lg_py-3.lg_px-4.lg_opacity-0.lg_group-hover_opacity-100.focus_outline-none(slot="outer", @click="openViewer", v-show="!opened", :class="{'opacity-0': !token.drc}")
+      btn.px-6.lg_hover_bg-black-a15.flex.items-center.text-white(size="small", theme="none")
+        span.mr-3.pt-1.text-xs(v-if="token.drc") 3D
+        svg-eye
 </template>
 
 <script>
 import { mapState, mapGetters } from 'vuex'
 import SquishyThumb from '@/components/SquishyThumb'
 import Btn from '@/components/Btn'
-// import RespImg from '@/components/RespImg'
-import { resizeCloudinary } from '@/components/RespImg'
+import RespImg, { resizeCloudinary } from '@/components/RespImg'
 import svgEye from '@/components/SVG-Eye'
 export default {
   name: 'SquishyThumbToken',
@@ -47,7 +45,10 @@ export default {
   data () {
     return {
       owner: '',
-      opened: false
+      opened: false,
+      hover: false,
+      iframeLoaded: false,
+      hoverTmout: null
     }
   },
   computed: {
@@ -62,14 +63,43 @@ export default {
   methods: {
     resizeCloudinary,
     async fetchOwner () {
-      this.owner = await this.$store.dispatch('getNFTOwnerByTokenId', this.token.tokenId)
+      this.owner = this.owner || await this.$store.dispatch('getNFTOwnerByTokenId', this.token.tokenId)
     },
     open () {
       this.opened = true
       this.fetchOwner()
+      this.$refs.thumb.open()
+      // this.onMouseleave() // cancel hover
+    },
+    close () {
+      this.$refs.thumb.close()
+      this.opened = false
+    },
+    openViewer () {
+      this.$router.push({ name: 'work-token', params: { token: this.token.tokenId } })
+    },
+    onMediaClick () {
+      return this.opened ? this.close() : this.open()
     }
+    // onMouseenter () {
+    //   // cancel if opened
+    //   if (this.opened) return this.onMouseleave()
+    //   // load iframe
+    //   this.hoverTmout = setTimeout(() => {
+    //     this.hover = true
+    //   }, 300)
+    // },
+    // onMouseleave () {
+    //   this.hover = this.iframeLoaded = false
+    //   clearTimeout(this.hoverTmout)
+    // },
+    // onMousemove () {
+    //   // cancel until they actually stop for long enough
+    //   clearTimeout(this.hoverTmout)
+    //   this.onMouseenter()
+    // }
   },
-  components: { Btn, SquishyThumb, svgEye }
+  components: { Btn, SquishyThumb, svgEye, RespImg }
 }
 </script>
 

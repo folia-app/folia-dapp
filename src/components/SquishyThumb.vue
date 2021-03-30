@@ -3,7 +3,7 @@
     //- square sizer
     .relative.pb-ar-1x1
       //- image (.bg-gray-900 to prevent shadow poking through...)
-      figure.absolute.overlay-px.z-10.cursor-pointer.bg-gray-900.transition-transform.duration-400.bg-cover.bg-center(:data-dir="rand", :class="{'squish': squish}", @click="squish = !squish")
+      figure.absolute.overlay-px.z-10.cursor-pointer.bg-gray-900.transition-transform.duration-400.bg-cover.bg-center(:data-dir="rand", :class="{'squish': squish}", @click="$emit('mediaClick')")
         slot(name="media")
         //- img.absolute.overlay.z-10.object-cover.object-center(:src="doc.data.index_thumbnail.square.url", :alt="doc.data.index_thumbnail.alt")
 
@@ -29,12 +29,23 @@
           .flex-1.flex(@click.stop)
             router-link.cursor-pointer(:to="{name: 'work', params: {work: doc.uid}}").w-1x2.flex.items-center.justify-center.btn-theme-darken View
             button.w-1x2.flex.items-center.justify-center.btn-theme-darken.cursor-pointer(@click="buy") Buy
+
+      //- eyebll
+      //- .absolute.z-20.bottom-0.right-0.py-3.px-3.opacity-0ff.group-hover_opacity-100
+        btn.px-4.hover_bg-black-a15(size="small", theme="none", @click="$emit('view')")
+          svg-eye.text-white
+
+      //- outer
+      slot(name="outer")
 </template>
 
 <script>
 // import { mapGetters } from 'vuex'
+import svgEye from '@/components/SVG-Eye'
+import Btn from '@/components/Btn'
 export default {
   name: 'SquishyThumb',
+  components: { svgEye, Btn },
   // props: ['doc'],
   data () {
     return {
@@ -52,6 +63,14 @@ export default {
         'pr-1x4': this.rand === 2,
         'pr-1x4 md_pr-0 md_pb-1x4': this.rand === 3
       }
+    }
+  },
+  methods: {
+    open () {
+      this.squish = true
+    },
+    close () {
+      this.squish = false
     }
   },
   watch: {

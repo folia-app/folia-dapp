@@ -9,7 +9,7 @@
 
     //- singular works
     figure.mb-12(v-else-if="!isVariableEdition")
-      router-link.block(:to="{name: 'view-token', params: { token: Number(doc.uid) * 1000000 + 1 }}")
+      router-link.block(:to="{name: 'work-token', params: { token: Number(doc.uid) * 1000000 + 1 }}")
         //- (gif)
         .pb-ar-1x1.relative(v-if="doc.data.teaser_image.url && doc.data.teaser_image.url.includes('.gif')")
           .absolute.overlay.flex.items-center.justify-center.bg-white

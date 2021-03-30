@@ -267,8 +267,13 @@ export default new Vuex.Store({
     async getWork ({ state, commit }, { id, flush }) {
       let work = state.works.find(work => work.id === id)
       if (!flush && work) return work
+
+      if (!state.foliaControllerContract) {
+        console.warn('controller not set yet')
+        return
+      }
       // get new data
-      if (state.foliaControllerContract && id) {
+      if (id) {
         try {
           work = await state.foliaControllerContract.methods.works(id).call()
           work = { id, ...work } // add id
