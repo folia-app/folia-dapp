@@ -16,9 +16,6 @@ export default {
     'lasso.gif': '5a76ed2f6024c7391d7f65e0fd6e501157e37879980b9245176ff3e52869bbe9'
   },
   tokens: {
-    3000001: asset,
-    3000002: asset,
-    3000003: asset,
     3000004: asset
   }
 }
