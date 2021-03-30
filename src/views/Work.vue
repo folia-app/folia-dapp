@@ -80,7 +80,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 import RichText from '@/components/RichText'
 import svgX from '@/components/SVG-X'
 import Btn from '@/components/Btn'
@@ -102,6 +102,7 @@ export default {
     }
   },
   computed: {
+    ...mapState(['foliaControllerContract']),
     ...mapGetters(['weiToETH', 'workId', 'isSoldOut']),
     // id () {
     //   return this.$route.params.work
@@ -156,7 +157,7 @@ export default {
       this.goToDefaultTab()
     },
     fetchWork (flush) {
-      this.$store.dispatch('getWork', { id: this.id, flush })
+      return !this.work && this.$store.dispatch('getWork', { id: this.id, flush })
     },
     goToDefaultTab () {
       if (this.$route.name === 'work') {
@@ -183,6 +184,11 @@ export default {
     },
     '$route' (to, from) {
       this.goToDefaultTab()
+    },
+    foliaControllerContract (contract) {
+      if (contract) {
+        this.fetchWork()
+      }
     }
   },
   metaInfo () {

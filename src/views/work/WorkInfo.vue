@@ -4,8 +4,9 @@
     //- (media)
 
     //- (teaser video - non-release + generatative)
-    figure.mb-12(v-if="isReleased === false && isVariableEdition")
-      video.w-full.block(:src="video", loop, muted, autoplay, playsinline)
+    figure.mb-12(v-if="isVariableEdition && video")
+      //- && (isReleased === false || (work && work.printed !== '0'))")
+      video.w-full.md_w-2x3.block(:src="video", loop, muted, autoplay, playsinline)
 
     //- singular works
     figure.mb-12(v-else-if="!isVariableEdition")
@@ -27,7 +28,7 @@ import RichText from '@/components/RichText'
 import ImgGif from '@/components/ImgGif'
 export default {
   name: 'WorkInfo',
-  props: ['doc', 'isVariableEdition', 'isReleased'],
+  props: ['doc', 'work', 'isVariableEdition', 'isReleased'],
   computed: {
     video () {
       const videoLink = this.doc?.data.teaser_video
