@@ -15,7 +15,6 @@ export default {
     'Bison.gif': '7a81335b4d821c4698a80d50ad81a17aac11617322d37324f340a4a435efe498'
   },
   tokens: {
-    6000001: asset,
     6000002: asset
   }
 }
