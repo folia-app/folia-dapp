@@ -8,10 +8,10 @@
           img.absolute.overlay.object-contain.object-center(:src="imageUrl")
           video.absolute.overlay.object-contain.object-center(ref="video", :src="videoUrl", playsinline, @contextmenu.prevent, @click.stop="$event => $event.target.paused ? $event.target.play() : null", @ended="close")
 
-    template(v-else-if="visible")
+    template(v-else-if="visible && metadata")
       //- iframe
-      template(v-if="metadata && metadata.iframe")
-        iframe.absolute.overlay(:src="`${metadata.iframe}?drc=${encodeURIComponent(metadata.drc)}`", :key="token")
+      template(v-if="metadata.iframe")
+        iframe.absolute.overlay(:src="`${metadata.iframe}?model=${encodeURIComponent(metadata.drc)}`", :key="token")
 
       //- gif format
       template(v-else-if="metadata.image && metadata.image.toLowerCase().includes('.gif')")
@@ -19,7 +19,7 @@
           img-gif(:src="metadata.image", :key="token")
 
       //- image
-      template(v-else-if="metadata && metadata.image")
+      template(v-else-if="metadata.image")
         figure.absolute.overlay.py-5.md_p-10.lg_p-12.xl_p-24.flex
           .relative.w-full
             img.absolute.overlay.object-contain.object-center.opacity-0.transition.duration-200(:src="metadata.image", @load="$event => $event.target.style.opacity = '1'")

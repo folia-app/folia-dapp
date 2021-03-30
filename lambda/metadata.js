@@ -78,7 +78,7 @@ exports.handler = async function (event, context) {
       // owner: owner,
       // name: `${doc.data.artist}, "${doc.data.title}", ${doc.data.year} (${printNo}/${doc.data.edition})`,
 
-      description: work.description, // by token ID?
+      description: work.description.replace('{{no}}', printNo(work, tokenId)), // by token ID?
       // description: doc.data.description[0].text ?? '',
 
       // all assets related to the work (posterity)
