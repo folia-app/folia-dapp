@@ -71,7 +71,7 @@
             button.focus_outline-none(@click="$router.replace({name: 'work-details'})")
               btn.px-8.md_px-12(theme="drkgray", :active="$route.name === 'work-details'") Details
 
-          router-view(:doc="doc", :work="work", :isVariableEdition="isVariableEdition", :isReleased="isReleased", :canBuy="canBuy", @buy="buy")
+          router-view(:doc="doc", :work="work", :isVariableEdition="isVariableEdition", :isReleased="isReleased", :canBuy="canBuy", @buy="buy", @newToken="fetchWork(true)")
 
       //- side column (auctions)
       transition(name="work-sidebar")
