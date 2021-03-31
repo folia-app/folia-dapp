@@ -4,6 +4,7 @@ import Index from '@/views/Index'
 // import Work from '@/views/Work'
 // import ViewWork from '@/views/ViewWork'
 const WorkTokens = () => import(/* webpackChunkName: "work-tokens" */ '../views/work/WorkTokens.vue')
+const WorkInfo = () => import(/* webpackChunkName: "work" */ '../views/work/WorkInfo.vue')
 
 // import Home from '@/views/Home'
 // import Admin from '@/views/Admin'
@@ -24,6 +25,13 @@ export default new Router({
       name: 'index',
       component: Index
     },
+    // preview prismic docs
+    {
+      path: '/preview',
+      name: 'preview',
+      component: () => import(/* webpackChunkName: "preview" */ '../views/Preview.vue')
+    },
+
     {
       path: '/view/:token',
       name: 'view-token',
@@ -44,7 +52,7 @@ export default new Router({
           path: 'info',
           name: 'work-info',
           meta: { layout: 'panel' },
-          component: () => import(/* webpackChunkName: "work" */ '../views/work/WorkInfo.vue')
+          component: WorkInfo
         },
         {
           path: 'details',
@@ -76,10 +84,18 @@ export default new Router({
           }
         },
 
+        // token viewers...
+        {
+          path: 'info/:token',
+          name: 'work-info-tokenviewer',
+          meta: { layout: 'panel' },
+          component: WorkInfo
+        },
         // !! METADATA/OPENSEA "external_url" is /work/2/:token
         {
           path: ':token',
-          name: 'work-token',
+          alias: 'info/:token',
+          name: 'work-tokenviewer',
           meta: { layout: 'panel' },
           component: WorkTokens
         }

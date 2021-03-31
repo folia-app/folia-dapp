@@ -76,7 +76,7 @@ export default {
       this.opened = false
     },
     openViewer () {
-      this.$router.push({ name: 'work-token', params: { token: this.token.tokenId } })
+      this.$router.push({ name: 'work-tokenviewer', params: { token: this.token.tokenId } })
     },
     onMediaClick () {
       return this.opened ? this.close() : this.open()

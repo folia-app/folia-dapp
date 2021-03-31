@@ -31,7 +31,7 @@ import VueMeta from 'vue-meta'
 // }
 
 Vue.use(PrismicVue, {
-  endpoint: process.env.VUE_APP_PRISMIC_ENDPOINT,
+  endpoint: `https://${process.env.VUE_APP_PRISMIC_REPO}.cdn.prismic.io/api/v2`,
   linkResolver
 })
 

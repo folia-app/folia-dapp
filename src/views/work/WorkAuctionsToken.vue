@@ -24,7 +24,7 @@
         section
           .flex.px-6.lg_px-10.flex-row-reverse(v-if="metadata")
             figure.flex-1
-              router-link(:to="{name: 'work-token', params: {token: $route.params.token}}")
+              router-link(:to="{name: 'work-tokenviewer', params: {token: $route.params.token}}")
                 template(v-if="metadata.image")
                   .pb-full.relative.bg-white.rounded-4xl.overflow-hidden
                     .absolute.overlay.p-2.flex.items-center.bg-white(v-if="metadata.image.includes('.gif')")
