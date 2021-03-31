@@ -20,7 +20,7 @@
     .absolute.bottom-0.z-10.w-full.pb-12.px-8.lg_px-12.xl_pb-16.flex.flex-wrap.items-end.justiy-center.md_justify-between
       //- title
       prismic-link.w-full.md_w-auto.flex.flex-wrap.justify-center.group-off(:field="slice.primary.link", :linkResolver="linkResolver", @click.native.stop)
-        .w-full.md_w-auto.flex.justify-center(v-for="chunk in slice.primary.title.split(' | ')")
+        .w-full.md_w-auto.flex.justify-center.-mt-px(v-for="chunk in slice.primary.title.split(' | ')")
           btn.px-10(style="backdrop-filter:blur(20px)") {{ chunk }}
         //-
           btn.px-10 {{ $store.getters.workId(doc.uid, true) }}

@@ -23,7 +23,7 @@
       //- MAIN
       main.index.relative.min-h-screen.transition.duration-500.transform.origin-left(:class="panelOpen ? panelWidths[1] : ''")
         //- HEADER
-        header.absolute.top-0.left-0.w-full.z-20.text-white
+        header.absolute.top-0.left-0.w-full.z-20.text-white(style="mix-blend-mode:difference")
           .absolute.top-0.left-0.w-full
             .flex.w-full.justify-between.items-center
               //- logo
