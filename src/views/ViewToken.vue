@@ -54,7 +54,7 @@ export default {
       if (this.token) {
         this.metadata = null
         const meta = await this.$store.dispatch('getMetadata', { token: this.token })
-        this.videoUrl = meta?.animation_url_optim
+        this.videoUrl = meta?.animation_url_optim || meta?.animation_url
         this.imageUrl = meta?.image
         this.metadata = meta
         this.autoplayVideo()
@@ -112,8 +112,10 @@ export default {
       this.autoplayVideo()
     },
     visible (visible) {
-      if (!visible) {
-        // after transition...
+      if (visible) {
+        this.btnsVisible = true
+      } else {
+        // after hide transition...
         setTimeout(() => {
           this.videoUrl = null
           this.imageUrl = null

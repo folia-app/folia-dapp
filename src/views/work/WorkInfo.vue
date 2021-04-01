@@ -20,7 +20,7 @@
           img.block.w-full(:src="doc.data.teaser_image.url", @contextmenu.prevent)
 
         //- eyeball icon
-        .absolute.bottom-0.right-0.text-black.py-3.px-5.lg_opacity-0.lg_group-hover_opacity-100.transition.duration-150(style="mix-blend-mode:difference")
+        .absolute.bottom-0.right-0.text-black.py-3.px-5.lg_opacity-0ff.lg_group-hover_opacity-100.transition.duration-150(style="mix-blend-mode:difference")
           svg-eye.text-white
 
     //- info text
