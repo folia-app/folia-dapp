@@ -16,7 +16,7 @@
               //- no.
               router-link.flex.mb-16.text-lg.-ml-1(to="/")
                 svg-fleuron.block.mr-2(style="width:0.96em;height:0.96em")
-                .leading-none {{ workId(doc.uid, true) }}
+                .hidden.md_inline.leading-none {{ workId(doc.uid, true) }}
 
               //- ...enquire btn
               template(v-if="doc.data.enquire_button")
