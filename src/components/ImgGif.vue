@@ -1,7 +1,7 @@
 <template lang="pug">
   //- src added from parent
   .img-gif.w-full
-    img.block.w-auto.max-w-full.mx-auto.image-render-crisp(ref="img", v-bind="$attrs")
+    img.block.w-auto.max-w-full.mx-auto.image-render-crisp(ref="img", v-bind="$attrs", @load="$emit('load')")
 </template>
 
 <script>

@@ -102,6 +102,7 @@ export default {
       // re-fetch tokens if bought from current work
       if (event.returnValues?.workId === this.doc?.uid) {
         this.getTokens()
+        this.$emit('newToken')
       }
     },
     changeSort () {

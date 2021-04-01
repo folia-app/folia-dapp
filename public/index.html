@@ -16,7 +16,7 @@
     <meta name="theme-color" content="#ffffff">
     <!-- preconnect -->
     <link rel="preconnect" href="https://gateway.pinata.cloud">
-    <link rel="preconnect" href="https://folia-dev.cdn.prismic.io">
+    <link rel="preconnect" href="https://<%= VUE_APP_PRISMIC_REPO %>.cdn.prismic.io">
     <link rel="preconnect" href="https://res.cloudinary.com">
     <link rel="preconnect" href="https://puppet-state.folia.app">
     <link rel="prefetch" href="/fonts/Hershey-Noailles-HelpMe-Regular.woff2">
@@ -54,5 +54,6 @@
     </div>
     <div id="app"></div>
     <!-- built files will be auto injected -->
+    <script async defer src="https://static.cdn.prismic.io/prismic.js?new=true&repo=<%= VUE_APP_PRISMIC_REPO %>"></script>
   </body>
 </html>

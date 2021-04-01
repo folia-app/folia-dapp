@@ -1,7 +1,5 @@
 <template lang="pug">
   article.work.w-full.text-white.relative
-    //- token viewer
-    //- .fixed.overlay.z-50.bg-black(v-if="$route.name === 'work-token'")
 
     .flex.w-full
       //- main / left col
@@ -48,7 +46,7 @@
 
             header.text-xl
               div {{ doc.data.title }}
-              .font-bold {{ doc.data.artist }}
+              div.font-bold {{ doc.data.artist }}
               rich-text(:field="doc.data.medium")
               //- (minted + price)
               template(v-if="!isUnitSale")
@@ -71,7 +69,7 @@
             button.focus_outline-none(@click="$router.replace({name: 'work-details'})")
               btn.px-8.md_px-12(theme="drkgray", :active="$route.name === 'work-details'") Details
 
-          router-view(:doc="doc", :work="work", :isVariableEdition="isVariableEdition", :isReleased="isReleased", :canBuy="canBuy", @buy="buy")
+          router-view(:doc="doc", :work="work", :isVariableEdition="isVariableEdition", :isReleased="isReleased", :canBuy="canBuy", @buy="buy", @newToken="fetchWork(true)")
 
       //- side column (auctions)
       transition(name="work-sidebar")

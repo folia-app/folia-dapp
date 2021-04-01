@@ -10,7 +10,7 @@
 
     //- singular works
     figure.mb-12(v-else-if="!isVariableEdition")
-      router-link.block(:to="{name: 'work-token', params: { token: Number(doc.uid) * 1000000 + 1 }}")
+      router-link.block.relative.group(:to="{name: 'work-info-tokenviewer', params: { token: Number(doc.uid) * 1000000 + 1 }}")
         //- (gif)
         .pb-ar-1x1.relative(v-if="doc.data.teaser_image.url && doc.data.teaser_image.url.includes('.gif')")
           .absolute.overlay.flex.items-center.justify-center.bg-white
@@ -19,6 +19,10 @@
         template(v-else)
           img.block.w-full(:src="doc.data.teaser_image.url", @contextmenu.prevent)
 
+        //- eyeball icon
+        .absolute.bottom-0.right-0.text-black.py-3.px-5.lg_opacity-0.lg_group-hover_opacity-100.transition.duration-150(style="mix-blend-mode:difference")
+          svg-eye.text-white
+
     //- info text
     rich-text.text-lg.px-10.lg_px-12.children-mt-em.lg_w-10x12(style="max-width:28em;", :field="doc.data.description")
 </template>
@@ -26,6 +30,7 @@
 <script>
 import RichText from '@/components/RichText'
 import ImgGif from '@/components/ImgGif'
+import SvgEye from '@/components/SVG-Eye'
 export default {
   name: 'WorkInfo',
   props: ['doc', 'work', 'isVariableEdition', 'isReleased'],
@@ -35,7 +40,7 @@ export default {
       return videoLink?.kind === 'document' && videoLink?.link_type === 'Media' && videoLink?.url
     }
   },
-  components: { RichText, ImgGif }
+  components: { RichText, ImgGif, SvgEye }
 }
 </script>
 

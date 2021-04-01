@@ -1,8 +1,8 @@
 <template lang="pug">
   .index
 
-    .fixed.overlay.z-50.transition.transform.duration-700.origin-right.py-5.md_p-10.lg_p-12.xl_p-24.flex.bg-black(:class="{'pointer-events-none scale-x-0ff opacity-0': $route.name !== 'work-token'}")
-      view-token(:token="$route.params.token", :visible="$route.name === 'work-token'", @close="closeViewer")
+    .fixed.overlay.z-50.transition.transform.duration-700.origin-right.py-5.md_p-10.lg_p-12.xl_p-24.flex.bg-black(:class="{'pointer-events-none scale-x-0ff opacity-0': !viewToken}")
+      view-token(:token="$route.params.token", :visible="viewToken", @close="closeViewer")
     //- (token viewer)
     //- .fixed.overlay.z-50.transition.transform.duration-700.origin-right.py-5.md_p-10.lg_p-12.xl_p-24.flex.bg-black(:class="{'pointer-events-none scale-x-0ff opacity-0': !viewToken}")
       view-token(:token="viewToken", @close="closeViewer")
@@ -23,11 +23,11 @@
       //- MAIN
       main.index.relative.min-h-screen.transition.duration-500.transform.origin-left(:class="panelOpen ? panelWidths[1] : ''")
         //- HEADER
-        header.absolute.top-0.left-0.w-full.z-20.text-white
+        header.absolute.top-0.left-0.w-full.z-20.text-white(style="mix-blend-mode:difference")
           .absolute.top-0.left-0.w-full
             .flex.w-full.justify-between.items-center
               //- logo
-              .p-10.px-12
+              .p-10.md_px-12
                 button.focus_outline-none(@click="onLogoClick", aria-label="About Folia")
                   logo.block.text-white.h-12.cursor-poiner(aria-label="Folia")
                 //- svg-fleuron.block.text-white(style="height:3rem")
@@ -138,7 +138,8 @@ export default {
       workId: 'workId'
     }),
     viewToken () {
-      return this.$route.name === 'view-token' ? this.$route.params.token : null
+      // return this.$route.name === 'view-token' ? this.$route.params.token : null
+      return this.$route.name?.endsWith('-tokenviewer')
     },
     carouselEnabled () {
       return this.home?.landing.length > 1
