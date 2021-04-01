@@ -2,7 +2,6 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Index from '@/views/Index'
 // import Work from '@/views/Work'
-// import ViewWork from '@/views/ViewWork'
 const WorkTokens = () => import(/* webpackChunkName: "work-tokens" */ '../views/work/WorkTokens.vue')
 const WorkInfo = () => import(/* webpackChunkName: "work" */ '../views/work/WorkInfo.vue')
 
@@ -36,7 +35,6 @@ export default new Router({
       path: '/view/:token',
       name: 'view-token',
       component: Index
-      // component: ViewWork
     },
     {
       path: '/works/:work',
