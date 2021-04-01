@@ -6,7 +6,7 @@
       figure.absolute.overlay.py-5.md_p-10.lg_p-12.xl_p-24.bg-gray-100off.bg-white.flex.transition-opacity.duration-500.delay-500(:class="{'opacity-0': !visible}")
         .relative.w-full
           img.absolute.overlay.object-contain.object-center(:src="imageUrl")
-          video.absolute.overlay.object-contain.object-center(ref="video", :src="videoUrl", playsinline, @contextmenu.prevent, @click="$event => $event.target.paused ? $event.target.play() : null", @ended="close", :loop="metadata.animation_loop", @playing="onVideoPlaying")
+          video.absolute.overlay.object-contain.object-center(ref="video", :src="videoUrl", playsinline, @contextmenu.prevent, @click="$event => $event.target.paused ? $event.target.play() : null", @ended="close", :loop="metadata && metadata.animation_loop", @playing="onVideoPlaying")
 
     template(v-else-if="visible && metadata")
       //- iframe
