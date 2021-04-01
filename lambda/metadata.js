@@ -118,6 +118,7 @@ exports.handler = async function (event, context) {
 
       // optimized for folia site
       animation_url_optim: asset(work, tokenId, 'animation_url_optim'),
+      animation_loop: token.animation_loop,
 
       youtube_url: '',
 

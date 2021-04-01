@@ -27,7 +27,7 @@
           .absolute.top-0.left-0.w-full
             .flex.w-full.justify-between.items-center
               //- logo
-              .p-10.px-12
+              .p-10.md_px-12
                 button.focus_outline-none(@click="onLogoClick", aria-label="About Folia")
                   logo.block.text-white.h-12.cursor-poiner(aria-label="Folia")
                 //- svg-fleuron.block.text-white(style="height:3rem")
