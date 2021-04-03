@@ -7,9 +7,10 @@ export default {
   name: 'Preview',
   beforeCreate () {
     const previewToken = this.$route.query.token
+    // todo update to getPreviewResolver
     this.$prismic.client.previewSession(previewToken, this.$prismic.linkResolver, '/')
       .then((url) => {
-        // console.log(url)
+        console.log(url)
         // window.location.replace(url)
         this.$router.replace(url)
       })

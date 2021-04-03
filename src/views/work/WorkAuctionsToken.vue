@@ -32,6 +32,9 @@
                       img-gif(:src="metadata.image", :key="metadata.image")
                     //- (image)
                     resp-img(v-else-if="metadata.image", :bg="true", :image="{src: metadata.image}", fit="object-contain object-center")
+                    //- eye icon
+                    .absolute.bottom-0.right-0.pr-5.pb-2
+                      svg-eye.text-black
 
             .w-2x3.sm_w-1x2.p-7.lg_p-8.bg-black-a15.rounded-4xl
               h2.font-bold {{ metadata.name }}
@@ -108,6 +111,7 @@ import Btn from '@/components/Btn'
 import Countdown, { ddhhmmss } from '@/components/Countdown'
 import ImgGif from '@/components/ImgGif'
 import RespImg from '@/components/RespImg'
+import SvgEye from '@/components/SVG-Eye'
 let lastRt
 export default {
   name: 'WorkAuctionsToken',
@@ -225,7 +229,7 @@ export default {
       this.getAuction()
     }
   },
-  components: { Btn, ImgGif, Countdown, RespImg }
+  components: { Btn, ImgGif, Countdown, RespImg, SvgEye }
 }
 </script>
 

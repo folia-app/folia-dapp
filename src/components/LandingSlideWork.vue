@@ -37,8 +37,8 @@
       template(v-if="isSoldOut(work)")
         sold-out-dot.ml-auto.mr-12.md_mr-0
       template(v-else-if="isAuction")
-        template(v-if="isReleased")
-          router-link.ml-auto.focus_outline-none(:to="{name: 'work-auctions', params: {work: slice.primary.link.uid}}", @click.native.stop)
+        template(v-if="bidLink && (!releaseTime || isReleased)")
+          router-link.ml-auto.focus_outline-none(:to="bidLink", @click.native.stop)
             btn.px-16.bg-black-a03(style="backdrop-filter:blur(20px)") BID
       template(v-else-if="work")
         button.ml-auto.focus_outline-none(@click.stop="buy", :disabled="!isReleased", :class="{'opacity-50': !isReleased}")
@@ -91,6 +91,12 @@ export default {
     },
     isAuction () {
       return this.slice.primary?.link?.data?.page_layout === 'token-unit-sale'
+    },
+    bidLink () {
+      if (this.slice.primary.auction_link?.link_type !== 'Any') {
+        return linkResolver(this.slice.primary.auction_link)
+      }
+      return { name: 'work-auctions', params: { work: this.slice.primary.link.uid } }
     }
   },
   methods: {

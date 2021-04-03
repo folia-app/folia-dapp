@@ -20,6 +20,24 @@ export default {
   methods: {
     release (slice) {
       return slice.primary.release_link1?.data.release_time
+    },
+    redirectToSingleAuction (rt) {
+      const isSingleAuction = this.doc?.data.auction?.length === 1
+      const isAuctionIndex = rt?.name === 'work-auctions'
+      if (isAuctionIndex && isSingleAuction) {
+        const token = this.doc.data.auction[0].primary?.token_id
+        if (token) {
+          this.$router.replace({ name: 'work-auctions-token', params: { token } })
+        }
+      }
+    }
+  },
+  created () {
+    this.redirectToSingleAuction(this.$route)
+  },
+  watch: {
+    '$route' (to, from) {
+      this.redirectToSingleAuction(to)
     }
   },
   components: { AuctionListRow }
