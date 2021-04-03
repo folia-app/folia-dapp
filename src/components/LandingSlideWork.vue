@@ -93,7 +93,7 @@ export default {
       return this.slice.primary?.link?.data?.page_layout === 'token-unit-sale'
     },
     bidLink () {
-      if (this.slice.primary.auction_link?.link_type !== 'Any') {
+      if (this.slice.primary.auction_link?.link_type === 'Document') {
         return linkResolver(this.slice.primary.auction_link)
       }
       return { name: 'work-auctions', params: { work: this.slice.primary.link.uid } }
