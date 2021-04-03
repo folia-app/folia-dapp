@@ -50,10 +50,11 @@ export default {
     ...mapState(['networkId'])
   },
   methods: {
-    async get () {
-      if (this.token) {
+    async get (token) {
+      token = token || this.token
+      if (token) {
         this.metadata = null
-        const meta = await this.$store.dispatch('getMetadata', { token: this.token })
+        const meta = await this.$store.dispatch('getMetadata', { token })
         this.videoUrl = meta?.animation_url_optim || meta?.animation_url
         this.imageUrl = meta?.image
         this.metadata = meta
@@ -70,11 +71,12 @@ export default {
     },
     async onWorkView (to, from) {
       // PRELOAD VIDEOS FOR SAFARI
-      const newWork = to?.params.work && to.params.work !== from?.params.work
-      if (newWork) {
-        const token = to.params.work * 1000000 + 1 // first token has asset ?
-        const meta = await this.$store.dispatch('getMetadata', { token })
-        this.videoUrl = meta?.animation_url_optim
+      const work = to?.params.work // && to.params.work !== from?.params.work
+      if (work) {
+        // const token = to.params.work * 1000000 + 1 // first token has asset ?
+        this.get()
+        // const meta = await this.$store.dispatch('getMetadata', { token })
+        // this.videoUrl = meta?.animation_url_optim
       }
     },
     onVideoPlaying () {
@@ -109,7 +111,7 @@ export default {
     },
     '$route' (to, from) {
       this.onWorkView(to, from)
-      this.autoplayVideo()
+      // this.autoplayVideo()
     },
     visible (visible) {
       if (visible) {

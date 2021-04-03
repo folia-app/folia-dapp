@@ -62,14 +62,17 @@ export default {
   }
 }
 
-export function ddhhmmss (milliseconds, separator = ' - ', omittSeconds) {
-  let hour, minute, seconds
+export function ddhhmmss (milliseconds, separator = ' - ', omittSeconds, omittDays) {
+  let hour, minute, seconds, day
   seconds = Math.floor(milliseconds / 1000)
   minute = Math.floor(seconds / 60)
   seconds = seconds % 60
   hour = Math.floor(minute / 60)
   minute = minute % 60
-  const day = Math.floor(hour / 24)
+  day = 0
+  if (!omittDays) {
+    day = Math.floor(hour / 24)
+  }
   hour = hour % 24
   // const tm = str => str // ('0' + str).slice(-2)
   // return `${day}d - ${hour}h - ${minute}m - ${seconds}s`

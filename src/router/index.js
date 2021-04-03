@@ -89,6 +89,16 @@ export default new Router({
           meta: { layout: 'panel' },
           component: WorkInfo
         },
+        {
+          path: 'auctions/:token/view',
+          name: 'work-auctions-token-tokenviewer',
+          meta: { layout: 'panel', panelWide: true, workView: 'auctions' },
+          components: {
+            default: () => import(/* webpackChunkName: "work-auction" */ '../views/work/WorkAuctions.vue'),
+            sidebar: () => import(/* webpackChunkName: "work-auction" */ '../views/work/WorkAuctionsToken.vue')
+            // sidebar: component: () => import(/* webpackChunkName: "work" */ '../views/work/WorkAuctions.vue')
+          }
+        },
         // !! METADATA/OPENSEA "external_url" is /work/2/:token
         {
           path: ':token',

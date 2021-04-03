@@ -24,11 +24,14 @@
         section
           .flex.px-6.lg_px-10.flex-row-reverse(v-if="metadata")
             figure.flex-1
-              router-link(:to="{name: 'work-tokenviewer', params: {token: $route.params.token}}")
+              router-link(:to="{name: 'work-auctions-token-tokenviewer', params: {token: $route.params.token}}")
                 template(v-if="metadata.image")
                   .pb-full.relative.bg-white.rounded-4xl.overflow-hidden
+                    //- (gif)
                     .absolute.overlay.p-2.flex.items-center.bg-white(v-if="metadata.image.includes('.gif')")
                       img-gif(:src="metadata.image", :key="metadata.image")
+                    //- (image)
+                    resp-img(v-else-if="metadata.image", :bg="true", :image="{src: metadata.image}", fit="object-contain object-center")
 
             .w-2x3.sm_w-1x2.p-7.lg_p-8.bg-black-a15.rounded-4xl
               h2.font-bold {{ metadata.name }}
@@ -51,7 +54,7 @@
                 .flex.w-full.justify-between.items-center
                   div.text-sm Auction Duration
                   button.text-xxs.opacity-75.focus_outline-none.hover_opacity-100.px-4.-mx-4(@click="helpText = true") ?
-                .text-xl.text-right.font-bold {{ ddhhmmss(auction.duration * 1000, ' ', true) }}
+                .text-xl.text-right.font-bold {{ ddhhmmss(auction.duration * 1000, ' ', true, true) }}
 
           //- (auction active)
           template(v-else-if="Number(auction.amount) > 0")
@@ -104,6 +107,7 @@ import { mapState, mapGetters } from 'vuex'
 import Btn from '@/components/Btn'
 import Countdown, { ddhhmmss } from '@/components/Countdown'
 import ImgGif from '@/components/ImgGif'
+import RespImg from '@/components/RespImg'
 let lastRt
 export default {
   name: 'WorkAuctionsToken',
@@ -221,7 +225,7 @@ export default {
       this.getAuction()
     }
   },
-  components: { Btn, ImgGif, Countdown }
+  components: { Btn, ImgGif, Countdown, RespImg }
 }
 </script>
 
