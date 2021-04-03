@@ -96,7 +96,9 @@ export default {
       if (this.slice.primary.auction_link?.link_type === 'Document') {
         return linkResolver(this.slice.primary.auction_link)
       }
-      return { name: 'work-auctions', params: { work: this.slice.primary.link.uid } }
+      // TODO add release check for button?
+      // return { name: 'work-auctions', params: { work: this.slice.primary.link.uid } }
+      return null
     }
   },
   methods: {
