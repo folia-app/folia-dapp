@@ -72,8 +72,8 @@ export function ddhhmmss (milliseconds, separator = ' - ', omittSeconds, omittDa
   day = 0
   if (!omittDays) {
     day = Math.floor(hour / 24)
+    hour = hour % 24
   }
-  hour = hour % 24
   // const tm = str => str // ('0' + str).slice(-2)
   // return `${day}d - ${hour}h - ${minute}m - ${seconds}s`
   const time = [
