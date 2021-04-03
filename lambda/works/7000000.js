@@ -8,7 +8,7 @@ const asset = {
 export default {
   titlePattern: '2000 Cliparts',
   editions: 1,
-  description: 'Oliver Laric (b. 1981), "2000 Cliparts", Video/MP4, 2:54, 2000 frames, 1440x1080 pixels, 91.7MB, Created 2010, Minted 2021.',
+  description: 'Oliver Laric (b. 1981), "2000 Cliparts", Video/MP4, 2:54, 2000 frames, 1440x1080 pixels, 91.7MB, Created 2010, Minted 2021, Edition of 1',
   release: null,
   directory: 'https://gateway.pinata.cloud/ipfs/QmcUtS6h1k2kNBhGrUZqyZGJStSY5vTXn5LPFLoBFtRXar/FLA7000000__oliver-laric__2000-cliparts__2010',
   assetPath: '',
