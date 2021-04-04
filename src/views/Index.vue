@@ -23,26 +23,26 @@
       //- MAIN
       main.index.relative.min-h-screen.transition.duration-500.transform.origin-left(:class="panelOpen ? panelWidths[1] : ''")
         //- HEADER
-        header.absolute.top-0.left-0.w-full.z-20.text-white(style="mix-blend-mode:difference")
+        header.absolute.top-0.left-0.w-full.z-20.text-white.pointer-events-none(style="mix-blend-mode:difference")
           .absolute.top-0.left-0.w-full
             .flex.w-full.justify-between.items-center
               //- logo
-              .p-10.md_px-12
+              .p-10.md_px-12.pointer-events-auto
                 button.focus_outline-none(@click="onLogoClick", aria-label="About Folia")
                   logo.block.text-white.h-12.cursor-poiner(aria-label="Folia")
                 //- svg-fleuron.block.text-white(style="height:3rem")
-              div
+              div.pointer-events-auto
                 button.p-10.focus_outline-none(v-if="!address", @click="$store.dispatch('connect')") Connect
                 button.p-10.focus_outline-none.relative.group(v-else, @click="$store.dispatch('disconnect')")
                   span.group-hover_opacity-0.truncate {{ address.slice(0, 6) + '...' + address.slice(-4) }}
                   span.hidden.group-hover_block.absolute.overlay.text-right.p-10 Disconnect
         //- landing
-        section.w-full.bg-black.text-white.relative.flex.items-center.justify-center.font-sans.text-sm.h-90vh.md_h-93vh-off.md_h-screen(:style="{cursor: carouselEnabled ? 'e-resize' : 'auto'}", @click="carouselEnabled && nextSlide()")
+        section.w-full.bg-black.text-white.relative.flex.items-center.justify-center.font-sans.text-sm.h-90vh.md_h-93vh-off.md_h-screen
           template(v-if="home")
             //- slides...
             transition-group(:name="carouselEnabled ? 'slide' : 'none'")
               figure.absolute.overlay(v-for="(slice, i) in home.landing", v-show="current === i", :key="i")
-                landing-slide-work(:slice="slice")
+                landing-slide-work(:slice="slice", @next="carouselEnabled && nextSlide()", :isCarousel="carouselEnabled")
 
           //- dots
           //- ul.absolute.bottom-0.left-0.w-full.flex.items-center.justify-center.pb-6(v-if="slides.length > 1")

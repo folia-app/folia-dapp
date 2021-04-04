@@ -9,9 +9,16 @@
       //- (blur?)
       //- .absolute.overlay(:style="{backdropFilter: `blur(12px)`}")
 
+    //- tap areas
+    .absolute.overlay.flex
+      //- open work
+      button.flex-1.block.cursor-pointer.focus_outline-none(@click.stop="$router.push(linkResolver(slice.primary.link))", aria-label="View")
+      //- (next slide)
+      button.w-1x3.md_w-1x4.focus_outline-none(v-if="isCarousel", style="cursor:e-resize", aria-label="Next Slide", @click.stop="$emit('next')")
+
     //- (countdown)
     //- countdown-play-btn-overlay.z-10.text-lg(:doc="doc", @released="isReleased = true", :playBtn="false")
-    .absolute.overlay.flex.items-center.justify-center(v-if="releaseTime && !isReleased")
+    //- .absolute.overlay.flex.items-center.justify-center(v-if="releaseTime && !isReleased")
       prismic-link(:field="slice.primary.link", :linkResolver="linkResolver", @click.native.stop)
         btn.px-8(style="backdrop-filter: blur(20px)")
           countdown(:until="releaseTime", @ended="isReleased = true")
@@ -35,7 +42,7 @@
       //- .mx-auto.md_m-0
       //- template(v-if="isSoldOut")
       template(v-if="isSoldOut(work)")
-        sold-out-dot.ml-auto.mr-12.md_mr-0
+        sold-out-dot.ml-auto.mr-1.md_-mr-2
       template(v-else-if="isAuction")
         template(v-if="bidLink && (!releaseTime || isReleased)")
           router-link.ml-auto.focus_outline-none(:to="bidLink", @click.native.stop)
@@ -65,7 +72,8 @@ export default {
   components: { Btn, Countdown, SoldOutDot },
   props: {
     slice: { type: Object, default: () => ({}) },
-    doc: { type: Object, default: undefined }
+    doc: { type: Object, default: undefined },
+    isCarousel: { type: Boolean, default: false }
   },
   data () {
     return {
