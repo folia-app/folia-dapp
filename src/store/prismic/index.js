@@ -11,6 +11,9 @@ export default {
     works (state) {
       return state.docs.filter(doc => doc.type === 'work')
     },
+    auctions (state) {
+      return state.docs.filter(doc => doc.type === 'auction')
+    },
     isReleased: (state) => ({ uid, doc }) => {
       doc = doc || state.docs.find(doc => doc.uid === uid)
       const time = doc?.data?.release_link?.data?.release_time

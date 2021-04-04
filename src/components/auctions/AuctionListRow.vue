@@ -20,9 +20,11 @@
         template(v-if="auctionEnded")
           sold-out-dot.ml-6
         //- auction active
-        template(v-else-if="auctionIsActive")
-          btn.px-8.bg-red.pointer-events-none(size="small", theme="none")
-            countdown.ml-2(:until="auctionEndTimeMs", separator=" ", @ended="auctionEnded = true")
+        template(v-else-if="auctionIsActive || expires")
+          btn.px-8.bg-red.pointer-events-none.ml-2(size="small", theme="none")
+            countdown(v-if="auctionIsActive", :until="auctionEndTimeMs", separator=" ", @ended="auctionEnded = true")
+            countdown(v-else-if="expires && !expired", :until="expires", separator=" ", @ended="expired = true")
+            span(v-else-if="expired") EXPIRED
         //- auction to be released
         //- template(v-else-if="releaseTime")
         //- chevron
@@ -46,7 +48,8 @@ export default {
       auction: undefined,
       listening: false,
       auctionEnded: false,
-      releaseTimerEnded: false
+      releaseTimerEnded: false,
+      expired: false
     }
   },
   computed: {
@@ -60,6 +63,10 @@ export default {
     },
     auctionIsActive () {
       return this.auction && Number(this.auction.firstBidTime) && !this.auctionEnded
+    },
+    expires () {
+      const auctionDoc = this.$store.getters['prismic/auctions'].find(doc => doc.uid === this.tokenId)
+      return auctionDoc?.data?.expires
     }
   },
   methods: {

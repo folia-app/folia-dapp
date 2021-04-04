@@ -99,6 +99,11 @@ export default {
       // TODO add release check for button?
       // return { name: 'work-auctions', params: { work: this.slice.primary.link.uid } }
       return null
+    },
+    auctionExpiration () {
+      const token = this.slice.primary.auction_link?.uid
+      const auctionDoc = this.$store.getters['prismic/auctions'].find(doc => doc.uid === token)
+      return auctionDoc?.data?.expires
     }
   },
   methods: {

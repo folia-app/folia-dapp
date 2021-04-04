@@ -1,5 +1,5 @@
 <template lang="pug">
-  article.work-auctions.token.transition-background.duration-500(:class="{'bg-red': auctionEnded !== true, 'bg-gray-800': auctionEnded === true}")
+  article.work-auctions.token.transition-background.duration-500(:class="{'bg-red': isActive, 'bg-gray-800': !isActive}")
     .h-screen.overflow-y-scroll.scrollbars-hidden.flex.flex-col(v-if="doc", :key="$route.params.token")
       header.px-6.py-10.lg_p-10.mx-1.flex.justify-between.items-start(role="banner")
         button.flex.items-center.focus_outline-none(@click="backBtn")
@@ -58,15 +58,15 @@
                   button.text-xxs.opacity-75.focus_outline-none.hover_opacity-100.px-4.-mx-4(@click="helpText = true") ?
                 div.text-xl.text-right.font-bold {{ weiToETH(auction.reservePrice) }} ETH
               //- auction duration
-              .w-1x2.rounded-4xl.bg-black-a30.p-7.lg_p-8.flex.flex-col.justify-between.min-h-56
+              .w-1x2.rounded-4xl.bg-black-a30.p-7.lg_p-8.flex.flex-col.justify-between.min-h-56(v-if="!expired")
                 .flex.w-full.justify-between.items-center
                   div.text-sm Auction Duration
                   button.text-xxs.opacity-75.focus_outline-none.hover_opacity-100.px-4.-mx-4(@click="helpText = true") ?
                 .text-xl.text-right.font-bold {{ ddhhmmss(auction.duration * 1000, ' ', true, true) }}
               //- (expires)
-              .w-full.rounded-4xl.bg-black-a15.p-7.lg_p-8.flex.flex-col.justify-between.min-h-36.lg_min-h-0ff
-                div.text-sm Auction Expires
-                countdown.font-bold.w-full.text-right.leading-none.text-xl(:until="expires", :separator="' '")
+              .w-full.rounded-4xl.bg-black-a15.p-7.lg_p-8.flex.flex-col.justify-between.min-h-36.lg_min-h-0ff(v-if="expiration", :class="{'lg_max-w-1x2 bg-black-a30': expired}")
+                div.text-sm {{ expired ? 'Auction Expired' : 'Auction Expires' }}
+                countdown.font-bold.w-full.text-right.leading-none.text-xl(v-if="!expired", :until="expiration", :separator="' '", @ended="expired = true")
 
           //- (auction active)
           template(v-else-if="Number(auction.amount) > 0")
@@ -93,25 +93,30 @@
               //- .w-1x2.rounded-4xl.bg-black-a03.p-7.lg_p-8.flex.flex-col.justify-between.min-h-52
                 div.text-sm Errors/Help ?
 
-        //- bid
-        .order-last.sticky.bottom-0.left-0.w-full.p-6.lg_p-10.text-xl.select-none(v-if="auctionEnded !== true")
-          .bg-red.backdrop-blurff.rounded-4xl
-            .bg-black-a30.rounded-4xl.p-5.lg_p-6
-              .flex.flex-wrap.sm_flex-no-wrap.w-full.group
-                //- input
-                btn.flex-1.px-6.lg_px-10(size="large", theme="darken", @click="$refs.input.focus()")
-                  input.w-full.text-center.focus_outline-none(ref="input", v-model="bidETH", type="number", :min="weiToETH(auction.reservePrice)", required, step="0.1", size="1", min="bidStepETH")
-                //- ETH
-                btn.w-40.lg_w-48.group-hover_hidden.px-6.lg_px-10.pointer-events-none(size="large", theme="darken") ETH
-                //- (+/-)
-                .hidden.group-hover_flex
-                  btn.w-20.lg_w-24.flex.justify-center.items-center.lg_hover_bg-gray-a30(size="large", theme="darken", @click="decreaseBid")
-                    .h-px.bg-current(style="width:0.55em")
-                  btn.w-20.lg_w-24.flex.justify-center.items-center.lg_hover_bg-gray-a30(size="large", theme="darken", @click="increaseBid") +
-                //- bid btn
-                button.w-full.sm_w-auto.sm_flex-1.block.focus_outline-none.text-xl.font-bold(@click="bid")
-                  btn.tracking-wide.px-10.lg_px-16(size="large", theme="darkener") BID
+        //- (bid)
+        .sticky.bottom-0.left-0.w-full.p-6.lg_p-10.text-xl.select-none
+          //- (bid)
+          template(v-if="isActive")
+            .bg-red.backdrop-blurff.rounded-4xl
+              .bg-black-a30.rounded-4xl.p-5.lg_p-6
+                .flex.flex-wrap.sm_flex-no-wrap.w-full.group
+                  //- input
+                  btn.flex-1.px-6.lg_px-10(size="large", theme="darken", @click="$refs.input.focus()")
+                    input.w-full.text-center.focus_outline-none(ref="input", v-model="bidETH", type="number", :min="weiToETH(auction.reservePrice)", required, step="0.1", size="1", min="bidStepETH")
+                  //- ETH
+                  btn.w-40.lg_w-48.group-hover_hidden.px-6.lg_px-10.pointer-events-none(size="large", theme="darken") ETH
+                  //- (+/-)
+                  .hidden.group-hover_flex
+                    btn.w-20.lg_w-24.flex.justify-center.items-center.lg_hover_bg-gray-a30(size="large", theme="darken", @click="decreaseBid")
+                      .h-px.bg-current(style="width:0.55em")
+                    btn.w-20.lg_w-24.flex.justify-center.items-center.lg_hover_bg-gray-a30(size="large", theme="darken", @click="increaseBid") +
+                  //- bid btn
+                  button.w-full.sm_w-auto.sm_flex-1.block.focus_outline-none.text-xl.font-bold(@click="bid")
+                    btn.tracking-wide.px-10.lg_px-16(size="large", theme="darkener") BID
 
+          //- (enquire btn)
+          a.w-full.sm_flex-1.block.focus_outline-none.text-xl.font-bold.rounded-full.bg-gray-800(v-if="expired", href="mailto:info@folia.app?subject=2000 Cliparts", target="_blank", rel="noopener noreferrer")
+            btn.tracking-wide.px-10.lg_px-16(size="large", theme="darkener") ENQUIRE
 </template>
 
 <script>
@@ -133,7 +138,8 @@ export default {
       listening: false,
       bidStepETH: 0.1,
       auctionEnded: undefined,
-      helpText: false
+      helpText: false,
+      expired: true
     }
   },
   computed: {
@@ -155,9 +161,12 @@ export default {
       }
       return minBid.toString()
     },
-    expires () {
+    expiration () {
       const auctionDoc = this.$store.state.prismic.docs.find(doc => doc.uid === this.tokenId)
       return auctionDoc?.data?.expires
+    },
+    isActive () {
+      return this.auctionEnded !== true && !this.expired
     }
   },
   methods: {
