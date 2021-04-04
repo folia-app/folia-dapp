@@ -94,7 +94,7 @@
                 div.text-sm Errors/Help ?
 
         //- (bid)
-        .sticky.bottom-0.left-0.w-full.p-6.lg_p-10.text-xl.select-none
+        .lg_sticky.bottom-0.left-0.w-full.p-6.pb-24.lg_p-10.text-xl.select-none
           //- (bid)
           template(v-if="isActive")
             .bg-red.backdrop-blurff.rounded-4xl
