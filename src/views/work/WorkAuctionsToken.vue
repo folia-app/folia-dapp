@@ -94,7 +94,7 @@
             p.w-full.rounded-4xl.bg-black-a15.p-7.lg_p-8.min-h-56.text-sm.lg_hover_bg-black-a30 Folia uses a reserve price auction contract. The first bid at the reserve price triggers a 24-hour countdown. Any bids made in the last 15 minutes of the auction will extend the clock by 15 minutes. When time runs out, the highest bidder wins. Bids are held in escrow and will be refunded if a higher bid is made. Minimum bid increase is set at .1ETH.
 
         //- (bid)
-        .lg_sticky.bottom-0.left-0.w-full.p-6.pb-40.lg_p-10.text-xl.select-none
+        .lg_sticky.bottom-0.left-0.w-full.p-6.pb-56.lg_p-10.text-xl.select-none
           //- (bid)
           template(v-if="isActive")
             .bg-red.backdrop-blurff.rounded-4xl
