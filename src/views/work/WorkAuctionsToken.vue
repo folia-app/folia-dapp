@@ -139,7 +139,7 @@ export default {
       bidStepETH: 0.1,
       auctionEnded: undefined,
       helpText: false,
-      expired: true
+      expired: false
     }
   },
   computed: {
