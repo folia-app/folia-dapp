@@ -124,8 +124,7 @@ export default {
       activeWork: this.$route.params.work,
       current: 0,
       panelWidths: [],
-      carouselTimer: null,
-      carouselInterval: 6000
+      carouselTimer: null
     }
   },
   computed: {
@@ -191,14 +190,17 @@ export default {
       return autoplay ? this.autoplayCarousel() : this.pauseCarousel()
     },
     autoplayCarousel () {
-      // first time? pause on window.blur
-      if (!this.carouselTimer) {
-        window.addEventListener('blur', this.pauseCarousel)
-      }
-      // reset
-      clearTimeout(this.carouselTimer)
-      if (this.carouselEnabled && this.$route.name === 'index') {
-        this.carouselTimer = setTimeout(() => this.nextSlide(), this.carouselInterval)
+      const interval = this.home?.landing_carousel_autoplay_interval // seconds
+      const canPlay = interval > 0 && this.carouselEnabled && this.$route.name === 'index'
+      if (canPlay) {
+        // first time? pause on window.blur
+        if (!this.carouselTimer) {
+          window.addEventListener('blur', this.pauseCarousel)
+        }
+        // reset
+        clearTimeout(this.carouselTimer)
+        // queue
+        this.carouselTimer = setTimeout(() => this.nextSlide(), interval * 1000)
       }
     },
     pauseCarousel () {
