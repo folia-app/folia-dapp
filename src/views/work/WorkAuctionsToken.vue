@@ -36,8 +36,11 @@
                     .absolute.bottom-0.right-0.pr-5.pb-2
                       svg-eye.text-black
 
-            .w-2x3.sm_w-1x2.p-7.lg_p-8.bg-black-a15.rounded-4xl
-              h2.font-bold {{ metadata.name }}
+            .w-1x2.p-7.lg_p-8.bg-black-a15.rounded-4xl
+              //- title
+              h2.font-bold
+                router-link(:to="{name: 'work'}") {{ metadata.name }}
+              //- description
               div.text-xs.mt-2 {{ metadata.description }}
               //- div Reserve Price: {{ weiToETH(auction.reservePrice) }} ETH
 
@@ -47,17 +50,23 @@
 
           //- (pre-auction)
           template(v-if="auction.amount === '0'")
-            .flex.px-6.lg_px-10
+            .flex.flex-wrap.px-6.lg_px-10
+              //- reserve price
               .w-1x2.rounded-4xl.bg-black-a30.p-7.lg_p-8.flex.flex-col.justify-between.min-h-56
                 .flex.w-full.justify-between.items-center
                   div.text-sm Reserve Price
                   button.text-xxs.opacity-75.focus_outline-none.hover_opacity-100.px-4.-mx-4(@click="helpText = true") ?
                 div.text-xl.text-right.font-bold {{ weiToETH(auction.reservePrice) }} ETH
+              //- auction duration
               .w-1x2.rounded-4xl.bg-black-a30.p-7.lg_p-8.flex.flex-col.justify-between.min-h-56
                 .flex.w-full.justify-between.items-center
                   div.text-sm Auction Duration
                   button.text-xxs.opacity-75.focus_outline-none.hover_opacity-100.px-4.-mx-4(@click="helpText = true") ?
                 .text-xl.text-right.font-bold {{ ddhhmmss(auction.duration * 1000, ' ', true, true) }}
+              //- (expires)
+              .w-full.rounded-4xl.bg-black-a15.p-7.lg_p-8.flex.flex-col.justify-between.min-h-36.lg_min-h-0ff
+                div.text-sm Auction Expires
+                countdown.font-bold.w-full.text-right.leading-none.text-xl(:until="expires", :separator="' '")
 
           //- (auction active)
           template(v-else-if="Number(auction.amount) > 0")
@@ -112,7 +121,7 @@ import Countdown, { ddhhmmss } from '@/components/Countdown'
 import ImgGif from '@/components/ImgGif'
 import RespImg from '@/components/RespImg'
 import SvgEye from '@/components/SVG-Eye'
-let lastRt
+// let lastRt
 export default {
   name: 'WorkAuctionsToken',
   props: ['doc'],
@@ -145,6 +154,10 @@ export default {
         minBid = currentBid ? Number(currentBid + this.bidStepETH).toFixed(1) : reserve
       }
       return minBid.toString()
+    },
+    expires () {
+      const auctionDoc = this.$store.state.prismic.docs.find(doc => doc.uid === this.tokenId)
+      return auctionDoc?.data?.expires
     }
   },
   methods: {
@@ -209,13 +222,14 @@ export default {
       this.bidETH = val
     },
     backBtn () {
-      return lastRt?.name ? this.$router.go(-1) : this.$router.push({ name: 'work-auctions' })
+      // return lastRt?.name ? this.$router.go(-1) : this.$router.push({ name: 'work-auctions' })
+      return this.$router.push({ name: 'work-auctions' })
     }
   },
-  beforeRouteEnter (to, from, next) {
-    lastRt = from
-    next()
-  },
+  // beforeRouteEnter (to, from, next) {
+  //   lastRt = from
+  //   next()
+  // },
   created () {
     this.getMetadata()
     this.getAuction()

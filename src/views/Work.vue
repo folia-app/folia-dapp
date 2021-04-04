@@ -32,7 +32,7 @@
               //- ...bid
               template(v-else-if="isUnitSale")
                 template(v-if="doc.data.auction.length")
-                  button.block.group.relative.focus_outline-none.-m-2(@click="$router.replace({name: 'work-auctions'})")
+                  button.block.group.relative.focus_outline-none.-m-2(@click="onBidBtn")
                     btn.px-16(theme="drkgray") BID
 
               //- ...sold-out
@@ -169,6 +169,15 @@ export default {
           this.$router.replace({ name: 'work-info' })
         }
       }
+    },
+    onBidBtn () {
+      // single auction go direct
+      if (this.doc.data.auction.length === 1) {
+        const token = this.doc.data.auction[0].primary.token_id
+        return this.$router.push({ name: 'work-auctions-token', params: { token } })
+      }
+      // multiple auctions go to list
+      return this.$router.replace({ name: 'work-auctions' })
     }
   },
   watch: {
