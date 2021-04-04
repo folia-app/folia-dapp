@@ -22,8 +22,8 @@
       //- (auction)
       template(v-else-if="auction")
         section
-          .flex.px-6.lg_px-10.flex-row-reverse(v-if="metadata")
-            figure.flex-1
+          .flex.flex-wrap.px-6.lg_px-10.sm_flex-row-reverse(v-if="metadata")
+            figure.w-full.sm_w-1x2
               router-link(:to="{name: 'work-auctions-token-tokenviewer', params: {token: $route.params.token}}")
                 template(v-if="metadata.image")
                   .pb-full.relative.bg-white.rounded-4xl.overflow-hidden
@@ -36,7 +36,7 @@
                     .absolute.bottom-0.right-0.pr-5.pb-2
                       svg-eye.text-black
 
-            .w-1x2.p-7.lg_p-8.bg-black-a15.rounded-4xl
+            .flex-1.p-7.lg_p-8.bg-black-a15.rounded-4xl
               //- title
               h2.font-bold
                 router-link(:to="{name: 'work'}") {{ metadata.name }}
@@ -44,29 +44,25 @@
               div.text-xs.mt-2 {{ metadata.description }}
               //- div Reserve Price: {{ weiToETH(auction.reservePrice) }} ETH
 
-          //- (help text)
-          .flex.px-6.lg_px-10.cursor-pointer(v-show="helpText", @click="helpText = false")
-            p.w-full.rounded-4xl.bg-black-a30.p-7.lg_p-8.min-h-56.text-sm Folia uses a reserve price auction contract. The first bid at the reserve price triggers a 24-hour countdown. Any bids made in the last 15 minutes of the auction will extend the clock by 15 minutes. When time runs out, the highest bidder wins. Bids are held in escrow and will be refunded if a higher bid is made. Minimum bid increase is set at .1ETH.
-
           //- (pre-auction)
           template(v-if="auction.amount === '0'")
             .flex.flex-wrap.px-6.lg_px-10
+              //- (expires)
+              .w-full.rounded-4xl.bg-black-a30.p-7.lg_p-8.flex.flex-col.justify-between.min-h-36.lg_min-h-0ff(v-if="expiration", :class="{'lg_max-w-1x2 bg-black-a30': expired}")
+                div.text-sm {{ expired ? 'Auction Expired' : 'Auction Expires' }}
+                countdown.font-bold.w-full.text-right.leading-none.text-xl(v-if="!expired", :until="expiration", :separator="' '", @ended="expired = true")
               //- reserve price
-              .w-1x2.rounded-4xl.bg-black-a30.p-7.lg_p-8.flex.flex-col.justify-between.min-h-56
+              .w-full.sm_w-1x2.rounded-4xl.bg-black-a15.p-7.lg_p-8.flex.flex-col.justify-between.min-h-36.sm_min-h-56
                 .flex.w-full.justify-between.items-center
                   div.text-sm Reserve Price
                   button.text-xxs.opacity-75.focus_outline-none.hover_opacity-100.px-4.-mx-4(@click="helpText = true") ?
                 div.text-xl.text-right.font-bold {{ weiToETH(auction.reservePrice) }} ETH
               //- auction duration
-              .w-1x2.rounded-4xl.bg-black-a30.p-7.lg_p-8.flex.flex-col.justify-between.min-h-56(v-if="!expired")
+              .w-full.sm_w-1x2.rounded-4xl.bg-black-a15.p-7.lg_p-8.flex.flex-col.justify-between.min-h-36.sm_min-h-56(v-if="!expired")
                 .flex.w-full.justify-between.items-center
                   div.text-sm Auction Duration
                   button.text-xxs.opacity-75.focus_outline-none.hover_opacity-100.px-4.-mx-4(@click="helpText = true") ?
                 .text-xl.text-right.font-bold {{ ddhhmmss(auction.duration * 1000, ' ', true, true) }}
-              //- (expires)
-              .w-full.rounded-4xl.bg-black-a15.p-7.lg_p-8.flex.flex-col.justify-between.min-h-36.lg_min-h-0ff(v-if="expiration", :class="{'lg_max-w-1x2 bg-black-a30': expired}")
-                div.text-sm {{ expired ? 'Auction Expired' : 'Auction Expires' }}
-                countdown.font-bold.w-full.text-right.leading-none.text-xl(v-if="!expired", :until="expiration", :separator="' '", @ended="expired = true")
 
           //- (auction active)
           template(v-else-if="Number(auction.amount) > 0")
@@ -92,6 +88,10 @@
                       | {{ auction.bidder === address ? 'You' : addrShort(auction.bidder || auction.winner) }}
               //- .w-1x2.rounded-4xl.bg-black-a03.p-7.lg_p-8.flex.flex-col.justify-between.min-h-52
                 div.text-sm Errors/Help ?
+
+          //- (help text)
+          .flex.px-6.lg_px-10(v-show="helpText", @click="helpText = false", style="cursor:n-resize")
+            p.w-full.rounded-4xl.bg-black-a15.p-7.lg_p-8.min-h-56.text-sm.lg_hover_bg-black-a30 Folia uses a reserve price auction contract. The first bid at the reserve price triggers a 24-hour countdown. Any bids made in the last 15 minutes of the auction will extend the clock by 15 minutes. When time runs out, the highest bidder wins. Bids are held in escrow and will be refunded if a higher bid is made. Minimum bid increase is set at .1ETH.
 
         //- (bid)
         .lg_sticky.bottom-0.left-0.w-full.p-6.pb-24.lg_p-10.text-xl.select-none
