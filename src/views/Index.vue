@@ -37,7 +37,7 @@
                   span.group-hover_opacity-0.truncate {{ address.slice(0, 6) + '...' + address.slice(-4) }}
                   span.hidden.group-hover_block.absolute.overlay.text-right.p-10 Disconnect
         //- landing
-        observer.w-full.bg-black.text-white.relative.flex.items-center.justify-center.font-sans.text-sm.h-90vh.md_h-93vh-off.md_h-screen(:threshold="0.1", @visible="autoplayCarousel", @hidden="pauseCarousel")
+        observer.w-full.bg-black.text-white.relative.flex.items-center.justify-center.font-sans.text-sm.h-90vh.md_h-93vh-off.md_h-screen(:threshold="0.5", @visible="autoplayCarousel", @hidden="pauseCarousel")
           template(v-if="home")
             //- slides...
             transition-group(:name="carouselEnabled ? 'slide' : 'none'")
@@ -191,6 +191,11 @@ export default {
       return autoplay ? this.autoplayCarousel() : this.pauseCarousel()
     },
     autoplayCarousel () {
+      // first time? pause on window.blur
+      if (!this.carouselTimer) {
+        window.addEventListener('blur', this.pauseCarousel)
+      }
+      // reset
       clearTimeout(this.carouselTimer)
       if (this.carouselEnabled && this.$route.name === 'index') {
         this.carouselTimer = setTimeout(() => this.nextSlide(), this.carouselInterval)
@@ -228,6 +233,9 @@ export default {
     },
     workDocs () {
       this.setPanelWidths()
+    },
+    home (doc) {
+      if (doc) this.autoplayCarousel()
     }
   },
   created () {
