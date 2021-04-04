@@ -52,7 +52,7 @@
                 div.text-sm {{ expired ? 'Auction Expired' : 'Auction Expires' }}
                 countdown.font-bold.w-full.text-right.leading-none.text-xl(v-if="!expired", :until="expiration", :separator="' '", @ended="expired = true")
               //- reserve price
-              .w-full.sm_w-1x2.rounded-4xl.bg-black-a15.p-7.lg_p-8.flex.flex-col.justify-between.min-h-36.sm_min-h-56
+              .flex-1.rounded-4xl.bg-black-a15.p-7.lg_p-8.flex.flex-col.justify-between.min-h-36.sm_min-h-56
                 .flex.w-full.justify-between.items-center
                   div.text-sm Reserve Price
                   button.text-xxs.opacity-75.focus_outline-none.hover_opacity-100.px-4.-mx-4(@click="helpText = true") ?
