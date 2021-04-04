@@ -48,7 +48,7 @@
           template(v-if="auction.amount === '0'")
             .flex.flex-wrap.px-6.lg_px-10
               //- (expires)
-              .w-full.rounded-4xl.bg-black-a30.p-7.lg_p-8.flex.flex-col.justify-between.min-h-36.lg_min-h-0ff(v-if="expiration", :class="{'lg_max-w-1x2 bg-black-a30': expired}")
+              .w-full.rounded-4xl.bg-black-a30.p-7.lg_p-8.flex.flex-col.justify-between.min-h-36.lg_min-h-0ff(v-if="expiration")
                 div.text-sm {{ expired ? 'Auction Expired' : 'Auction Expires' }}
                 countdown.font-bold.w-full.text-right.leading-none.text-xl(v-if="!expired", :until="expiration", :separator="' '", @ended="expired = true")
               //- reserve price

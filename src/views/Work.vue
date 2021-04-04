@@ -63,7 +63,7 @@
             button.focus_outline-none(@click="$router.replace({name: 'work-info'})")
               btn.px-8.md_px-12(theme="drkgray", :active="$route.name === 'work-info'") Info
             button.focus_outline-none(@click="$router.replace({name: 'work-auctions'})", v-if="isAuction")
-              btn.px-8.md_px-12(theme="drkgray", :active="$route.name.includes('work-auctions')") Auction
+              btn.px-8.md_px-12(theme="drkgray", :active="$route.name.includes('work-auctions')") Auctions
             button.focus_outline-none(@click="$router.replace({name: 'work-owners'})", v-if="(isReleased && work && work.editions < 20) && !isUnitSale && !isVariableEdition")
               btn.px-8.md_px-12(theme="drkgray", :active="$route.name === 'work-owners'") Collectors
             button.focus_outline-none(@click="$router.replace({name: 'work-details'})")
