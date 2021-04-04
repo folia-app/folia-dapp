@@ -37,12 +37,12 @@
                   span.group-hover_opacity-0.truncate {{ address.slice(0, 6) + '...' + address.slice(-4) }}
                   span.hidden.group-hover_block.absolute.overlay.text-right.p-10 Disconnect
         //- landing
-        section.w-full.bg-black.text-white.relative.flex.items-center.justify-center.font-sans.text-sm.h-90vh.md_h-93vh-off.md_h-screen
+        observer.w-full.bg-black.text-white.relative.flex.items-center.justify-center.font-sans.text-sm.h-90vh.md_h-93vh-off.md_h-screen(:threshold="0.1", @visible="autoplayCarousel", @hidden="pauseCarousel")
           template(v-if="home")
             //- slides...
             transition-group(:name="carouselEnabled ? 'slide' : 'none'")
               figure.absolute.overlay(v-for="(slice, i) in home.landing", v-show="current === i", :key="i")
-                landing-slide-work(:slice="slice", @next="carouselEnabled && nextSlide()", :isCarousel="carouselEnabled")
+                landing-slide-work(:slice="slice", @next="carouselEnabled && nextSlide(false)", :isCarousel="carouselEnabled")
 
           //- dots
           //- ul.absolute.bottom-0.left-0.w-full.flex.items-center.justify-center.pb-6(v-if="slides.length > 1")
@@ -110,10 +110,11 @@ import RichText from '@/components/RichText'
 import linkResolver from '@/plugins/prismic/link-resolver'
 import SliceAuctions from '@/slices/SliceAuctions'
 import SliceAnnouncement from '@/slices/SliceAnnouncement'
+import Observer from '@/components/Observer'
 let lastRt
 export default {
   name: 'Index',
-  components: { WorkView, Logo, Info, svgFleuron, Btn, LandingSlideWork, ViewToken, SetView, RichText, SliceAuctions, SliceAnnouncement },
+  components: { WorkView, Logo, Info, svgFleuron, Btn, LandingSlideWork, ViewToken, SetView, RichText, SliceAuctions, SliceAnnouncement, Observer },
   data () {
     return {
       squish: false,
@@ -122,7 +123,9 @@ export default {
       panelOpen: this.$route.meta.layout === 'panel',
       activeWork: this.$route.params.work,
       current: 0,
-      panelWidths: []
+      panelWidths: [],
+      carouselTimer: null,
+      carouselInterval: 6000
     }
   },
   computed: {
@@ -182,8 +185,19 @@ export default {
       this.panelOpen = false
       setTimeout(() => this.setPanelWidths(), 700) // after transition
     },
-    nextSlide () {
+    nextSlide (autoplay = true) {
       this.current = this.current + 1 === this.home.landing.length ? 0 : this.current + 1
+      // autoplay carousel ?
+      return autoplay ? this.autoplayCarousel() : this.pauseCarousel()
+    },
+    autoplayCarousel () {
+      clearTimeout(this.carouselTimer)
+      if (this.carouselEnabled && this.$route.name === 'index') {
+        this.carouselTimer = setTimeout(() => this.nextSlide(), this.carouselInterval)
+      }
+    },
+    pauseCarousel () {
+      clearTimeout(this.carouselTimer)
     }
   },
   beforeRouteEnter (to, from, next) {
@@ -200,9 +214,12 @@ export default {
       if (to.meta.layout === 'panel') {
         this.openPanel()
       }
-      // close panel ?
+      // index / no panel ?
       if (to.name === 'index') {
         this.closeWorkPanel()
+        this.autoplayCarousel()
+      } else {
+        this.pauseCarousel()
       }
       // update active work ?
       if (to.params.work) {
