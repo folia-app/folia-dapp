@@ -18,8 +18,12 @@
                 svg-fleuron.block.mr-2(style="width:0.96em;height:0.96em")
                 .hidden.md_inline.leading-none {{ workId(doc.uid, true) }}
 
+              //- ...sold-out
+              template(v-if="isSold")
+                sold-out-dot
+
               //- ...enquire btn
-              template(v-if="doc.data.enquire_button")
+              template(v-else-if="doc.data.enquire_button || doc.data.status === 'enquire'")
                 a.block.group.relative.focus_outline-none.-m-2(:href="`mailto:info@folia.app?subject=${doc.data.artist} - ${doc.data.title}`", target="_blank", rel="noopener noreferrer")
                   btn.px-10.text-md(theme="drkgray") ENQUIRE
 
@@ -34,10 +38,6 @@
                 template(v-if="doc.data.auction.length")
                   button.block.group.relative.focus_outline-none.-m-2(@click="onBidBtn")
                     btn.px-16(theme="drkgray") BID
-
-              //- ...sold-out
-              template(v-else-if="isSoldOut(work)")
-                sold-out-dot
 
               //- ...buy
               template(v-else)
@@ -64,7 +64,7 @@
               btn.px-8.md_px-12(theme="drkgray", :active="$route.name === 'work-info'") Info
             button.focus_outline-none(@click="$router.replace({name: 'work-auctions'})", v-if="isAuction")
               btn.px-8.md_px-12(theme="drkgray", :active="$route.name.includes('work-auctions')") Auctions
-            button.focus_outline-none(@click="$router.replace({name: 'work-owners'})", v-if="(isReleased && work && work.editions < 20) && !isUnitSale && !isVariableEdition")
+            button.focus_outline-none(@click="$router.replace({name: 'work-owners'})", v-if="collectorsTabEnabled")
               btn.px-8.md_px-12(theme="drkgray", :active="$route.name === 'work-owners'") Collectors
             button.focus_outline-none(@click="$router.replace({name: 'work-details'})")
               btn.px-8.md_px-12(theme="drkgray", :active="$route.name === 'work-details'") Details
@@ -115,6 +115,9 @@ export default {
     metadata () {
       return this.$store.state.metadatas.find(metadata => metadata._work === this.id)
     },
+    isSold () {
+      return this.isSoldOut(this.work) || this.doc?.data.status === 'sold'
+    },
     isVariableEdition () {
       return this.doc.data.page_layout === 'generative'
     },
@@ -136,6 +139,10 @@ export default {
     },
     isAuction () {
       return this.doc.data.auction?.length
+    },
+    collectorsTabEnabled () {
+      const isSmallEdition = this.work?.editions && Number(this.work.editions) < 10
+      return !this.isVariableEdition && !this.isAuction && this.isReleased !== false && (isSmallEdition || this.isSold)
     }
   },
   created () {

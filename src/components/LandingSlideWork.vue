@@ -41,7 +41,7 @@
       //- buy/bid btn
       //- .mx-auto.md_m-0
       //- template(v-if="isSoldOut")
-      template(v-if="isSoldOut(work)")
+      template(v-if="isSold")
         sold-out-dot.ml-auto.mr-1.md_-mr-2
       template(v-else-if="isAuction")
         template(v-if="bidLink && (!releaseTime || isReleased)")
@@ -99,6 +99,9 @@ export default {
     },
     isAuction () {
       return this.slice.primary?.link?.data?.page_layout === 'token-unit-sale'
+    },
+    isSold () {
+      return this.isSoldOut(this.work) || this.slice.primary?.link?.data?.status === 'sold'
     },
     bidLink () {
       if (this.slice.primary.auction_link?.link_type === 'Document') {

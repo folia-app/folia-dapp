@@ -1,5 +1,5 @@
 <template lang="pug">
-  section.work-owners.px-10.lg_px-12.pb-64
+  section.work-owners.px-6.lg_px-10.pb-64
     ul
       //- tokens...
       li.flex(v-for="token in tokensSorted")
@@ -8,7 +8,7 @@
         a.truncate(:href="openSeaLink({ account: token[1] })", target="_blank", rel="noopener noreferrer")
           btn.px-8.truncate(theme="drkgray")
             template(v-if="token[1] === $store.state.address") You
-            template(v-else) {{ token[1] }}
+            template(v-else) {{ addrShort(token[1]) }}
 </template>
 
 <script>
@@ -25,7 +25,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['openSeaLink']),
+    ...mapGetters(['openSeaLink', 'addrShort']),
     tokensSorted () {
       return this.tokens.slice().sort((a, b) => a[0] - b[0])
     },
@@ -39,8 +39,10 @@ export default {
   },
   methods: {
     getOwners () {
-      const printed = Number(this.work.printed)
-      for (let i = printed - 1; i >= 0; i--) {
+      // TODO - make this not based on printed since direct-minting currently ignores...
+      const items = Number(this.work.printed) || Number(this.work.editions) || 0
+      console.log('itms', items)
+      for (let i = items - 1; i >= 0; i--) {
         if (!this.tokensSorted[i]) {
           const tokenId = this.work.id * 1000000 + i + 1
           this.$store.dispatch('getNFTOwnerByTokenId', tokenId).then(owner => {
