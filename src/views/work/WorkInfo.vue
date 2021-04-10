@@ -27,7 +27,7 @@
           svg-eye.text-white
 
     //- info text
-    rich-text.text-lg.px-10.lg_px-12.children-mt-em.lg_w-10x12(style="max-width:28em;", :field="doc.data.description")
+    rich-text.text-lg.px-10.lg_px-12.children-mt-em.lg_w-10x12.links-underline(style="max-width:28em;", :field="doc.data.description")
 </template>
 
 <script>
