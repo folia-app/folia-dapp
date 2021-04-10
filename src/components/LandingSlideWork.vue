@@ -50,8 +50,8 @@
       //- template(v-if="isSoldOut")
       template(v-if="isSold")
         sold-out-dot.ml-auto.mr-1.md_-mr-2
-      template(v-else-if="isAuction")
-        template(v-if="bidLink && (!releaseTime || isReleased)")
+      template(v-else-if="bidLink")
+        template(v-if="!releaseTime || isReleased")
           router-link.ml-auto.focus_outline-none(:to="bidLink", @click.native.stop)
             btn.px-16.bg-black-a0.backdrop-blur BID
       template(v-else-if="work")

@@ -305,7 +305,6 @@ export default new Vuex.Store({
         // fetch new
         // query parameters
         let params = []
-        console.log(state.networkId)
         if (state.networkId) params.push(`network=${state.networkId}`)
         if (isViewer) params.push('viewer=1')
         params = params.length ? '?' + params.join('&') : ''

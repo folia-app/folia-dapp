@@ -19,7 +19,7 @@ export default {
   props: ['doc'],
   methods: {
     release (slice) {
-      return slice.primary.release_link1?.data.release_time
+      return slice.primary.release_link1?.data?.release_time
     },
     redirectToSingleAuction (rt) {
       // const isSingleAuction = this.doc?.data.auction?.length === 1

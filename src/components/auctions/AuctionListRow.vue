@@ -27,8 +27,9 @@
             span(v-else-if="expired") EXPIRED
         //- auction to be released
         //- template(v-else-if="releaseTime")
-        //- chevron
-        .h-4.w-4.border-t.border-r.transform.rotate-45.border-white.ml-6(v-if="releaseTimerEnded")
+
+        //- (chevron)
+        .h-4.w-4.border-t.border-r.transform.rotate-45.border-white.ml-6(v-if="!releaseTime || releaseTimerEnded")
         //- (timer)
         btn.px-8.pointer-events-none.-mr-4(v-else, size="small", theme="drkgray")
           countdown(:until="releaseTime", @ended="onReleaseTimerEnded", separator=" ")
