@@ -50,10 +50,8 @@
               rich-text(:field="doc.data.medium")
               //- (minted + price)
               template(v-if="!isUnitSale")
-                //- printed/edition
-                div(v-if="isReleased && work") {{ work.printed }}/{{work.editions}} Minted
-                  //- template(v-if="work")
-                  //- template(v-else) Edition of {{ doc.data.edition }}
+                //- minted
+                div(v-if="isVariableEdition && work") {{ work.printed }}/{{work.editions}} Minted
                 //- price
                 div {{ work ? weiToETH(work.price) : doc.data.price_eth }} ETH
 
