@@ -13,6 +13,10 @@
       nav.fixed.bottom-0.left-0.p2.z3(v-show="!viewNotifs")
         button.bg-white.black.border.cursor-pointer.flex.items-center.justify-center(@click="viewNotifs = !viewNotifs", style="width:2em; height:2em;", title="View Notifications")
           span {{notifications.length}}
+
+    template(v-if="isWrongNetwork")
+      .p-8 Oops
+      .fixed.z-50.bottom-0.left-0.w-full.p-6.md_p-8.bg-yellow.text-black.text-center.-shadow-md.font-sans.text-sm.md_text-base.lg_text-lg(v-html="'Wrong&nbsp;Network&nbsp;🤖 Please&nbsp;switch&nbsp;to&nbsp;Mainnet'")
 </template>
 
 <script>
@@ -24,6 +28,12 @@ export default {
   metaInfo: {
     titleTemplate: (ttl) => {
       return ttl ? `Folia – ${ttl}` : 'Folia'
+    }
+  },
+  computed: {
+    isWrongNetwork () {
+      const id = this.$store.state.networkId
+      return id && id !== 1 // && process.env.NODE_ENV !== 'development'
     }
   },
   created () {
