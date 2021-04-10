@@ -24,6 +24,7 @@ export default new Router({
       name: 'index',
       component: Index
     },
+
     // preview prismic docs
     {
       path: '/preview',
@@ -31,11 +32,14 @@ export default new Router({
       component: () => import(/* webpackChunkName: "preview" */ '../views/Preview.vue')
     },
 
+    // token viewer index
     {
       path: '/view/:token',
-      name: 'view-token',
+      name: 'index-tokenviewer',
       component: Index
     },
+
+    // work
     {
       path: '/works/:work',
       component: Index,

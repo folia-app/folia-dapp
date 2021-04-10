@@ -3,9 +3,9 @@
     //- media
     figure.absolute.overlay(:style="{background: slice.primary.slide_bg_color}")
       //- (image / poster)
-      img.absolute.overlay(v-if="slice.primary.image && slice.primary.image.url", :src="slice.primary.image.url", :alt="slice.primary.image.alt", :style="slice.primary.style_inline", :class="slice.primary.media_custom_css_classes || mediaClasses")
+      //- img.absolute.overlay(v-if="slice.primary.image && slice.primary.image.url", :src="slice.primary.image.url", :alt="slice.primary.image.alt", :style="slice.primary.style_inline", :class="mediaClasses")
       //- (video)
-      video.absolute.overlay(v-if="slice.primary.media && slice.primary.media.url", :src="slice.primary.media.url", muted, ref="video", playsinline, loop, :style="slice.primary.style_inline", @load="$event => $event.target.playbackRate = slice.primary.video_speed || 1", :class="slice.primary.media_custom_css_classes || mediaClasses")
+      video.absolute.overlay(v-if="slice.primary.media && slice.primary.media.url", :src="slice.primary.media.url", muted, ref="video", playsinline, loop, :style="slice.primary.style_inline", @load="$event => $event.target.playbackRate = slice.primary.video_speed || 1", :class="mediaClasses", :poster="slice.primary.image.url")
       //- (blur?)
       //- .absolute.overlay(:style="{backdropFilter: `blur(12px)`}")
 
@@ -16,6 +16,13 @@
       //- (next slide)
       button.w-1x3.md_w-1x4.focus_outline-none(v-if="isCarousel", style="cursor:e-resize", aria-label="Next Slide", @click.stop="$emit('next')")
 
+    //- (play btn)
+    .absolute.overlay.pointer-events-none.flex.items-center.justify-center(v-if="slice.primary.play_button")
+      button.text-black-a45.lg_hover_text-white.pointer-events-auto.p-16.focus_outline-none(@click="onPlayBtn")
+        <svg class="block w-36 md_w-48" viewBox="0 0 49 38" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio>
+          <path d="M48.3763 19L0.313892 37.0628L0.313893 0.93723L48.3763 19Z" fill="currentColor" style="transition: all 500ms;" />
+        </svg>
+
     //- (countdown)
     //- countdown-play-btn-overlay.z-10.text-lg(:doc="doc", @released="isReleased = true", :playBtn="false")
     //- .absolute.overlay.flex.items-center.justify-center(v-if="releaseTime && !isReleased")
@@ -24,12 +31,12 @@
           countdown(:until="releaseTime", @ended="isReleased = true")
 
     //- bottom info
-    .absolute.bottom-0.z-10.w-full.pb-12.px-8.lg_px-12.xl_pb-16.flex.flex-wrap.items-end
+    .absolute.bottom-0.w-full.pb-12.px-8.lg_px-12.xl_pb-16.flex.flex-wrap.items-end
       //- title
       //- prismic-link.flex.flex-wrap.justify-start.group-off.mr-20(:field="slice.primary.link", :linkResolver="linkResolver", @click.native.stop)
       .-mt-px(v-for="(chunk, i) in slice.primary.title.split(' | ')", :class="{'w-full md_w-auto': i < slice.primary.title.split(' | ').length - 1, 'hidden md_block': !isNaN(chunk)}")
-        prismic-link.flex( :field="slice.primary.link", :linkResolver="linkResolver", @click.native.stop)
-          btn.px-8.lg_px-10.whitespace-no-wrap(style="backdrop-filter:blur(20px)") {{ chunk }}
+        prismic-link.flex(:field="slice.primary.link", :linkResolver="linkResolver", @click.native.stop)
+          btn.px-8.lg_px-10.whitespace-no-wrap.backdrop-blur {{ chunk }}
           //-
             btn.px-10 {{ $store.getters.workId(doc.uid, true) }}
             .w-full.md_w-0
@@ -46,10 +53,10 @@
       template(v-else-if="isAuction")
         template(v-if="bidLink && (!releaseTime || isReleased)")
           router-link.ml-auto.focus_outline-none(:to="bidLink", @click.native.stop)
-            btn.px-16.bg-black-a03(style="backdrop-filter:blur(20px)") BID
+            btn.px-16.bg-black-a0.backdrop-blur BID
       template(v-else-if="work")
-        button.ml-auto.focus_outline-none(@click.stop="buy", :disabled="!isReleased", :class="{'opacity-50': !isReleased}")
-          btn.px-16.bg-black-a03(:disabled="!isReleased", style="backdrop-filter:blur(20px)") BUY
+        button.ml-auto.focus_outline-none(@click.stop="buy")
+          btn.px-16.bg-black-a03.backdrop-blur BUY
 
       //- .group
         span.group-hover_hidden.block.h-8.w-8.rounded-full.bg-red-duller
@@ -77,8 +84,7 @@ export default {
   },
   data () {
     return {
-      isReleased: false, // || process.env.VUE_APP_DEV_IGNORE_RELEASES === 'true'
-      mediaClasses: 'object-cover object-center'
+      isReleased: false // || process.env.VUE_APP_DEV_IGNORE_RELEASES === 'true'
     }
   },
   computed: {
@@ -91,6 +97,9 @@ export default {
     work () {
       return this.$store.state.works.find(work => work.id === this.workId)
     },
+    // buyDisabled () {
+    //   return !this.work?.exists || this.isReleased === false
+    // },
     canPlay () {
       return this.$route.name === 'index'
     },
@@ -115,6 +124,10 @@ export default {
       const token = this.slice.primary.auction_link?.uid
       const auctionDoc = this.$store.getters['prismic/auctions'].find(doc => doc.uid === token)
       return auctionDoc?.data?.expires
+    },
+    mediaClasses () {
+      const defaults = 'object-cover object-center'
+      return this.slice.primary?.media_custom_css_classes || defaults
     }
   },
   methods: {
@@ -142,6 +155,12 @@ export default {
     async buy () {
       this.$router.push({ name: 'work', params: { work: this.workId } })
       await this.$store.dispatch('buy', this.workId)
+    },
+    onPlayBtn () {
+      const token = this.workId ? Number(this.workId) * 1000000 + 1 : false
+      if (token) {
+        this.$router.push('/view/' + token)
+      }
     }
   },
 

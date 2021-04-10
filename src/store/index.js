@@ -286,7 +286,7 @@ export default new Vuex.Store({
     },
 
     /* get metadata of work (if released) */
-    async getMetadata ({ state, commit }, { token, work }) {
+    async getMetadata ({ state, commit }, { token, work, isViewer = false }) {
       try {
         token = token || Number(work) * 1000000
         work = work || Math.floor(Number(token) / 1000000)
@@ -303,9 +303,16 @@ export default new Vuex.Store({
           return saved
         }
         // fetch new
-        const params = state.networkId ? `?network=${state.networkId}` : ''
+        // query parameters
+        let params = []
+        console.log(state.networkId)
+        if (state.networkId) params.push(`network=${state.networkId}`)
+        if (isViewer) params.push('viewer=1')
+        params = params.length ? '?' + params.join('&') : ''
         const url = `/.netlify/functions/metadata/${token}${params}`
+        // go!
         let metadata = await fetch(url).then(resp => resp.json())
+        // process
         if (metadata && metadata.name) {
           metadata = { _work: work, _token: token, ...metadata }
           commit('SAVE_METADATA', metadata)

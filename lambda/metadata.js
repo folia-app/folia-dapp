@@ -5,7 +5,7 @@ import Eth from 'web3-eth'
 require('dotenv').config()
 require('encoding') // netlify build error / missing package??
 const ignoreRelease = process.env.VUE_APP_DEV_IGNORE_RELEASES === 'true'
-const ignoreIsOwned = process.env.VUE_APP_DEV_IGNORE_IS_OWNED === 'true'
+// const ignoreIsOwned = process.env.VUE_APP_DEV_IGNORE_IS_OWNED === 'true'
 
 let foliaContract
 
@@ -22,6 +22,7 @@ exports.handler = async function (event, context) {
     const tokenId = event.path.substr(event.path.lastIndexOf('/') + 1) // 1000005
     const workId = Math.floor(tokenId / 1000000) // 1
     const workNamespace = workId * 1000000 // 1000000
+    const ignoreIsOwned = event.queryStringParameters.viewer === '1'
 
     // find work
 
@@ -57,10 +58,10 @@ exports.handler = async function (event, context) {
       }
     }
 
-    // !! generative && not owned / minted yet
-    if (work.generative) {
+    // !! not minted (skip if site viewer mode)
+    if (work.generative || ignoreIsOwned !== true) {
       const owner = await getNFTOwnerByTokenId(tokenId, networkId)
-      if (!owner && !ignoreIsOwned) {
+      if (!owner) {
         return {
           statusCode: 200,
           body: JSON.stringify({

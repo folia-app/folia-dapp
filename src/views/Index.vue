@@ -36,6 +36,7 @@
                 button.p-10.focus_outline-none.relative.group(v-else, @click="$store.dispatch('disconnect')")
                   span.group-hover_opacity-0.truncate {{ address.slice(0, 6) + '...' + address.slice(-4) }}
                   span.hidden.group-hover_block.absolute.overlay.text-right.p-10 Disconnect
+
         //- landing
         observer.w-full.bg-black.text-white.relative.flex.items-center.justify-center.font-sans.text-sm.h-90vh.md_h-93vh-off.md_h-screen(:threshold="0.5", @visible="autoplayCarousel", @hidden="pauseCarousel")
           template(v-if="home")

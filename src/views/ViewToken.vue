@@ -1,12 +1,15 @@
 <template lang="pug">
   .view-token.absolute.overlay.bg-black(@click="onBodyClick", :class="{'pointer-events-auto': visible}")
 
+    //- media container
+    .transition-opacity.duration-500.delay-500(:class="{'opacity-0': !visible}")
+
     //- video format
     template(v-if="videoUrl")
-      figure.absolute.overlay.py-5.md_p-10.lg_p-12.xl_p-24.bg-gray-100off.bg-white.flex.transition-opacity.duration-500.delay-500(:class="{'opacity-0': !visible}")
+      figure.absolute.overlay.py-5.md_p-10.lg_p-20.xl_p-32.bg-gray-100off.bg-white.flex
         .relative.w-full
-          img.absolute.overlay.object-contain.object-center(:src="imageUrl")
-          video.absolute.overlay.object-contain.object-center(ref="video", :src="videoUrl", playsinline, @contextmenu.prevent, @click="$event => $event.target.paused ? $event.target.play() : null", @ended="close", :loop="metadata && metadata.animation_loop", @playing="onVideoPlaying")
+          img.absolute.overlay.object-contain.object-center.transition.duration-500.opacity-0(:src="imageUrl", @load="$event => $event.target.style.opacity = 1")
+          video.absolute.overlay.object-contain.object-center(ref="video", :src="videoUrl", playsinline, @contextmenu.prevent, @click="$event => $event.target.paused ? $event.target.play() : null", :loop="metadata && metadata.animation_loop", @playing="onVideoPlaying")
 
     template(v-else-if="visible && metadata")
       //- iframe
@@ -26,8 +29,9 @@
 
     //- back btn
     //- button.absolute.top-0.left-0.h-full.w-1x4.focus_outline-none(@click.stop="close", aria-label="Go back", style="cursor: w-resize")
-    button.absolute.top-0.right-0.p-12.focus_outline-none.transition.duration-300(@click.stop="$emit('close')", style="mix-blend-mode:difference", aria-label="Close", :class="{'opacity-0 pointer-events-none': !btnsVisible}")
-      svg-x.w-8.h-8.text-white(strokeWidth="2")
+    button.absolute.top-0.right-0.p-8.focus_outline-none.transition.duration-300(@click.stop="$emit('close')", style="mix-blend-mode:difference", aria-label="Close", :class="{'opacity-0 pointer-events-none': !btnsVisible}")
+      svg-x.w-8.h-8.text-white(strokeWidth="1")
+
 </template>
 
 <script>
@@ -54,7 +58,7 @@ export default {
       token = token || this.token
       if (token) {
         this.metadata = null
-        const meta = await this.$store.dispatch('getMetadata', { token })
+        const meta = await this.$store.dispatch('getMetadata', { token, isViewer: true })
         this.videoUrl = meta?.animation_url_optim || meta?.animation_url
         this.imageUrl = meta?.image
         this.metadata = meta
@@ -63,7 +67,7 @@ export default {
     },
     autoplayVideo () {
       if (this.videoUrl && this.visible) {
-        return setTimeout(() => this.$refs.video?.play(), 500)
+        return setTimeout(() => this.$refs.video?.play(), 1500)
       }
     },
     close () {

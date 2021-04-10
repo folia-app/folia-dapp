@@ -208,7 +208,7 @@ export default {
   metaInfo () {
     if (this.$route.name === 'work' && this.doc) {
       const doc = this.doc.data
-      const title = `${doc.artist}, "${doc.title}" (${doc.year})`
+      const title = `${doc.artist} – ${doc.title}`
       return {
         title: title,
         meta: this.$store.getters.meta({ title: title, descrip: '', img: doc.meta_image?.url })

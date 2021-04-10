@@ -2,7 +2,7 @@
   section.work-owners.px-6.lg_px-10.pb-64
     ul
       //- tokens...
-      li.flex(v-for="token in tokensSorted")
+      li.flex(v-for="token in tokensSorted", v-if="token[1]")
         a(:href="openSeaLink({ token: token[0] })", target="_blank", rel="noopener noreferrer")
           btn.px-8(theme="drkgray", style="min-width:4em") {{ token[0].toString().slice(-3) }}
         a.truncate(:href="openSeaLink({ account: token[1] })", target="_blank", rel="noopener noreferrer")
