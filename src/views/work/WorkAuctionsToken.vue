@@ -99,19 +99,19 @@
           template(v-if="isActive")
             .bg-red.backdrop-blurff.rounded-4xl
               .bg-black-a30.rounded-4xl.p-5.lg_p-6
-                .flex.flex-wrap.sm_flex-no-wrap.w-full.group
+                .flex.flex-wrap.w-full.group
                   //- input
                   btn.flex-1.px-6.lg_px-10(size="large", theme="darken", @click="$refs.input.focus()")
                     input.w-full.text-center.focus_outline-none(ref="input", v-model="bidETH", type="number", :min="weiToETH(auction.reservePrice)", required, step="0.1", size="1", min="bidStepETH")
                   //- ETH
-                  btn.w-40.lg_w-48.group-hover_hidden.px-6.lg_px-10.pointer-events-none(size="large", theme="darken") ETH
+                  btn.px-8.lg_w-48.lg_group-hover_hidden.pointer-events-none(size="large", theme="darken") ETH
                   //- (+/-)
-                  .hidden.group-hover_flex
+                  .flex.lg_hidden.lg_group-hover_flex
                     btn.w-20.lg_w-24.flex.justify-center.items-center.lg_hover_bg-gray-a30(size="large", theme="darken", @click="decreaseBid")
                       .h-px.bg-current(style="width:0.55em")
                     btn.w-20.lg_w-24.flex.justify-center.items-center.lg_hover_bg-gray-a30(size="large", theme="darken", @click="increaseBid") +
                   //- bid btn
-                  button.w-full.sm_w-auto.sm_flex-1.block.focus_outline-none.text-xl.font-bold(@click="bid")
+                  button.w-full.block.focus_outline-none.text-xl.font-bold(@click="bid")
                     btn.tracking-wide.px-10.lg_px-16(size="large", theme="darkener") BID
 
           //- (enquire btn)
