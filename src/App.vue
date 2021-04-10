@@ -33,7 +33,7 @@ export default {
   computed: {
     isWrongNetwork () {
       const id = this.$store.state.networkId
-      return id && id !== 1 // && process.env.NODE_ENV !== 'development'
+      return id && id !== 1 && process.env.NODE_ENV !== 'development'
     }
   },
   created () {
