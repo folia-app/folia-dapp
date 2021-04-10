@@ -8,7 +8,7 @@
             //- label
             .leading-none.whitespace-no-wrap.text-smm.uppercase {{ doc.data.set_type_label }}
             //- (link home mbl)
-            router-link.md_hidden(to="/")
+            router-link.lg_hidden(to="/")
               svg-fleuron.block.mr-2(style="width:0.96em;height:0.96em")
 
           //- title
@@ -53,7 +53,7 @@
                 prismic-link.w-full.block.-mb-px(:field="item.link", :linkResolver="linkResolver", :class="{'px-8 pb-8': item.thumbnail_format === 'padded'}")
                   //- (video)
                   template(v-if="item.thumbnail.link_type === 'Media' && item.thumbnail.kind === 'document'")
-                    video.w-auto.max-w-full.mx-auto.block.lazyload(:src="item.thumbnail.url", autoplay, muted, loop, playsinline, data-expand="0")
+                    video.block.lazyload(:src="item.thumbnail.url", autoplay, muted, loop, playsinline, data-expand="0", :class="item.thumbnail_format === 'padded' ? 'w-auto max-w-full mx-auto' : 'w-full'")
                   //- (image)
                   template(v-else-if="item.thumbnail.kind === 'image'")
                     img.w-auto.max-w-full.mx-auto.block(:src="item.thumbnail.url")
