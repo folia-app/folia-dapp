@@ -36,7 +36,7 @@
                     figure.w-48.h-48.bg-black.ml-auto.relative
                       img.absolute.o
               //- blocks
-              li.mx-8.lg_mx-10.border.rounded-3xl.overflow-hidden.border-gray-400.-mb-px(v-for="(item, i) in items", :class="{'flex-row-reverse': i % 2 === 1}")
+              li.mx-8.lg_mx-10.border.rounded-3xl.overflow-hidden.border-gray-400.-mb-px.transform.translate-z-0(v-for="(item, i) in items", :class="{'flex-row-reverse': i % 2 === 1}")
                 prismic-link.w-full.px-6.sm_px-8.py-10.flex.flex-wrap.justify-between.items-center(:field="item.link", :linkResolver="linkResolver")
                   .flex.items-center
                     //- span.flex.items-center.text-base.mr-8
@@ -50,7 +50,7 @@
                     //- | AUCTION
                     | {{ item.label }}
 
-                prismic-link.w-full.block(:field="item.link", :linkResolver="linkResolver", :class="{'px-8 pb-8': item.thumbnail_format === 'padded'}")
+                prismic-link.w-full.block.-mb-px(:field="item.link", :linkResolver="linkResolver", :class="{'px-8 pb-8': item.thumbnail_format === 'padded'}")
                   //- (video)
                   template(v-if="item.thumbnail.link_type === 'Media' && item.thumbnail.kind === 'document'")
                     video.w-auto.max-w-full.mx-auto.block.lazyload(:src="item.thumbnail.url", autoplay, muted, loop, playsinline, data-expand="0")
