@@ -18,8 +18,13 @@
                 svg-fleuron.block.mr-2(style="width:0.96em;height:0.96em")
                 .hidden.md_inline.leading-none {{ workId(doc.uid, true) }}
 
+              //- ... custom button
+              template(v-if="doc.data.cta_link")
+                prismic-link(:field="doc.data.cta_link", :linkResolver="linkResolver")
+                  btn.px-12(theme="drkgray") {{ doc.data.cta_text | 'LINK' }}
+
               //- ...sold-out
-              template(v-if="isSold")
+              template(v-else-if="isSold")
                 sold-out-dot
 
               //- ...enquire btn
@@ -85,6 +90,7 @@ import Countdown from '@/components/Countdown'
 import ImgGif from '@/components/ImgGif'
 // import CountdownPlayBtnOverlay from '@/components/CountdownPlayBtnOverlay'
 import SoldOutDot from '@/components/SoldOutDot'
+import linkResolver from '@/plugins/prismic/link-resolver'
 export default {
   name: 'Work',
   props: ['id'],
@@ -183,7 +189,8 @@ export default {
       }
       // multiple auctions go to list
       return this.$router.replace({ name: 'work-auctions' })
-    }
+    },
+    linkResolver
   },
   watch: {
     isReleased (released) {
@@ -204,9 +211,9 @@ export default {
     }
   },
   metaInfo () {
-    if (this.$route.name === 'work' && this.doc) {
+    if (this.doc) {
       const doc = this.doc.data
-      const title = `${doc.artist} – ${doc.title}`
+      const title = doc.artist ? `${doc.artist} – ${doc.title}` : doc.title
       return {
         title: title,
         meta: this.$store.getters.meta({ title: title, descrip: '', img: doc.meta_image?.url })

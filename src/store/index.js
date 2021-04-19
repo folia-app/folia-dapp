@@ -273,7 +273,7 @@ export default new Vuex.Store({
         return
       }
       // get new data
-      if (id) {
+      if (id && !isNaN(id)) {
         try {
           work = await state.foliaControllerContract.methods.works(id).call()
           work = { id, ...work } // add id
