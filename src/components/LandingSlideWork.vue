@@ -2,10 +2,10 @@
   .landing-slide-work.absolute.overlay.overflow-hidden.text-md.lg_text-base.xl_text-lg
     //- media
     figure.absolute.overlay(:style="{background: slice.primary.slide_bg_color}")
-      //- (image / poster)
-      //- img.absolute.overlay(v-if="slice.primary.image && slice.primary.image.url", :src="slice.primary.image.url", :alt="slice.primary.image.alt", :style="slice.primary.style_inline", :class="mediaClasses")
+      //- (image / video-poster)
+      img.absolute.overlay(v-if="slice.primary.image && slice.primary.image.url && !videoAutoplayed", :src="slice.primary.image.url", :alt="slice.primary.image.alt", :style="slice.primary.style_inline", :class="mediaClasses")
       //- (video)
-      video.absolute.overlay(v-if="slice.primary.media && slice.primary.media.url", :src="slice.primary.media.url", muted, ref="video", playsinline, loop, :style="slice.primary.style_inline", @load="$event => $event.target.playbackRate = slice.primary.video_speed || 1", :class="mediaClasses", :poster="slice.primary.image.url")
+      video.absolute.overlay(v-if="slice.primary.media && slice.primary.media.url", :src="slice.primary.media.url", muted, ref="video", playsinline, loop, :style="slice.primary.style_inline", @load="onVideoLoad", :class="mediaClasses", @playing="videoAutoplayed = true")
       //- (blur?)
       //- .absolute.overlay(:style="{backdropFilter: `blur(12px)`}")
 
@@ -89,7 +89,8 @@ export default {
   },
   data () {
     return {
-      isReleased: false // || process.env.VUE_APP_DEV_IGNORE_RELEASES === 'true'
+      isReleased: false, // || process.env.VUE_APP_DEV_IGNORE_RELEASES === 'true'
+      videoAutoplayed: false
     }
   },
   computed: {
@@ -166,6 +167,10 @@ export default {
       if (token) {
         this.$router.push('/view/' + token)
       }
+    },
+    onVideoLoad ($event) {
+      // custom playback rate?
+      $event.target.playbackRate = this.slice.primary.video_speed || 1
     }
   },
 
