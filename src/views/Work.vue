@@ -21,7 +21,7 @@
               //- ... custom button
               template(v-if="doc.data.cta_link")
                 prismic-link(:field="doc.data.cta_link", :linkResolver="linkResolver")
-                  btn.px-12(theme="drkgray") {{ doc.data.cta_text | 'LINK' }}
+                  btn.px-12(theme="drkgray") {{ doc.data.cta_text || 'LINK' }}
 
               //- ...sold-out
               template(v-else-if="isSold")
