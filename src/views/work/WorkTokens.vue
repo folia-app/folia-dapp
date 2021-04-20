@@ -73,15 +73,23 @@ export default {
       return tokens
     },
     gridCols () {
-      return this.doc.data?.grid === '2 cols' ? 'grid-cols-1 md_grid-cols-2 xl_grid-cols-3'
-        : 'grid-cols-2 md_grid-cols-3 xl_grid-cols-4'
+      const grids = {
+        '2 cols': 'grid-cols-1 md_grid-cols-2 xl_grid-cols-3',
+        '3 cols': 'grid-cols-2 md_grid-cols-3 xl_grid-cols-4',
+        '4 cols': 'grid-cols-3 md_grid-cols-4 xl_grid-cols-5',
+        '5 cols': 'grid-cols-3 md_grid-cols-5 xl_grid-cols-6'
+      }
+      const cols = this.doc.data?.grid || '3 cols'
+      return grids[cols]
     }
   },
   methods: {
     async getTokens () {
       if (!this.networkId) return console.warn('no network')
+      let endpoint = `/.netlify/functions/work/${this.doc.uid}` // default
+      endpoint = this.doc.data.tokens_endpoint || endpoint // custom ?
       try {
-        let resp = await fetch(`/.netlify/functions/work/${this.doc.uid}?network=${this.networkId}`)
+        let resp = await fetch(`${endpoint}?network=${this.networkId}`)
         resp = await resp.json()
         this.tokens = resp.tokens?.reverse()
       } catch (e) {

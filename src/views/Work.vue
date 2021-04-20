@@ -19,7 +19,7 @@
                 .hidden.md_inline.leading-none {{ workId(doc.uid, true) }}
 
               //- ... custom button
-              template(v-if="doc.data.cta_link")
+              template(v-if="doc.data.cta_link.link_type !== 'Any'")
                 prismic-link(:field="doc.data.cta_link", :linkResolver="linkResolver")
                   btn.px-12(theme="drkgray") {{ doc.data.cta_text || 'LINK' }}
 
