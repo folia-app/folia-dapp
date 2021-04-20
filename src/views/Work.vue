@@ -216,7 +216,7 @@ export default {
       const title = doc.artist ? `${doc.artist} – ${doc.title}` : doc.title
       return {
         title: title,
-        meta: this.$store.getters.meta({ title: title, descrip: '', img: doc.meta_image?.url })
+        meta: this.$store.getters.meta({ title: title, descrip: this.doc.data.meta_description, img: doc.meta_image?.url })
       }
     }
   },

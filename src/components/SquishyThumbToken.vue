@@ -10,6 +10,9 @@
         .absolute.overlay(:class="{'cursor-wait': !iframeLoaded}")
           iframe.absolute.overlay.pointer-events-none.transition-opacity.duration-500(:src="`https://programmatic-puppet.netlify.app?drc=${encodeURIComponent(token.drc)}`", @load="iframeLoaded = true", :class="{'opacity-0': !iframeLoaded}")
 
+      //- (custom link overr)
+      a.absolute.overlay(v-if="token.link", :href="token.link", target="_blank", rel="noopener noreferrer", @click.stop)
+
     //- inner content
     .absolute.overlay.flex.items-center.justify-center.group(v-if="opened")
       //- No. (centered) / token link
@@ -27,7 +30,7 @@
         btn.lg_px-5.lg_hover_bg-black-a15(theme="none", size="small") {{ userIsOwner ? 'You' : addrShort(owner) }}
 
     //- open viewer (outer)
-    button.absolute.z-20.bottom-0.right-0.lg_py-3.lg_px-4.lg_opacity-0.lg_group-hover_opacity-100.focus_outline-none(slot="outer", @click="openViewer", v-show="!opened", :class="{'opacity-0': !token.drc}")
+    button.absolute.z-20.bottom-0.right-0.lg_py-3.lg_px-4.lg_opacity-0.lg_group-hover_opacity-100.focus_outline-none(slot="outer", v-if="!token.link", @click="openViewer", v-show="!opened", :class="{'opacity-0': !token.drc}")
       btn.px-6.lg_hover_bg-black-a15.flex.items-center.text-white(size="small", theme="none")
         span.mr-3.pt-1.text-xs(v-if="token.drc") 3D
         svg-eye

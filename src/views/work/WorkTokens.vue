@@ -77,7 +77,7 @@ export default {
         '2 cols': 'grid-cols-1 md_grid-cols-2 xl_grid-cols-3',
         '3 cols': 'grid-cols-2 md_grid-cols-3 xl_grid-cols-4',
         '4 cols': 'grid-cols-3 md_grid-cols-4 xl_grid-cols-5',
-        '5 cols': 'grid-cols-3 md_grid-cols-5 xl_grid-cols-6'
+        '5 cols': 'grid-cols-3 sm_grid-cols-4 md_grid-cols-5 xl_grid-cols-6'
       }
       const cols = this.doc.data?.grid || '3 cols'
       return grids[cols]
