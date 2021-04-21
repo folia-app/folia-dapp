@@ -69,7 +69,7 @@
               btn.px-8.md_px-12(theme="drkgray", :active="$route.name.includes('work-auctions')") Auctions
             button.focus_outline-none(@click="$router.replace({name: 'work-owners'})", v-if="collectorsTabEnabled")
               btn.px-8.md_px-12(theme="drkgray", :active="$route.name === 'work-owners'") Collectors
-            button.focus_outline-none(@click="$router.replace({name: 'work-details'})")
+            button.focus_outline-none(@click="$router.replace({name: 'work-details'})", v-if="hasDetails")
               btn.px-8.md_px-12(theme="drkgray", :active="$route.name === 'work-details'") Details
 
           router-view(:doc="doc", :work="work", :isVariableEdition="isVariableEdition", :isReleased="isReleased", :canBuy="canBuy", @buy="buy", @newToken="fetchWork(true)")
@@ -147,6 +147,9 @@ export default {
     collectorsTabEnabled () {
       const isSmallEdition = this.work?.editions && Number(this.work.editions) < 10
       return !this.isVariableEdition && !this.isAuction && this.isReleased !== false && (isSmallEdition || this.isSold)
+    },
+    hasDetails () {
+      return this.doc && this.$prismic.asText(this.doc.data.details).length > 0
     }
   },
   created () {
