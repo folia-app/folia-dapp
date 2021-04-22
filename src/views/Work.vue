@@ -58,7 +58,8 @@
                 //- minted
                 div(v-if="isVariableEdition && work") {{ work.printed }}/{{work.editions}} Minted
                 //- price
-                div {{ work ? weiToETH(work.price) : doc.data.price_eth }} ETH
+                div(v-if="work") {{ weiToETH(work.price) }} ETH
+                div(v-else-if="doc.data.price_eth") {{ doc.data.price_eth }} ETH
 
           nav.px-8.lg_px-12.flex.justify-start.mt-4.mb-12.-ml-2
             button.focus_outline-none(@click="$router.replace({name: 'work'})", v-if="isReleased && isVariableEdition")
