@@ -13,11 +13,26 @@
 
     //- grid
     .w-full.grid(:class="[gridCols]")
+      //- slice body (manually added tokens)
+      //- template(v-if="doc && doc.data.tokens_body.length")
+        //- slices...
+        template(v-for="slice in doc.data.tokens_body")
+          //- (token grid)
+          template(v-if="slice.slice_type === 'token_grid'")
+            ul.text-white
+              li.flex.w-full.items-center.justify-between(v-for="item in slice.items")
+                div {{ item.token_id }}
+                div {{ doc.data.price_eth }}ETH
+                btn.px-8.md_px-12(theme="drkgray", @click="$store.dispatch('buyByID', {tokenId: 10000000})") BUY
+
+      //- default / API
+      //- template(v-else)
+
       //- tokens...
-      squishy-thumb-token(v-for="(token, i) in tokensFiltered", :token="token", :key="token.image")
+      squishy-thumb-token(v-for="(token, i) in tokensFiltered", :token="token", :key="token.tokenId", :buyBtn="doc.data.sale_type === 'buy by ID'")
 
       //- buy block
-      div(v-if="canBuy")
+      div(v-if="canBuy && doc.data.sale_type === 'generative'")
         .relative.pb-full.overflow-hidden.bg-gray-900
           //- (teaser video as background)
           video.absolute.overlay.object-cover.object-contain.opacity-25(:src="doc.data.teaser_video.url", loop, playsinline, muted, autoplay, v-if="work.printed === '0'")
@@ -30,6 +45,9 @@
               <line x1="0.530937" y1="32.8311" x2="63.9023" y2="32.8311" stroke="rgb(255,255,255,0.8)" stroke-width="0.75" />
             </svg>
 
+      //- .flex-1.flex.items-center.justify-center(v-else)
+        svg-fleuron.text-gray-800.h-32
+
     //- lazyloader
     observer.w-full(:style="{height: '200vh', marginTop: tokensFiltered.length > 12 ? '-50vh' : '0'}", :threshold="0.01", @visible="loadTokens", v-if="tokens && limit < tokens.length")
 </template>
@@ -39,6 +57,7 @@ import { mapState } from 'vuex'
 import SquishyThumbToken from '@/components/SquishyThumbToken'
 import Btn from '@/components/Btn'
 import Observer from '@/components/Observer'
+import SvgFleuron from '@/components/SVG-Fleuron'
 export default {
   name: 'WorkTokens',
   props: {
@@ -73,6 +92,11 @@ export default {
       return tokens
     },
     gridCols () {
+      // custom classes
+      if (this.doc.data.grid_classes_custom) {
+        return this.doc.data.grid_classes_custom
+      }
+      // default
       const grids = {
         '2 cols': 'grid-cols-1 md_grid-cols-2 xl_grid-cols-3',
         '3 cols': 'grid-cols-2 md_grid-cols-3 xl_grid-cols-4',
@@ -143,7 +167,7 @@ export default {
       this.listenToContract()
     }
   },
-  components: { SquishyThumbToken, Btn, Observer }
+  components: { SquishyThumbToken, Btn, Observer, SvgFleuron }
 }
 </script>
 

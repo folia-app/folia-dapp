@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import { Folia, FoliaController, ReserveAuction } from 'folia-contracts'
+import { Folia, FoliaControllerV2, ReserveAuction } from 'folia-contracts'
 import Web3 from 'web3'
 import Web3Modal from 'web3modal'
 import WalletConnectProvider from '@walletconnect/web3-provider'
@@ -128,10 +128,10 @@ export default new Vuex.Store({
       console.log('folia addr', Folia.networks[networkId].address)
       // controller
       state.foliaControllerContract = new web3.eth.Contract(
-        FoliaController.abi,
-        FoliaController.networks[networkId].address
+        FoliaControllerV2.abi,
+        FoliaControllerV2.networks[networkId].address
       )
-      console.log('controller addr', FoliaController.networks[networkId].address)
+      console.log('controller addr', FoliaControllerV2.networks[networkId].address)
       // auctions
       if (ReserveAuction.networks[networkId]) {
         state.reserveAuctionContract = new web3.eth.Contract(
@@ -262,6 +262,37 @@ export default new Vuex.Store({
       }
     },
 
+    /* buy by ID */
+    async buyByID ({ state, dispatch }, { tokenId }) {
+      try {
+        const workId = Math.floor(tokenId / 1000000)
+        const workSpace = workId * 1000000
+        const editionId = tokenId - workSpace
+
+        const work = await dispatch('getWork', { id: workId, flush: true })
+        // !! unavailable
+        if (!work.exists) throw new Error(`!! Work ${workId} doesn't exist`)
+        // !! paused
+        if (work.paused) throw new Error(`!! Work ${workId} is locked. Please wait for release or try again shortly.`)
+        // wallet connected ?
+        if (!state.address) {
+          await dispatch('connect')
+        }
+        // buy
+        await state.foliaControllerContract.methods
+          .buyByID(state.address, workId, editionId)
+          .send({ from: state.address, value: work.price })
+        // refresh work data for app
+        dispatch('getWork', { id: workId, flush: true })
+      } catch (e) {
+        console.error('@buyByID:', e)
+        // TODO - more elegant UX error ?
+        if (e.message?.includes('!! ')) {
+          alert(e.message.replace('!! ', ''))
+        }
+      }
+    },
+
     /* read artwork */
     async getWork ({ state, commit }, { id, flush }) {
       let work = state.works.find(work => work.id === id)
@@ -275,6 +306,7 @@ export default new Vuex.Store({
       if (id && !isNaN(id)) {
         try {
           work = await state.foliaControllerContract.methods.works(id).call()
+          console.log('WORK', id, work)
           work = { id, ...work } // add id
           commit('SAVE_WORK', work)
         } catch (e) {

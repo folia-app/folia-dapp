@@ -5,7 +5,7 @@
     .transition-opacity.duration-500.delay-500(:class="{'opacity-0': !visible}")
 
     //- video format
-    template(v-if="videoUrl")
+    template(v-if="videoUrl && !metadata.iframe")
       figure.absolute.overlay.py-5.md_p-10.lg_p-20.xl_p-32.bg-gray-100off.bg-white.flex
         .relative.w-full
           img.absolute.overlay.object-contain.object-center.transition.duration-500.opacity-0(:src="imageUrl", @load="$event => $event.target.style.opacity = 1")

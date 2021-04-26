@@ -163,7 +163,7 @@ export default {
       let isWide = this.$route.meta.panelWide
       if (!isWide) {
         const doc = this.workDocs.find(doc => doc.uid === this.$route.params.work)
-        const isGenerative = doc?.data.page_layout === 'generative'
+        const isGenerative = ['generative', 'wide'].includes(doc?.data.page_layout)
         // const isReleased = this.$store.getters['prismic/isReleased']({ doc })
         isWide = isGenerative // && isReleased
       }
