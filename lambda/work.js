@@ -4,7 +4,7 @@ import { FoliaController } from 'folia-contracts'
 import Eth from 'web3-eth'
 require('dotenv').config()
 require('encoding') // netlify build error / missing package??
-const ignoreRelease = process.env.VUE_APP_DEV_IGNORE_RELEASES === 'true'
+// const ignoreRelease = process.env.VUE_APP_DEV_IGNORE_RELEASES === 'true'
 
 let foliaControllerContract
 
@@ -25,6 +25,7 @@ exports.handler = async function (event, context) {
     // find work
     const prefix = networkId === '4' ? 'TEST' : 'FLA'
     // console.log(prefix, networkId, typeof networkId)
+
     // (test data || main data)
     const metadata = metadatas[prefix + workNamespace] || metadatas['FLA' + workNamespace]
 
@@ -37,48 +38,49 @@ exports.handler = async function (event, context) {
     }
 
     // !! not released yet
-    const now = new Date().getTime()
-    const release = metadata.release && new Date(metadata.release).getTime()
-    if (release && release - now > 0 && !ignoreRelease) {
-      return {
-        statusCode: 200,
-        body: JSON.stringify({
-          message: 'Not Yet Released',
-          release: metadata.release,
-          // blank data to overwrite old opensea.io data?
-          name: '',
-          image: '',
-          image_url: '',
-          animation_url: ''
-        })
-      }
-    }
+    // const now = new Date().getTime()
+    // const release = metadata.release && new Date(metadata.release).getTime()
+    // if (release && release - now > 0 && !ignoreRelease) {
+    //   return {
+    //     statusCode: 200,
+    //     body: JSON.stringify({
+    //       message: 'Not Yet Released',
+    //       release: metadata.release,
+    //       // blank data to overwrite old opensea.io data?
+    //       name: '',
+    //       image: '',
+    //       image_url: '',
+    //       animation_url: ''
+    //     })
+    //   }
+    // }
 
     // get work and figure out how many
     const work = await getWorkFromContract(workId, networkId)
-    if (!work || !work.exists) {
-      return {
-        statusCode: 404,
-        body: JSON.stringify({ message: 'Work Not Found' })
-      }
-    }
+
+    // if (!work || !work.exists) {
+    //   return {
+    //     statusCode: 404,
+    //     body: JSON.stringify({ message: 'Work Not Found' })
+    //   }
+    // }
 
     // tokens list
     let tokens = Object.keys(metadata.tokens) // [2000001, 2000002, ...]
+
     // generative? >> only exposed what's been printed...
     if (metadata.generative) {
       tokens = tokens.slice(0, Number(work.printed))
     }
+
     // format...
     tokens = tokens.map(token => {
       const data = metadata.tokens[token]
       return {
         tokenId: token,
         ...data,
-        // overwrite image with assetpath to assets
+        // add asset path to image (in case just filenames)
         image: metadata.assetPath + data.image
-        // animation_url: metadata.assetPath + token.animation_url,
-        // animation_url_optim: metadata.assetPath + token.animation_url_optim
       }
     })
 

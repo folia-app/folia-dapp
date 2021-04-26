@@ -1,0 +1,235 @@
+{
+  "Main": {
+    "title": {
+      "type": "Text",
+      "config": {
+        "label": "Title"
+      }
+    },
+    "artist": {
+      "type": "Text",
+      "config": {
+        "label": "Artist"
+      }
+    },
+    "uid": {
+      "type": "UID",
+      "config": {
+        "label": "Work ID",
+        "placeholder": "2000000"
+      }
+    },
+    "release_link": {
+      "type": "Link",
+      "config": {
+        "select": "document",
+        "customtypes": [
+          "release"
+        ],
+        "label": "Release",
+        "placeholder": "Select a Release"
+      }
+    },
+    "status": {
+      "type": "Select",
+      "config": {
+        "options": [
+          "available",
+          "enquire",
+          "sold"
+        ],
+        "label": "Status"
+      }
+    },
+    "cta_link": {
+      "type": "Link",
+      "config": {
+        "allowTargetBlank": true,
+        "label": "Custom Button Link"
+      }
+    },
+    "cta_text": {
+      "type": "Text",
+      "config": {
+        "label": "Custom Button Text",
+        "placeholder": "JOIN | LAUNCH | ..."
+      }
+    },
+    "enquire_button": {
+      "type": "Boolean",
+      "config": {
+        "default_value": false,
+        "label": "Enquire Button"
+      }
+    },
+    "set": {
+      "type": "Link",
+      "config": {
+        "select": "document",
+        "customtypes": [
+          "set"
+        ],
+        "label": "(Set/Series)",
+        "placeholder": "Link a Set"
+      }
+    },
+    "year": {
+      "type": "Number",
+      "config": {
+        "label": "Year"
+      }
+    },
+    "price_eth": {
+      "type": "Number",
+      "config": {
+        "label": "Price (ETH)",
+        "placeholder": "0.01"
+      }
+    },
+    "edition": {
+      "type": "Number",
+      "config": {
+        "label": "Edition",
+        "placeholder": "100"
+      }
+    },
+    "arist_proof_qty": {
+      "type": "Number",
+      "config": {
+        "label": "Aritst Proofs (AP)"
+      }
+    },
+    "medium": {
+      "type": "StructuredText",
+      "config": {
+        "multi": "paragraph,hyperlink",
+        "allowTargetBlank": true,
+        "label": "Medium Details"
+      }
+    },
+    "page_layout": {
+      "type": "Select",
+      "config": {
+        "options": [
+          "panel",
+          "generative",
+          "token-unit-sale"
+        ],
+        "label": "Page Layout"
+      }
+    },
+    "grid": {
+      "type": "Select",
+      "config": {
+        "options": [
+          "5 cols",
+          "4 cols",
+          "3 cols",
+          "2 cols"
+        ],
+        "label": "(Tokens Grid)"
+      }
+    },
+    "tokens_endpoint": {
+      "type": "Text",
+      "config": {
+        "label": "(Tokens Endpoint)",
+        "placeholder": "https://virus.folia.app/api/tokens"
+      }
+    },
+    "teaser_video": {
+      "type": "Link",
+      "config": {
+        "label": "Teaser Video"
+      }
+    },
+    "teaser_image": {
+      "type": "Link",
+      "config": {
+        "label": "Teaser Image"
+      }
+    },
+    "description": {
+      "type": "StructuredText",
+      "config": {
+        "multi": "paragraph,preformatted,heading1,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl",
+        "allowTargetBlank": true,
+        "label": "Description"
+      }
+    },
+    "details": {
+      "type": "StructuredText",
+      "config": {
+        "multi": "paragraph,hyperlink",
+        "allowTargetBlank": true,
+        "label": "Details"
+      }
+    }
+  },
+  "Meta": {
+    "meta_description": {
+      "type": "Text",
+      "config": {
+        "label": "Meta Description"
+      }
+    },
+    "meta_image": {
+      "type": "Image",
+      "config": {
+        "constraint": {
+          "width": 1200
+        },
+        "thumbnails": [],
+        "label": "Meta Image"
+      }
+    }
+  },
+  "Auction": {
+    "auction": {
+      "type": "Slices",
+      "fieldset": "Slice zone",
+      "config": {
+        "labels": {
+          "token": []
+        },
+        "choices": {
+          "token": {
+            "type": "Slice",
+            "fieldset": "Token",
+            "description": "–",
+            "icon": "art_track",
+            "display": "list",
+            "non-repeat": {
+              "token_id": {
+                "type": "Text",
+                "config": {
+                  "label": "Token ID",
+                  "placeholder": "3000001"
+                }
+              },
+              "release_link1": {
+                "type": "Link",
+                "config": {
+                  "select": "document",
+                  "customtypes": [
+                    "release"
+                  ],
+                  "label": "Release"
+                }
+              },
+              "lock_label": {
+                "type": "Text",
+                "config": {
+                  "label": "Lock + Label as:",
+                  "placeholder": "TBA"
+                }
+              }
+            },
+            "repeat": {}
+          }
+        }
+      }
+    }
+  },
+  "Tokens": {}
+}

@@ -62,17 +62,18 @@
                 div(v-else-if="doc.data.price_eth") {{ doc.data.price_eth }} ETH
 
           nav.px-8.lg_px-12.flex.justify-start.mt-4.mb-12.-ml-2
-            button.focus_outline-none(@click="$router.replace({name: 'work'})", v-if="isReleased && isVariableEdition")
+            button.focus_outline-none(@click="$router.replace({name: 'work'})", v-if="hasTabTokens")
               btn.px-8.md_px-12(theme="drkgray", :active="$route.name === 'work'") Tokens
             button.focus_outline-none(@click="$router.replace({name: 'work-info'})")
               btn.px-8.md_px-12(theme="drkgray", :active="$route.name === 'work-info'") Info
             button.focus_outline-none(@click="$router.replace({name: 'work-auctions'})", v-if="isAuction")
               btn.px-8.md_px-12(theme="drkgray", :active="$route.name.includes('work-auctions')") Auctions
-            button.focus_outline-none(@click="$router.replace({name: 'work-owners'})", v-if="collectorsTabEnabled")
+            button.focus_outline-none(@click="$router.replace({name: 'work-owners'})", v-if="hasTabCollectors")
               btn.px-8.md_px-12(theme="drkgray", :active="$route.name === 'work-owners'") Collectors
             button.focus_outline-none(@click="$router.replace({name: 'work-details'})", v-if="hasDetails")
               btn.px-8.md_px-12(theme="drkgray", :active="$route.name === 'work-details'") Details
 
+          //- child routes
           router-view(:doc="doc", :work="work", :isVariableEdition="isVariableEdition", :isReleased="isReleased", :canBuy="canBuy", @buy="buy", @newToken="fetchWork(true)")
 
       //- side column (auctions)
@@ -145,9 +146,13 @@ export default {
     isAuction () {
       return this.doc.data.auction?.length
     },
-    collectorsTabEnabled () {
-      const isSmallEdition = this.work?.editions && Number(this.work.editions) < 10
-      return !this.isVariableEdition && !this.isAuction && this.isReleased !== false && (isSmallEdition || this.isSold)
+    hasTabTokens () {
+      return (this.isReleased && this.isVariableEdition) || this.doc?.data.tokens_body?.length
+    },
+    hasTabCollectors () {
+      const isTokenGrid = this.isVariableEdition || this.doc.data.page_layout === 'wide'
+      // const isSmallEdition = this.work?.editions && Number(this.work.editions) < 10
+      return this.work?.printed > 0 && !isTokenGrid // && !this.isAuction && this.isReleased !== false && (isSmallEdition || this.isSold)
     },
     hasDetails () {
       return this.doc && this.$prismic.asText(this.doc.data.details).length > 0
@@ -173,14 +178,20 @@ export default {
       return !this.work && this.$store.dispatch('getWork', { id: this.id, flush })
     },
     goToDefaultTab () {
-      if (this.$route.name === 'work') {
+      if (this.doc && this.$route.name === 'work') {
         // auction ?
         // if (this.isAuction) {
         //   return this.$router.replace({ name: 'work-auctions' })
         // }
 
-        // fwd to /info
-        if (!this.isVariableEdition || (this.isVariableEdition && this.isReleased === false)) {
+        // fwd to /info ?
+        if (
+          !this.doc?.data.tokens_body.length &&
+          (
+            !this.isVariableEdition ||
+            (this.isVariableEdition && this.isReleased === false)
+          )
+        ) {
           this.$router.replace({ name: 'work-info' })
         }
       }

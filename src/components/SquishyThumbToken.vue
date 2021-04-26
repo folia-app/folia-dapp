@@ -4,7 +4,11 @@
     //- media
     div(slot="media")
       //- image
-      resp-img.transition-opacity.duration-500(:bg="true", :image="{src: token.image}", :class="{'opacity-0ff': hover && token.drc}")
+      resp-img.transition-opacity.duration-500(v-if="token.image && token.image.length",:bg="true", :image="{src: token.image}", :class="{'opacity-0ff': hover && token.drc}")
+      //- (video)
+      template(v-if="token.animation_thumb")
+        observer.absolute.overlay(:threshold="0.01", @visible="onVisible", @hidden="pauseVideo")
+          video.absolute.overlay.object-cover.object-center(v-if="loadVideo", ref="video", :src="token.animation_thumb", autoplay muted loop playsinline)
       //- iframe ?
       //- template(v-if="token.drc && hover")
         .absolute.overlay(:class="{'cursor-wait': !iframeLoaded}")
@@ -22,7 +26,7 @@
       //- open viewer (inner)
       button.focus_outline-none(@click="openViewer")
         btn.px-6.lg_hover_bg-black-a15.flex.items-center(size="small", theme="none")
-          span.mr-3.pt-1.text-xs(v-if="token.drc") 3D
+          span.mr-3.pt-1.text-xs(v-if="is3D") 3D
           svg-eye
 
       //- owner
@@ -32,7 +36,7 @@
     //- open viewer (outer)
     button.absolute.z-20.bottom-0.right-0.lg_py-3.lg_px-4.lg_opacity-0.lg_group-hover_opacity-100.focus_outline-none(slot="outer", v-if="!token.link", @click="openViewer", v-show="!opened", :class="{'opacity-0': !token.drc}")
       btn.px-6.lg_hover_bg-black-a15.flex.items-center.text-white(size="small", theme="none")
-        span.mr-3.pt-1.text-xs(v-if="token.drc") 3D
+        span.mr-3.pt-1.text-xs(v-if="is3D") 3D
         svg-eye
 </template>
 
@@ -42,16 +46,18 @@ import SquishyThumb from '@/components/SquishyThumb'
 import Btn from '@/components/Btn'
 import RespImg, { resizeCloudinary } from '@/components/RespImg'
 import svgEye from '@/components/SVG-Eye'
+import Observer from '@/components/Observer'
 export default {
   name: 'SquishyThumbToken',
-  props: ['token'],
+  props: ['token', 'buyBtn'],
   data () {
     return {
       owner: '',
       opened: false,
       hover: false,
       iframeLoaded: false,
-      hoverTmout: null
+      hoverTmout: null,
+      loadVideo: false
     }
   },
   computed: {
@@ -61,6 +67,9 @@ export default {
     ...mapGetters(['addrShort', 'openSeaLink']),
     userIsOwner () {
       return this.userAddress === this.owner
+    },
+    is3D () {
+      return this.token.drc || this.token.iframe
     }
   },
   methods: {
@@ -83,6 +92,16 @@ export default {
     },
     onMediaClick () {
       return this.opened ? this.close() : this.open()
+    },
+    onVisible () {
+      this.loadVideo = true
+      this.playVideo()
+    },
+    playVideo () {
+      return this.$refs.video?.paused && this.$refs.video?.play()
+    },
+    pauseVideo () {
+      return !this.$refs.video?.paused && this.$refs.video?.pause()
     }
     // onMouseenter () {
     //   // cancel if opened
@@ -102,7 +121,7 @@ export default {
     //   this.onMouseenter()
     // }
   },
-  components: { Btn, SquishyThumb, svgEye, RespImg }
+  components: { Observer, Btn, SquishyThumb, svgEye, RespImg }
 }
 </script>
 
