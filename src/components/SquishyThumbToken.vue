@@ -7,7 +7,7 @@
       resp-img.transition-opacity.duration-500(v-if="token.image && token.image.length",:bg="true", :image="{src: token.image}", :class="{'opacity-0ff': hover && token.drc}")
       //- (video)
       template(v-if="token.animation_thumb")
-        observer.absolute.overlay(:threshold="0.01", @visible="onVisible", @hidden="pauseVideo")
+        observer.absolute.overlay(:threshold="0.01", @visible="onVisible", @hidden="onHidden")
           video.absolute.overlay.object-cover.object-center(v-if="loadVideo", ref="video", :src="token.animation_thumb", autoplay muted loop playsinline)
       //- iframe ?
       //- template(v-if="token.drc && hover")
@@ -57,6 +57,7 @@ export default {
       hover: false,
       iframeLoaded: false,
       hoverTmout: null,
+      visible: false,
       loadVideo: false
     }
   },
@@ -94,8 +95,13 @@ export default {
       return this.opened ? this.close() : this.open()
     },
     onVisible () {
+      this.visible = true
       this.loadVideo = true
       this.playVideo()
+    },
+    onHidden () {
+      this.visible = false
+      this.pauseVideo()
     },
     playVideo () {
       return this.$refs.video?.paused && this.$refs.video?.play()
@@ -120,6 +126,15 @@ export default {
     //   clearTimeout(this.hoverTmout)
     //   this.onMouseenter()
     // }
+  },
+  watch: {
+    '$route' (to, from) {
+      if (to.name?.includes('tokenviewer')) {
+        this.pauseVideo()
+      } else if (this.visible) {
+        this.playVideo()
+      }
+    }
   },
   components: { Observer, Btn, SquishyThumb, svgEye, RespImg }
 }
