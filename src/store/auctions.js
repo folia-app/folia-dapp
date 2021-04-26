@@ -13,6 +13,10 @@ export default {
     contract (state, getters, rootState) {
       return rootState.reserveAuctionContract
     },
+    auctionStarted: (state) => ({ tokenId, auction }) => {
+      auction = auction || state.auctions.find(auc => auc._tokenId === tokenId)
+      return auction && Number(auction.firstBidTime) > 0
+    },
     auctionEnded: (state, getters) => ({ tokenId, auction }) => {
       auction = auction || state.auctions.find(auc => auc._tokenId === tokenId)
       // ended ?
@@ -135,7 +139,7 @@ export default {
         // !! not enough ETH
         const balance = await rootGetters.userBalance()
         const insufficientFunds = bn(balance).lt(bn(wei))
-        if (insufficientFunds) throw new Error('!! Insufficient funds!')
+        if (insufficientFunds) throw new Error('!! Insufficient funds in your wallet')
 
         // !! low time confirmation
         const hasStarted = Number(auction.firstBidTime)

@@ -10,7 +10,7 @@ export default {
   name: 'RespImg',
   props: {
     image: { type: Object, default: undefined },
-    alt: { type: String, default: 'Aro Archive' },
+    alt: { type: String, default: '' },
     bg: { type: Boolean, default: false },
     fit: { type: String, default: 'object-cover object-center' },
     lazy: { type: Boolean, default: true },

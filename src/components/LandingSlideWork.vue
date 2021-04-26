@@ -2,10 +2,10 @@
   .landing-slide-work.absolute.overlay.overflow-hidden.text-md.lg_text-base.xl_text-lg
     //- media
     figure.absolute.overlay(:style="{background: slice.primary.slide_bg_color}")
-      //- (image / poster)
-      //- img.absolute.overlay(v-if="slice.primary.image && slice.primary.image.url", :src="slice.primary.image.url", :alt="slice.primary.image.alt", :style="slice.primary.style_inline", :class="mediaClasses")
+      //- (image / video-poster)
+      img.absolute.overlay(v-if="slice.primary.image && slice.primary.image.url && !videoAutoplayed", :src="slice.primary.image.url", :alt="slice.primary.image.alt", :style="slice.primary.style_inline", :class="mediaClasses")
       //- (video)
-      video.absolute.overlay(v-if="slice.primary.media && slice.primary.media.url", :src="slice.primary.media.url", muted, ref="video", playsinline, loop, :style="slice.primary.style_inline", @load="$event => $event.target.playbackRate = slice.primary.video_speed || 1", :class="mediaClasses", :poster="slice.primary.image.url")
+      video.absolute.overlay(v-if="slice.primary.media && slice.primary.media.url", :src="slice.primary.media.url", muted, ref="video", playsinline, loop, :style="slice.primary.style_inline", @load="onVideoLoad", :class="mediaClasses", @playing="videoAutoplayed = true")
       //- (blur?)
       //- .absolute.overlay(:style="{backdropFilter: `blur(12px)`}")
 
@@ -45,15 +45,20 @@
             btn.px-10 {{ doc.data.title }}
             btn.px-10 {{ doc.data.year }}
 
-      //- buy/bid btn
-      //- .mx-auto.md_m-0
-      //- template(v-if="isSoldOut")
-      template(v-if="isSold")
+      //- btn
+      //- 1. custom link
+      template(v-if="slice.primary.button_link.link_type !== 'Any'")
+        prismic-link.ml-auto(:field="slice.primary.button_link", :linkResolver="linkResolver", @click.stop)
+          btn.px-12.bg-black-a03.backdrop-blur {{ slice.primary.button_text || 'LINK' }}
+      //- 2. sold out
+      template(v-else-if="isSold")
         sold-out-dot.ml-auto.mr-1.md_-mr-2
-      template(v-else-if="bidLink")
-        template(v-if="!releaseTime || isReleased")
-          router-link.ml-auto.focus_outline-none(:to="bidLink", @click.native.stop)
-            btn.px-16.bg-black-a0.backdrop-blur BID
+      //- 3. bid link (remove for custom link...)
+      //- template(v-else-if="bidLink")
+      //-   template(v-if="!releaseTime || isReleased")
+      //-     router-link.ml-auto.focus_outline-none(:to="bidLink", @click.native.stop)
+      //-       btn.px-16.bg-black-a0.backdrop-blur BID
+      //- 4. buy btn
       template(v-else-if="work")
         button.ml-auto.focus_outline-none(@click.stop="buy")
           btn.px-16.bg-black-a03.backdrop-blur BUY
@@ -84,7 +89,8 @@ export default {
   },
   data () {
     return {
-      isReleased: false // || process.env.VUE_APP_DEV_IGNORE_RELEASES === 'true'
+      isReleased: false, // || process.env.VUE_APP_DEV_IGNORE_RELEASES === 'true'
+      videoAutoplayed: false
     }
   },
   computed: {
@@ -161,6 +167,10 @@ export default {
       if (token) {
         this.$router.push('/view/' + token)
       }
+    },
+    onVideoLoad ($event) {
+      // custom playback rate?
+      $event.target.playbackRate = this.slice.primary.video_speed || 1
     }
   },
 

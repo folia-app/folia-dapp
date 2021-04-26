@@ -4,7 +4,6 @@ import { Folia, FoliaController, ReserveAuction } from 'folia-contracts'
 import Web3 from 'web3'
 import Web3Modal from 'web3modal'
 import WalletConnectProvider from '@walletconnect/web3-provider'
-import { resizeCloudinary } from '@/components/RespImg'
 // modules
 import prismic from './prismic'
 import auctions from './auctions'
@@ -81,7 +80,7 @@ export default new Vuex.Store({
       // custom
       title = title ? `${siteTitle} - ${title}` : siteTitle
       descrip = descrip || siteDescrip
-      img = img ? resizeCloudinary(img, [1200], false) : siteImg
+      img = img || siteImg
       // add
       meta.push({ property: 'og:title', content: title })
       meta.push({ property: 'og:site_name', content: siteTitle })
@@ -273,7 +272,7 @@ export default new Vuex.Store({
         return
       }
       // get new data
-      if (id) {
+      if (id && !isNaN(id)) {
         try {
           work = await state.foliaControllerContract.methods.works(id).call()
           work = { id, ...work } // add id

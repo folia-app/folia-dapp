@@ -18,8 +18,13 @@
                 svg-fleuron.block.mr-2(style="width:0.96em;height:0.96em")
                 .hidden.md_inline.leading-none {{ workId(doc.uid, true) }}
 
+              //- ... custom button
+              template(v-if="doc.data.cta_link.link_type !== 'Any'")
+                prismic-link(:field="doc.data.cta_link", :linkResolver="linkResolver")
+                  btn.px-12(theme="drkgray") {{ doc.data.cta_text || 'LINK' }}
+
               //- ...sold-out
-              template(v-if="isSold")
+              template(v-else-if="isSold")
                 sold-out-dot
 
               //- ...enquire btn
@@ -53,7 +58,8 @@
                 //- minted
                 div(v-if="isVariableEdition && work") {{ work.printed }}/{{work.editions}} Minted
                 //- price
-                div {{ work ? weiToETH(work.price) : doc.data.price_eth }} ETH
+                div(v-if="work") {{ weiToETH(work.price) }} ETH
+                div(v-else-if="doc.data.price_eth") {{ doc.data.price_eth }} ETH
 
           nav.px-8.lg_px-12.flex.justify-start.mt-4.mb-12.-ml-2
             button.focus_outline-none(@click="$router.replace({name: 'work'})", v-if="isReleased && isVariableEdition")
@@ -64,7 +70,7 @@
               btn.px-8.md_px-12(theme="drkgray", :active="$route.name.includes('work-auctions')") Auctions
             button.focus_outline-none(@click="$router.replace({name: 'work-owners'})", v-if="collectorsTabEnabled")
               btn.px-8.md_px-12(theme="drkgray", :active="$route.name === 'work-owners'") Collectors
-            button.focus_outline-none(@click="$router.replace({name: 'work-details'})")
+            button.focus_outline-none(@click="$router.replace({name: 'work-details'})", v-if="hasDetails")
               btn.px-8.md_px-12(theme="drkgray", :active="$route.name === 'work-details'") Details
 
           router-view(:doc="doc", :work="work", :isVariableEdition="isVariableEdition", :isReleased="isReleased", :canBuy="canBuy", @buy="buy", @newToken="fetchWork(true)")
@@ -85,6 +91,7 @@ import Countdown from '@/components/Countdown'
 import ImgGif from '@/components/ImgGif'
 // import CountdownPlayBtnOverlay from '@/components/CountdownPlayBtnOverlay'
 import SoldOutDot from '@/components/SoldOutDot'
+import linkResolver from '@/plugins/prismic/link-resolver'
 export default {
   name: 'Work',
   props: ['id'],
@@ -141,6 +148,9 @@ export default {
     collectorsTabEnabled () {
       const isSmallEdition = this.work?.editions && Number(this.work.editions) < 10
       return !this.isVariableEdition && !this.isAuction && this.isReleased !== false && (isSmallEdition || this.isSold)
+    },
+    hasDetails () {
+      return this.doc && this.$prismic.asText(this.doc.data.details).length > 0
     }
   },
   created () {
@@ -183,7 +193,8 @@ export default {
       }
       // multiple auctions go to list
       return this.$router.replace({ name: 'work-auctions' })
-    }
+    },
+    linkResolver
   },
   watch: {
     isReleased (released) {
@@ -204,12 +215,12 @@ export default {
     }
   },
   metaInfo () {
-    if (this.$route.name === 'work' && this.doc) {
+    if (this.doc) {
       const doc = this.doc.data
-      const title = `${doc.artist} – ${doc.title}`
+      const title = doc.artist ? `${doc.artist} – ${doc.title}` : doc.title
       return {
         title: title,
-        meta: this.$store.getters.meta({ title: title, descrip: '', img: doc.meta_image?.url })
+        meta: this.$store.getters.meta({ title: title, descrip: this.doc.data.meta_description, img: doc.meta_image?.url })
       }
     }
   },
