@@ -23,7 +23,7 @@ export default {
         'bg-gray-100 lg_hover_bg-gray-200 focus_bg-gray-200': this.theme === 'ltgray' && !this.active,
         'bg-black text-white': this.theme === 'ltgray' && this.active,
         // theme: drkgray
-        'bg-gray-900 lg_hover_bg-gray-950 focus_bg-gray-950 lg_group-hover_bg-gray-950 transition-background duration-100': this.theme === 'drkgray' && !this.active,
+        'bg-gray-900 lg_hover_bg-gray-950 focus_bg-gray-950 lg_group-hoverff_bg-gray-950 transition-background duration-100': this.theme === 'drkgray' && !this.active,
         'bg-white focus_bg-white text-black': this.theme === 'drkgray' && this.active,
         // sizing
         'p-6 lg_py-8': this.size === 'large',

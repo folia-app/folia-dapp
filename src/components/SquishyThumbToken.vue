@@ -14,6 +14,15 @@
         .absolute.overlay(:class="{'cursor-wait': !iframeLoaded}")
           iframe.absolute.overlay.pointer-events-none.transition-opacity.duration-500(:src="`https://programmatic-puppet.netlify.app?drc=${encodeURIComponent(token.drc)}`", @load="iframeLoaded = true", :class="{'opacity-0': !iframeLoaded}")
 
+      //- (buy/sold)
+      .absolute.top-0.right-0.px-6.sm_px-3.lg_px-5.py-px(v-if="buyBtn")
+        template(v-if="owner")
+          //- .h-12.lg_h-20.flex.items-center
+          sold-out-dot.mx-3
+        template(v-else)
+          button.lg_opacity-0.lg_group-hover_opacity-100.focus_outline-none(@click.stop="buy(token)")
+            btn.px-10.lg_px-12.text-white.lg_text-sm(theme="drkgray") BUY
+
       //- (custom link overr)
       a.absolute.overlay(v-if="token.link", :href="token.link", target="_blank", rel="noopener noreferrer", @click.stop)
 
@@ -44,9 +53,10 @@
 import { mapState, mapGetters } from 'vuex'
 import SquishyThumb from '@/components/SquishyThumb'
 import Btn from '@/components/Btn'
-import RespImg, { resizeCloudinary } from '@/components/RespImg'
+import RespImg from '@/components/RespImg'
 import svgEye from '@/components/SVG-Eye'
 import Observer from '@/components/Observer'
+import SoldOutDot from '@/components/SoldOutDot'
 export default {
   name: 'SquishyThumbToken',
   props: ['token', 'buyBtn'],
@@ -74,9 +84,11 @@ export default {
     }
   },
   methods: {
-    resizeCloudinary,
-    async fetchOwner () {
-      this.owner = this.owner ?? await this.$store.dispatch('getNFTOwnerByTokenId', this.token.tokenId)
+    async fetchOwner (flush) {
+      const get = () => this.$store.dispatch('getNFTOwnerByTokenId', this.token.tokenId)
+      // fetch new ?
+      this.owner = flush && !this.owner ? await get()
+        : this.owner ?? await get()
     },
     open () {
       this.opened = true
@@ -92,7 +104,16 @@ export default {
       this.$router.push({ name: 'work-tokenviewer', params: { token: this.token.tokenId } })
     },
     onMediaClick () {
-      return this.opened ? this.close() : this.open()
+      // close if open
+      if (this.opened) {
+        return this.close()
+      }
+      // open viewer if not sold yet (no reason to see squished info...)
+      if (this.buyBtn && !this.owner) {
+        return this.openViewer()
+      }
+      // ... else open
+      this.open()
     },
     onVisible () {
       this.visible = true
@@ -111,6 +132,10 @@ export default {
     },
     pauseVideo () {
       return !this.$refs.video?.paused && this.$refs.video?.pause()
+    },
+    async buy ({ tokenId }) {
+      await this.$store.dispatch('buyByID', { tokenId })
+      this.fetchOwner(true)
     }
     // onMouseenter () {
     //   // cancel if opened
@@ -139,7 +164,7 @@ export default {
       }
     }
   },
-  components: { Observer, Btn, SquishyThumb, svgEye, RespImg }
+  components: { Observer, Btn, SquishyThumb, svgEye, RespImg, SoldOutDot }
 }
 </script>
 

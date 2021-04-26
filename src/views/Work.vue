@@ -56,7 +56,7 @@
               //- (minted + price)
               template(v-if="!isUnitSale")
                 //- minted
-                div(v-if="isVariableEdition && work") {{ work.printed }}/{{work.editions}} Minted
+                div(v-if="work && work.editions > 1") {{ work.printed }}/{{work.editions}} Minted
                 //- price
                 div(v-if="work") {{ weiToETH(work.price) }} ETH
                 div(v-else-if="doc.data.price_eth") {{ doc.data.price_eth }} ETH
@@ -125,7 +125,7 @@ export default {
       return this.isSoldOut(this.work) || this.doc?.data.status === 'sold'
     },
     isVariableEdition () {
-      return this.doc.data.page_layout === 'generative'
+      return this.doc.data.page_layout === 'generative' || this.doc.data.sale
     },
     canBuy () {
       return this.work && (Number(this.work.printed) < Number(this.work.editions))
@@ -175,7 +175,7 @@ export default {
       this.goToDefaultTab()
     },
     fetchWork (flush) {
-      return !this.work && this.$store.dispatch('getWork', { id: this.id, flush })
+      return (!this.work || flush) && this.$store.dispatch('getWork', { id: this.id, flush })
     },
     goToDefaultTab () {
       if (this.doc && this.$route.name === 'work') {
