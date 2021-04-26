@@ -15,7 +15,7 @@
           iframe.absolute.overlay.pointer-events-none.transition-opacity.duration-500(:src="`https://programmatic-puppet.netlify.app?drc=${encodeURIComponent(token.drc)}`", @load="iframeLoaded = true", :class="{'opacity-0': !iframeLoaded}")
 
       //- (buy/sold)
-      .absolute.top-0.right-0.px-6.sm_px-3.lg_px-5.py-px(v-if="buyBtn")
+      .absolute.top-0.right-0.px-6.sm_px-3.lg_px-5.py-3(v-if="buyBtn")
         template(v-if="owner")
           //- .h-12.lg_h-20.flex.items-center
           sold-out-dot.mx-3
