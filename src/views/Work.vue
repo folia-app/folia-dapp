@@ -125,7 +125,7 @@ export default {
       return this.isSoldOut(this.work) || this.doc?.data.status === 'sold'
     },
     isVariableEdition () {
-      return this.doc.data.page_layout === 'generative' || this.doc.data.sale
+      return this.doc.data.page_layout === 'generative' || this.doc.data.variable_edition
     },
     canBuy () {
       return this.work && (Number(this.work.printed) < Number(this.work.editions))

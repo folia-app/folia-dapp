@@ -10,7 +10,7 @@
 
     //- singular works
     figure.mb-12(v-else-if="!isVariableEdition")
-      router-link.block.relative.group(:to="{name: 'work-info-tokenviewer', params: { token: Number(doc.uid) * 1000000 + 1 }}", :class="{'pointer-events-none': !work}")
+      router-link.block.relative.group(:to="{name: 'work-info-tokenviewer', params: { token: Number(doc.uid) * 1000000 + 1 }}")
         //- (video)
         video.w-full(v-if="videoUrl", ref="video", :src="videoUrl", loop, muted, autoplay, playsinline, :poster="doc.data.teaser_image.url")
 
@@ -23,7 +23,7 @@
           img.block.w-full(:src="doc.data.teaser_image.url", @contextmenu.prevent)
 
         //- eyeball icon
-        .absolute.bottom-0.right-0.text-black.py-3.px-5.lg_opacity-0ff.lg_group-hover_opacity-100.transition.duration-150(style="mix-blend-mode:difference", v-if="work")
+        .absolute.bottom-0.right-0.text-black.py-3.px-5.lg_opacity-0ff.lg_group-hover_opacity-100.transition.duration-150(style="mix-blend-mode:difference")
           svg-eye.text-white
 
     //- info text
