@@ -84,8 +84,8 @@ export default {
       // ...else
       let tokens = this.tokens?.slice() || []
       // sort
-      if (this.$route.query.sort === 'index') {
-        tokens.sort((a, b) => a.tokenId < b.tokenId ? -1 : 0)
+      if (this.$route.query.sort !== 'index' && this.isGenerative) {
+        tokens.sort((a, b) => a.tokenId > b.tokenId ? -1 : 0)
       }
       // limited ?
       tokens = tokens.slice(0, this.limit)
@@ -105,6 +105,9 @@ export default {
       }
       const cols = this.doc.data?.grid || '3 cols'
       return grids[cols]
+    },
+    isGenerative () {
+      return this.doc.data.sale_type === 'generative' || this.doc.data.page_layout === 'generative'
     }
   },
   methods: {
@@ -115,7 +118,7 @@ export default {
       try {
         let resp = await fetch(`${endpoint}?network=${this.networkId}`)
         resp = await resp.json()
-        this.tokens = resp.tokens?.reverse()
+        this.tokens = resp.tokens // ?.reverse()
       } catch (e) {
         console.error('@getTokens', e)
       }

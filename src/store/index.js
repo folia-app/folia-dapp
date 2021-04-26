@@ -306,7 +306,6 @@ export default new Vuex.Store({
       if (id && !isNaN(id)) {
         try {
           work = await state.foliaControllerContract.methods.works(id).call()
-          console.log('WORK', id, work)
           work = { id, ...work } // add id
           commit('SAVE_WORK', work)
         } catch (e) {
@@ -368,7 +367,9 @@ export default new Vuex.Store({
         }
         return null
       } catch (e) {
-        console.error('get owner error', e)
+        // seems to error if token doesn't exist...
+        console.error("get owner error / token doesn't exist?", tokenId, e)
+        return 0
       }
     }
   }

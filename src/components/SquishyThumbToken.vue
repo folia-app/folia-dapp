@@ -52,7 +52,7 @@ export default {
   props: ['token', 'buyBtn'],
   data () {
     return {
-      owner: '',
+      owner: null,
       opened: false,
       hover: false,
       iframeLoaded: false,
@@ -76,7 +76,7 @@ export default {
   methods: {
     resizeCloudinary,
     async fetchOwner () {
-      this.owner = this.owner || await this.$store.dispatch('getNFTOwnerByTokenId', this.token.tokenId)
+      this.owner = this.owner ?? await this.$store.dispatch('getNFTOwnerByTokenId', this.token.tokenId)
     },
     open () {
       this.opened = true
@@ -98,6 +98,9 @@ export default {
       this.visible = true
       this.loadVideo = true
       this.playVideo()
+      if (this.buyBtn) {
+        this.fetchOwner()
+      }
     },
     onHidden () {
       this.visible = false
