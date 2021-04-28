@@ -25,7 +25,7 @@ export default {
       // directory: 'https://gateway.pinata.cloud/ipfs/QmQbX6GwKdVRUJHy9xjqjiter4YPcVVFupW7NryX8BhpS1/FLA8000003__Hannah-Rose-Stewart__Programmatic-Puppet__2021',
       image: '',
       animation_url: 'https://folia-bultheel.fra1.digitaloceanspaces.com/counter%20mood_2.mp4',
-      animation_thumb: 'https://folia-bultheel.fra1.cdn.digitaloceanspaces.com/orbs/3.mp4',
+      animation_thumb: 'https://folia-bultheel.fra1.cdn.digitaloceanspaces.com/orbs/drum%20duet%203.mp4',
       iframe: 'https://the-contract.netlify.app/3'
     },
     10000004: {
