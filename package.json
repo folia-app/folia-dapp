@@ -13,7 +13,7 @@
   "dependencies": {
     "@prismicio/vue": "^2.0.7",
     "@walletconnect/web3-provider": "^1.3.3",
-    "folia-contracts": "github:folia-app/folia-contracts#e98777111d9218854bcd9867a825573a78db71ab",
+    "folia-contracts": "github:folia-app/folia-contracts#c884453356098b30050fc6c6e066b4c6464ff551",
     "global": "^4.4.0",
     "lazysizes": "^5.3.0",
     "netlify-cli": "^3.10.1",
