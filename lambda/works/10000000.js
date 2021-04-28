@@ -8,67 +8,67 @@ export default {
   assetPath: '',
   tokens: {
     10000001: {
-      // directory: 'https://gateway.pinata.cloud/ipfs/QmU1RdohqFaYQXieHbDGMLgtp9Q5zfwweBj5mracUBHnKq/FLA8000001__Hannah-Rose-Stewart__Programmatic-Puppet__2021',
-      image: '',
-      animation_url: 'https://folia-bultheel.fra1.digitaloceanspaces.com/Chamber.mp4',
+      directory: 'https://gateway.pinata.cloud/ipfs/QmahCyTa7JrrzwqZWi1Dk4PQ31f3FRYkLCrgjXR6qjP6cu/10000001__Billy-Bultheel__Songs-for-the-Contract__2021',
+      image: 'https://gateway.pinata.cloud/ipfs/QmahCyTa7JrrzwqZWi1Dk4PQ31f3FRYkLCrgjXR6qjP6cu/10000001__Billy-Bultheel__Songs-for-the-Contract__2021/orb.jpg',
+      animation_url: 'https://gateway.pinata.cloud/ipfs/QmahCyTa7JrrzwqZWi1Dk4PQ31f3FRYkLCrgjXR6qjP6cu/10000001__Billy-Bultheel__Songs-for-the-Contract__2021/thumb.mp4',
       animation_thumb: 'https://folia-bultheel.fra1.cdn.digitaloceanspaces.com/orbs/chamber.mp4',
-      iframe: 'https://the-contract.netlify.app/1'
+      iframe: 'https://songs-for-the-contract.folia.app/1'
     },
     10000002: {
-      // directory: 'https://gateway.pinata.cloud/ipfs/QmTXEFv7ZExsLz6GrUrEM2CavoqYAvo54CQHMxsoSSGqTw/FLA8000002__Hannah-Rose-Stewart__Programmatic-Puppet__2021',
-      image: '',
-      animation_url: 'https://folia-bultheel.fra1.digitaloceanspaces.com/AQUA%20DUET%20-%20render%20CBR-15%20v2%20-%20faster%20-q18.mp4',
+      directory: 'https://gateway.pinata.cloud/ipfs/QmNUVTxtByUBZGBYsiDbKDFw1JMbVHLpThRXMcqJBeTbuc/10000002__Billy-Bultheel__Songs-for-the-Contract__2021',
+      image: 'https://gateway.pinata.cloud/ipfs/QmNUVTxtByUBZGBYsiDbKDFw1JMbVHLpThRXMcqJBeTbuc/10000002__Billy-Bultheel__Songs-for-the-Contract__2021/orb.jpg',
+      animation_url: 'https://gateway.pinata.cloud/ipfs/QmNUVTxtByUBZGBYsiDbKDFw1JMbVHLpThRXMcqJBeTbuc/10000002__Billy-Bultheel__Songs-for-the-Contract__2021/thumb.mp4',
       animation_thumb: 'https://folia-bultheel.fra1.cdn.digitaloceanspaces.com/orbs/2.mp4',
-      iframe: 'https://the-contract.netlify.app/2'
+      iframe: 'https://songs-for-the-contract.folia.app/2'
     },
     10000003: {
-      // directory: 'https://gateway.pinata.cloud/ipfs/QmQbX6GwKdVRUJHy9xjqjiter4YPcVVFupW7NryX8BhpS1/FLA8000003__Hannah-Rose-Stewart__Programmatic-Puppet__2021',
-      image: '',
-      animation_url: 'https://folia-bultheel.fra1.digitaloceanspaces.com/counter%20mood_2.mp4',
+      directory: 'https://gateway.pinata.cloud/ipfs/QmRdnwup3tbgwYodnxN9oaHoYCRYaz4jFTyN8sZbrNRM5m/10000003__Billy-Bultheel__Songs-for-the-Contract__2021',
+      image: 'https://gateway.pinata.cloud/ipfs/QmRdnwup3tbgwYodnxN9oaHoYCRYaz4jFTyN8sZbrNRM5m/10000003__Billy-Bultheel__Songs-for-the-Contract__2021/orb.jpg',
+      animation_url: 'https://gateway.pinata.cloud/ipfs/QmRdnwup3tbgwYodnxN9oaHoYCRYaz4jFTyN8sZbrNRM5m/10000003__Billy-Bultheel__Songs-for-the-Contract__2021/thumb.mp4',
       animation_thumb: 'https://folia-bultheel.fra1.cdn.digitaloceanspaces.com/orbs/drum%20duet%203.mp4',
-      iframe: 'https://the-contract.netlify.app/3'
+      iframe: 'https://songs-for-the-contract.folia.app/3'
     },
     10000004: {
-      // directory: 'https://gateway.pinata.cloud/ipfs/QmeapQkbuvJwf78BMktPXV5a9iULEVLzcz4XC74BFxAErc/FLA8000004__Hannah-Rose-Stewart__Programmatic-Puppet__2021',
-      image: '',
-      animation_url: 'https://folia-bultheel.fra1.digitaloceanspaces.com/DOUBLE%20BASS.mp4',
+      directory: 'https://gateway.pinata.cloud/ipfs/QmVSXVe9jHgHCQiyxZCVxx6AucLrxjHRgSUf7Xz3NrrHLR/10000004__Billy-Bultheel__Songs-for-the-Contract__2021',
+      image: 'https://gateway.pinata.cloud/ipfs/QmVSXVe9jHgHCQiyxZCVxx6AucLrxjHRgSUf7Xz3NrrHLR/10000004__Billy-Bultheel__Songs-for-the-Contract__2021/orb.jpg',
+      animation_url: 'https://gateway.pinata.cloud/ipfs/QmVSXVe9jHgHCQiyxZCVxx6AucLrxjHRgSUf7Xz3NrrHLR/10000004__Billy-Bultheel__Songs-for-the-Contract__2021/thumb.mp4',
       animation_thumb: 'https://folia-bultheel.fra1.cdn.digitaloceanspaces.com/orbs/4c.mp4',
-      iframe: 'https://the-contract.netlify.app/4'
+      iframe: 'https://songs-for-the-contract.folia.app/4'
     },
     10000005: {
-      // directory: 'https://gateway.pinata.cloud/ipfs/QmY3SxKEz8STNPuJZegrhzTvhR3SGUF3NQGtPUFVFYTKLh/FLA8000005__Hannah-Rose-Stewart__Programmatic-Puppet__2021',
-      image: '',
-      animation_url: 'https://folia-bultheel.fra1.digitaloceanspaces.com/Drum%20Duet_1.mp4',
+      directory: 'https://gateway.pinata.cloud/ipfs/QmP1NKmpQFDK8z483Ec73HG9piJwMRMYxMDBeEBjuJ4MvH/10000005__Billy-Bultheel__Songs-for-the-Contract__2021',
+      image: 'https://gateway.pinata.cloud/ipfs/QmP1NKmpQFDK8z483Ec73HG9piJwMRMYxMDBeEBjuJ4MvH/10000005__Billy-Bultheel__Songs-for-the-Contract__2021/orb.jpg',
+      animation_url: 'https://gateway.pinata.cloud/ipfs/QmP1NKmpQFDK8z483Ec73HG9piJwMRMYxMDBeEBjuJ4MvH/10000005__Billy-Bultheel__Songs-for-the-Contract__2021/thumb.mp4',
       animation_thumb: 'https://folia-bultheel.fra1.cdn.digitaloceanspaces.com/orbs/5c.mp4',
-      iframe: 'https://the-contract.netlify.app/5'
+      iframe: 'https://songs-for-the-contract.folia.app/5'
     },
     10000006: {
-      // directory: 'https://gateway.pinata.cloud/ipfs/QmXqPWgrv54Qa1TpdxdzfzHyyZR5wY7nybvH75ipUryLFU/FLA8000006__Hannah-Rose-Stewart__Programmatic-Puppet__2021',
-      image: '',
-      animation_url: 'https://folia-bultheel.fra1.digitaloceanspaces.com/SLEEPER.mp4',
+      directory: 'https://gateway.pinata.cloud/ipfs/QmQs7ZMa2opBdMXb4uwxZ5CSTrqrByrXSEfPmMg9ovSdpF/10000006__Billy-Bultheel__Songs-for-the-Contract__2021',
+      image: 'https://gateway.pinata.cloud/ipfs/QmQs7ZMa2opBdMXb4uwxZ5CSTrqrByrXSEfPmMg9ovSdpF/10000006__Billy-Bultheel__Songs-for-the-Contract__2021/orb.jpg',
+      animation_url: 'https://gateway.pinata.cloud/ipfs/QmQs7ZMa2opBdMXb4uwxZ5CSTrqrByrXSEfPmMg9ovSdpF/10000006__Billy-Bultheel__Songs-for-the-Contract__2021/thumb.mp4',
       animation_thumb: 'https://folia-bultheel.fra1.cdn.digitaloceanspaces.com/orbs/6.mp4',
-      iframe: 'https://the-contract.netlify.app/6'
+      iframe: 'https://songs-for-the-contract.folia.app/6'
     },
     10000007: {
-      // directory: 'https://gateway.pinata.cloud/ipfs/Qmew9qZ4h71KjFTJFQYfqgKXrxK2EqbyihRUELuiJArdwj/FLA8000007__Hannah-Rose-Stewart__Programmatic-Puppet__2021',
-      image: '',
-      animation_url: 'https://folia-bultheel.fra1.digitaloceanspaces.com/Sofa%20Duet_2.mp4',
+      directory: 'https://gateway.pinata.cloud/ipfs/QmYoX9B7XPL2VnW6waNsUwB1vHg4MRxRixQoFDLuJA2hUy/10000007__Billy-Bultheel__Songs-for-the-Contract__2021',
+      image: 'https://gateway.pinata.cloud/ipfs/QmYoX9B7XPL2VnW6waNsUwB1vHg4MRxRixQoFDLuJA2hUy/10000007__Billy-Bultheel__Songs-for-the-Contract__2021/orb.jpg',
+      animation_url: 'https://gateway.pinata.cloud/ipfs/QmYoX9B7XPL2VnW6waNsUwB1vHg4MRxRixQoFDLuJA2hUy/10000007__Billy-Bultheel__Songs-for-the-Contract__2021/thumb.mp4',
       animation_thumb: 'https://folia-bultheel.fra1.cdn.digitaloceanspaces.com/orbs/7d.mp4',
-      iframe: 'https://the-contract.netlify.app/7'
+      iframe: 'https://songs-for-the-contract.folia.app/7'
     },
     10000008: {
-      // directory: 'https://gateway.pinata.cloud/ipfs/QmQDgKPadDF5gyDjkpdgps2UPuhU7cKGacXkzvoZ8zoTRA/FLA8000008__Hannah-Rose-Stewart__Programmatic-Puppet__2021',
-      image: '',
-      animation_url: 'https://folia-bultheel.fra1.digitaloceanspaces.com/STRING%20POLE.mp4',
+      directory: 'https://gateway.pinata.cloud/ipfs/QmdwzR5bu15qANmjkHjvUg6Gatj4V9Eq2gKSsjc8EvihDx/10000008__Billy-Bultheel__Songs-for-the-Contract__2021',
+      image: 'https://gateway.pinata.cloud/ipfs/QmdwzR5bu15qANmjkHjvUg6Gatj4V9Eq2gKSsjc8EvihDx/10000008__Billy-Bultheel__Songs-for-the-Contract__2021/orb.jpg',
+      animation_url: 'https://gateway.pinata.cloud/ipfs/QmdwzR5bu15qANmjkHjvUg6Gatj4V9Eq2gKSsjc8EvihDx/10000008__Billy-Bultheel__Songs-for-the-Contract__2021/thumb.mp4',
       animation_thumb: 'https://folia-bultheel.fra1.cdn.digitaloceanspaces.com/orbs/8.mp4',
-      iframe: 'https://the-contract.netlify.app/8'
+      iframe: 'https://songs-for-the-contract.folia.app/8'
     },
     10000009: {
-      // directory: 'https://gateway.pinata.cloud/ipfs/QmbwuKJTKApKeoQ1B9XFd7ijvt6smhWMTt2KLC1RSdQHvm/FLA8000009__Hannah-Rose-Stewart__Programmatic-Puppet__2021',
-      image: '',
-      animation_url: 'https://folia-bultheel.fra1.digitaloceanspaces.com/VIOLENT.mp4',
+      directory: 'https://gateway.pinata.cloud/ipfs/QmSxvZXnHroXe7QjXhSt6exJsP8Cm1ZRyVCtrHUFkVmGBB/10000009__Billy-Bultheel__Songs-for-the-Contract__2021',
+      image: 'https://gateway.pinata.cloud/ipfs/QmSxvZXnHroXe7QjXhSt6exJsP8Cm1ZRyVCtrHUFkVmGBB/10000009__Billy-Bultheel__Songs-for-the-Contract__2021/orb.jpg',
+      animation_url: 'https://gateway.pinata.cloud/ipfs/QmSxvZXnHroXe7QjXhSt6exJsP8Cm1ZRyVCtrHUFkVmGBB/10000009__Billy-Bultheel__Songs-for-the-Contract__2021/thumb.mp4',
       animation_thumb: 'https://folia-bultheel.fra1.cdn.digitaloceanspaces.com/orbs/9.mp4',
-      iframe: 'https://the-contract.netlify.app/9'
+      iframe: 'https://songs-for-the-contract.folia.app/9'
     }
   }
 }
