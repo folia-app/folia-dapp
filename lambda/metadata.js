@@ -60,21 +60,26 @@ exports.handler = async function (event, context) {
 
     // !! not minted (skip if site viewer mode)
     if (work.generative || ignoreIsOwned !== true) {
-      const owner = await getNFTOwnerByTokenId(tokenId, networkId)
-      if (!owner) {
-        return {
-          statusCode: 200,
-          body: JSON.stringify({
-            message: 'Not yet minted'
-          })
-        }
+      // temp lazy disable!!
+      if (ignoreIsOwned === 'imlazy') {
+        const owner = await getNFTOwnerByTokenId(tokenId, networkId)
+        console.log(owner)
       }
+
+      // if (!owner) {
+      //   return {
+      //     statusCode: 200,
+      //     body: JSON.stringify({
+      //       message: 'Not yet minted'
+      //     })
+      //   }
+      // }
     }
 
     // the sauce
     const metadata = {
       // both opensea and rarebits
-      name: work.titlePattern.replace('{{no}}', printNo(work, tokenId)),
+      name: token.title || work.titlePattern.replace('{{no}}', printNo(work, tokenId)),
 
       // owner: owner,
       // name: `${doc.data.artist}, "${doc.data.title}", ${doc.data.year} (${printNo}/${doc.data.edition})`,
