@@ -26,7 +26,7 @@ export default {
       image: 'https://cloudflare-ipfs.com/ipfs/QmXiad6QM7GSxtCqcQa7aYJKVkbb62Qm6CCTHVhPcEA2ZS/FLA11000000__Emily-Segal__Code-of-Holes__2021/FUTURIST.png',
       animation_url: 'https://cloudflare-ipfs.com/ipfs/QmXiad6QM7GSxtCqcQa7aYJKVkbb62Qm6CCTHVhPcEA2ZS/FLA11000000__Emily-Segal__Code-of-Holes__2021/FUTURIST.mp4',
       animation_thumb: 'https://res.cloudinary.com/folia/video/upload/v1620950481/segal-poems/FUTURIST--no-intro--720_m6ri63.mp4',
-      iframe: 'https://deluge.folia.app/futurirst'
+      iframe: 'https://deluge.folia.app/futurist'
     }
   }
 }
