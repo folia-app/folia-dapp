@@ -99,7 +99,7 @@ import SoldOutDot from '@/components/SoldOutDot'
 import linkResolver from '@/plugins/prismic/link-resolver'
 export default {
   name: 'Work',
-  // props: ['id'],
+  props: ['id'],
   data () {
     return {
       // id: this.$route.params.work,
@@ -112,9 +112,9 @@ export default {
   computed: {
     ...mapState(['foliaControllerContract']),
     ...mapGetters(['weiToETH', 'workId', 'isSoldOut']),
-    id () {
-      return this.$route.params.work
-    },
+    // id () {
+    //   return this.$route.params.work
+    // },
     // doc () {
     //   return this.$store.getters['prismic/works'].find(doc => doc.uid === this.id)
     // },
