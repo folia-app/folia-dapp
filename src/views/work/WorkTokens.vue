@@ -46,7 +46,7 @@
             </svg>
 
       //- .flex-1.flex.items-center.justify-center(v-else)
-        svg-fleuron.text-gray-800.h-32
+        svg-fleuron.text-gray-800.h-24.xl_h-32
 
     //- lazyloader
     observer.w-full(:style="{height: '200vh', marginTop: tokensFiltered.length > 12 ? '-50vh' : '0'}", :threshold="0.01", @visible="loadTokens", v-if="tokens && limit < tokens.length")

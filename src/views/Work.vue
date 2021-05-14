@@ -34,12 +34,12 @@
 
               //- ...not released
               template(v-else-if="!isReleased")
-                button.focus_outline-none(@click="$router.replace({name: 'work-auctions'})", :disabled="!isUnitSale", :class="{'pointer-events-none': !isUnitSale}")
+                button.focus_outline-none(@click="$router.replace({name: 'work-auctions'})", :disabled="!isAuction", :class="{'pointer-events-none': !isAuction}")
                   btn.px-8.text-sm.-mt-2.-mr-4(theme="drkgray", size="small")
                     countdown.text-white(:until="doc.data.release_link.data.release_time", @ended="isReleased = true", separator=" ")
 
               //- ...bid
-              template(v-else-if="isUnitSale")
+              template(v-else-if="isAuction")
                 template(v-if="doc.data.auction.length")
                   button.block.group.relative.focus_outline-none.-m-2(@click="onBidBtn")
                     btn.px-16(theme="drkgray") BID
@@ -54,7 +54,7 @@
               div.font-bold {{ doc.data.artist }}
               rich-text(:field="doc.data.medium")
               //- (minted + price)
-              template(v-if="!isUnitSale")
+              template(v-if="!isAuction")
                 //- minted
                 div(v-if="work && work.editions > 1") {{ work.printed }}/{{work.editions}} Minted
                 //- price
@@ -140,9 +140,9 @@ export default {
     //   }
     //   return url
     // },
-    isUnitSale () {
-      return this.doc.data.page_layout === 'token-unit-sale'
-    },
+    // isAuction () {
+    //   return this.doc.data.page_layout === 'token-unit-sale' || this.doc.data.sale_type === 'auction'
+    // },
     isAuction () {
       return this.doc.data.auction?.length
     },

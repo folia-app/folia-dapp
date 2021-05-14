@@ -53,6 +53,11 @@ export function optimImgSize (length) {
 
 // Cloudinary resizer
 export function resizeCloudinary (url, size = [], optim = true) {
+  // svg ?
+  if (url.includes('.svg')) {
+    return url
+  }
+
   let params = ['q_auto', 'f_auto']
   const optimize = (size) => optim ? optimImgSize(size) : size
   // expect it's /upload

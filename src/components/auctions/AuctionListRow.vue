@@ -1,5 +1,5 @@
 <template lang="pug">
-  router-link.block.hover_bg-gray-950.px-10.lg_px-12.flex.flex-wrap.justify-between.items-center.min-h-32.md_min-h-40.py-10(:to="{name: 'work-auctions-token', params: { work: tokenId[0], token: tokenId }}", :class="{'opacity-50 pointer-events-none': locked}")
+  router-link.block.hover_bg-gray-950.px-10.lg_px-12.flex.flex-wrap.justify-between.items-center.min-h-32.md_min-h-40.py-10(:to="{name: 'work-auctions-token', params: { work: workId, token: tokenId }}", :class="{'pointer-events-none': locked || !auction}")
     h6.flex.items-center
       slot
       svg-eye.ml-6(v-show="$route.params.token === tokenId", v-if="!hideTimers")
@@ -59,6 +59,9 @@ export default {
       weiToETH: 'weiToETH',
       isAuctionEnded: 'auctions/auctionEnded'
     }),
+    workId () {
+      return Math.floor(Number(this.tokenId) / 1000000)
+    },
     auctionEndTimeMs () {
       return this.$store.getters['auctions/auctionEndTimeMs']({ auction: this.auction })
     },
