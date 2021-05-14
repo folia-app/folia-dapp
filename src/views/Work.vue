@@ -36,7 +36,7 @@
 
               //- ...not released
               template(v-else-if="!isReleased")
-                button.focus_outline-none(@click="$router.replace({name: 'work-auctions'})", :disabled="!isAuction", :class="{'pointer-events-none': !isAuction}")
+                button.focus_outline-none(@click="onBidBtn", :disabled="!isAuction", :class="{'pointer-events-none': !isAuction}")
                   btn.px-8.text-sm.lg_-mt-2.lg_-mr-4(theme="drkgray", size="small")
                     countdown.text-white(:until="doc.data.release_link.data.release_time", @ended="isReleased = true", separator=" ")
 
@@ -99,7 +99,7 @@ import SoldOutDot from '@/components/SoldOutDot'
 import linkResolver from '@/plugins/prismic/link-resolver'
 export default {
   name: 'Work',
-  props: ['id'],
+  // props: ['id'],
   data () {
     return {
       // id: this.$route.params.work,
@@ -112,9 +112,9 @@ export default {
   computed: {
     ...mapState(['foliaControllerContract']),
     ...mapGetters(['weiToETH', 'workId', 'isSoldOut']),
-    // id () {
-    //   return this.$route.params.work
-    // },
+    id () {
+      return this.$route.params.work
+    },
     // doc () {
     //   return this.$store.getters['prismic/works'].find(doc => doc.uid === this.id)
     // },
