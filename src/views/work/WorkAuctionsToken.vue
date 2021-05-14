@@ -188,6 +188,9 @@ export default {
     },
 
     async bid () {
+      // track click
+      this.$gtag.event('bidBtnClick', { event_category: 'auction', event_label: this.tokenId, value: this.bidETH })
+      // submit bid
       await this.$store.dispatch('auctions/bid', { token: this.tokenId, wei: this.ethToWei(this.bidETH) })
     },
 

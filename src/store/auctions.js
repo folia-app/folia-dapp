@@ -1,4 +1,5 @@
 import debounce from 'lodash/debounce'
+import { exception } from 'vue-gtag'
 const deployBlock = 12088025
 
 export default {
@@ -161,6 +162,8 @@ export default {
       // errors...
       } catch (e) {
         console.error('@bid:', e)
+        // track
+        exception({ description: `@bid: ${e.message}`, fatal: false })
         // TODO - more elegant UX error ?
         if (e.message?.includes('!! ')) {
           alert(e.message.replace('!! ', ''))
