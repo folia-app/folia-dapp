@@ -29,8 +29,8 @@
     //- inner content
     .absolute.overlay.flex.items-center.justify-center.group(v-if="opened")
       //- No. (centered) / token link
-      a.absolute.top-0.left-0.py-3.px-4(:href="openSeaLink({token: token.tokenId})", target="_blank", rel="noopener noreferrer")
-          btn.lg_px-6.lg_hover_bg-black-a15(theme="none", size="small") {{ token.tokenId.slice(-3) }}
+      a.absolute.top-0.left-0.py-3.px-4(:href="openSeaLink({token: token.tokenId})", target="_blank", rel="noopener noreferrer", :class="{'pointer-events-none': !owner}")
+        btn.lg_px-6.lg_hover_bg-black-a15(theme="none", size="small") {{ token.tokenId.slice(-3) }}
 
       //- open viewer (inner)
       button.focus_outline-none(@click="openViewer")
