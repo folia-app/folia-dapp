@@ -189,7 +189,7 @@ export default {
 
     async bid () {
       // track click
-      this.$gtag.event('bidBtnClick', { event_category: 'auction', event_label: this.tokenId, value: this.bidETH })
+      this.$gtag.event('bidBtnClick', { event_category: 'auction', event_label: 'WorkAuctionsToken.vue', value: `${this.tokenId}: ${this.bidETH}ETH` })
       // submit bid
       await this.$store.dispatch('auctions/bid', { token: this.tokenId, wei: this.ethToWei(this.bidETH) })
     },
