@@ -134,6 +134,9 @@ export default {
       return !this.$refs.video?.paused && this.$refs.video?.pause()
     },
     async buy ({ tokenId }) {
+      // track
+      this.$gtag.event('buyBtnClick', { event_category: 'buy', event_label: 'squishyThumbToken.vue', value: tokenId })
+      //
       await this.$store.dispatch('buyByID', { tokenId })
       this.fetchOwner(true)
     }

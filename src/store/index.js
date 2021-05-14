@@ -4,6 +4,7 @@ import { Folia, FoliaControllerV2, ReserveAuction } from 'folia-contracts'
 import Web3 from 'web3'
 import Web3Modal from 'web3modal'
 import WalletConnectProvider from '@walletconnect/web3-provider'
+import { exception } from 'vue-gtag'
 // modules
 import prismic from './prismic'
 import auctions from './auctions'
@@ -255,6 +256,8 @@ export default new Vuex.Store({
         dispatch('getWork', { id: workId, flush: true })
       } catch (e) {
         console.error('@buy:', e)
+        // track
+        exception({ description: `@buy: ${e.message}`, fatal: false })
         // TODO - more elegant UX error ?
         if (e.message?.includes('!! ')) {
           alert(e.message.replace('!! ', ''))
@@ -263,21 +266,29 @@ export default new Vuex.Store({
     },
 
     /* buy by ID */
-    async buyByID ({ state, dispatch }, { tokenId }) {
+    async buyByID ({ state, dispatch, rootGetters }, { tokenId }) {
       try {
         const workId = Math.floor(tokenId / 1000000)
         const workSpace = workId * 1000000
         const editionId = tokenId - workSpace
+        const bn = mixed => new web3.utils.BN(mixed)
 
         const work = await dispatch('getWork', { id: workId, flush: true })
         // !! unavailable
         if (!work.exists) throw new Error(`!! Work ${workId} doesn't exist`)
         // !! paused
         if (work.paused) throw new Error(`!! Work ${workId} is locked. Please wait for release or try again shortly.`)
+
         // wallet connected ?
         if (!state.address) {
           await dispatch('connect')
         }
+
+        // !! not enough ETH
+        const balance = await rootGetters.userBalance()
+        const insufficientFunds = bn(balance).lt(bn(work.price))
+        if (insufficientFunds) throw new Error(`!! Insufficient funds in your wallet\n${state.address}`)
+
         // buy
         await state.foliaControllerContract.methods
           .buyByID(state.address, workId, editionId)
@@ -286,6 +297,8 @@ export default new Vuex.Store({
         dispatch('getWork', { id: workId, flush: true })
       } catch (e) {
         console.error('@buyByID:', e)
+        // track
+        exception({ description: `@buyByID: ${e.message}`, fatal: false })
         // TODO - more elegant UX error ?
         if (e.message?.includes('!! ')) {
           alert(e.message.replace('!! ', ''))
