@@ -12,9 +12,11 @@
 
           header.p-8.lg_p-12
 
-            .flex.justify-between.items-start
+            .flex.justify-between.items-center.lg_items-start
               //- no.
-              router-link.flex.mb-16.text-lg.-ml-1(to="/")
+              router-link.flex.items-center.text-2xl.lg_text-lg.-ml-1(to="/")
+                //- .p-4.-m-4.-mr-2.sm_hidden
+                  .h-4.w-4.border-b.border-l.transform.rotate-45.border-current
                 svg-fleuron.block.mr-2(style="width:0.96em;height:0.96em")
                 .hidden.md_inline.leading-none {{ workId(doc.uid, true) }}
 
@@ -35,7 +37,7 @@
               //- ...not released
               template(v-else-if="!isReleased")
                 button.focus_outline-none(@click="$router.replace({name: 'work-auctions'})", :disabled="!isAuction", :class="{'pointer-events-none': !isAuction}")
-                  btn.px-8.text-sm.-mt-2.-mr-4(theme="drkgray", size="small")
+                  btn.px-8.text-sm.lg_-mt-2.lg_-mr-4(theme="drkgray", size="small")
                     countdown.text-white(:until="doc.data.release_link.data.release_time", @ended="isReleased = true", separator=" ")
 
               //- ...bid
@@ -49,7 +51,7 @@
                 button.block.group.relative.focus_outline-none.-m-2(@click="buy", :disabled="!isReleased", :class="{'opacity-50': !isReleased}")
                   btn.px-12.md_px-16(theme="drkgray", :disabled="!isReleased") BUY
 
-            header.text-xl
+            header.text-xl.mt-12
               div {{ doc.data.title }}
               div.font-bold {{ doc.data.artist }}
               rich-text(:field="doc.data.medium")
@@ -61,17 +63,19 @@
                 div(v-if="work") {{ weiToETH(work.price) }} ETH
                 div(v-else-if="doc.data.price_eth") {{ doc.data.price_eth }} ETH
 
-          nav.px-8.lg_px-12.flex.justify-start.mt-4.mb-12.-ml-2
+          nav.px-8.lg_px-12.flex.justify-start.mt-4.mb-12.-ml-2.text-md.sm_text-base
             button.focus_outline-none(@click="$router.replace({name: 'work'})", v-if="hasTabTokens")
-              btn.px-8.md_px-12(theme="drkgray", :active="$route.name === 'work'") Tokens
+              btn.px-7.md_px-12(theme="drkgray", :active="$route.name === 'work'") Tokens
             button.focus_outline-none(@click="$router.replace({name: 'work-info'})")
-              btn.px-8.md_px-12(theme="drkgray", :active="$route.name === 'work-info'") Info
+              btn.px-7.md_px-12(theme="drkgray", :active="$route.name === 'work-info'") Info
             button.focus_outline-none(@click="$router.replace({name: 'work-auctions'})", v-if="isAuction")
-              btn.px-8.md_px-12(theme="drkgray", :active="$route.name.includes('work-auctions')") Auctions
+              btn.px-7.md_px-12(theme="drkgray", :active="$route.name.includes('work-auctions')") Auctions
             button.focus_outline-none(@click="$router.replace({name: 'work-owners'})", v-if="hasTabCollectors")
-              btn.px-8.md_px-12(theme="drkgray", :active="$route.name === 'work-owners'") Collectors
+              btn.px-7.md_px-12(theme="drkgray", :active="$route.name === 'work-owners'") Collectors
             button.focus_outline-none(@click="$router.replace({name: 'work-details'})", v-if="hasDetails")
-              btn.px-8.md_px-12(theme="drkgray", :active="$route.name === 'work-details'") Details
+              btn.px-6.md_px-12(theme="drkgray", :active="$route.name === 'work-details'")
+                span.hidden.sm_inline Details
+                span.sm_hidden.text-sm •••
 
           //- child routes
           router-view(:doc="doc", :work="work", :isVariableEdition="isVariableEdition", :isReleased="isReleased", :canBuy="canBuy", @buy="buy", @newToken="fetchWork(true)")
