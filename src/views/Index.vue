@@ -231,7 +231,7 @@ export default {
       }
       // update active work ?
       if (to.params.work) {
-        this.activeWork = to.params.work
+        this.activeWork = to.params.work.toString()
       }
     },
     workDocs () {
