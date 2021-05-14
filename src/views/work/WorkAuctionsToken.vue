@@ -255,6 +255,11 @@ export default {
       this.getAuction()
     }
   },
+  metaInfo () {
+    return this.doc && {
+      title: `Auction: FLA-${this.tokenId}, ${this.doc.data.artist}, "${this.doc.data.title}"`
+    }
+  },
   components: { Btn, ImgGif, Countdown, RespImg, SvgEye }
 }
 </script>

@@ -27,7 +27,7 @@ export default {
   name: 'App',
   metaInfo: {
     titleTemplate: (ttl) => {
-      return ttl ? `Folia – ${ttl}` : 'Folia'
+      return ttl ? `${ttl} – Folia` : 'Folia'
     }
   },
   computed: {
