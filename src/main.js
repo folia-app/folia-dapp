@@ -6,6 +6,7 @@ import 'lazysizes'
 import PrismicVue from '@prismicio/vue'
 import linkResolver from '@/plugins/prismic/link-resolver.js'
 import VueMeta from 'vue-meta'
+import analytics from './plugins/vue-gtag'
 
 // import { PortisProvider } from 'portis'
 // import Web3 from 'web3'
@@ -63,6 +64,10 @@ pwd(() => {
     router,
     store,
     components: { App },
-    template: '<App/>'
+    template: '<App/>',
+    mounted () {
+      analytics()
+      console.log('mntd')
+    }
   })
 })
