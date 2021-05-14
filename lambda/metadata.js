@@ -131,10 +131,10 @@ exports.handler = async function (event, context) {
       // 3d models
       obj: asset(work, tokenId, 'obj'),
       drc: asset(work, tokenId, 'drc'),
-      iframe: asset(work, tokenId, 'iframe'),
+      iframe: asset(work, tokenId, 'iframe')
 
-      // sha hashes for posterity
-      sha256: work.sha256 || {}
+      // sha hashes for posterity (annoying for works with many files... IPFS is source file...)
+      // sha256: work.sha256 || {}
     }
 
     // return metadata :)
