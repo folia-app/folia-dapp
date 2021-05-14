@@ -1,5 +1,6 @@
 import Vue from 'vue'
-import VueGtag from 'vue-gtag'
+import VueGtag, { exception } from 'vue-gtag'
+
 import router from '@/router'
 import FingerprintJS from '@fingerprintjs/fingerprintjs'
 
@@ -23,6 +24,7 @@ export default function () {
       // This is the visitor identifier:
       const visitorId = result.visitorId
 
+      // init
       Vue.use(VueGtag, {
         enabled: true,
         config: {
@@ -43,6 +45,14 @@ export default function () {
           }
         }
       }, router)
+
+      // track errors
+      window.addEventListener('error', (e) => {
+        exception({
+          description: `@windowError: ${e.message} | userAgent: ${window.navigator.userAgent} | winW: ${window.innerWidth}`,
+          fatal: false
+        })
+      })
     })()
   }
 }
