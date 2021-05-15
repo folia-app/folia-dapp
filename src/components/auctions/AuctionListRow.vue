@@ -1,5 +1,5 @@
 <template lang="pug">
-  router-link.block.hover_bg-gray-950.px-10.lg_px-12.flex.flex-wrap.justify-between.items-center.min-h-32.md_min-h-40.py-10(:to="{name: 'work-auctions-token', params: { work: workId, token: tokenId }}", :class="{'pointer-events-none': locked || !auction}")
+  router-link.block.hover_bg-gray-950.px-10.lg_px-12.flex.flex-wrap.justify-between.items-center.min-h-32.md_min-h-40.py-10(:to="{name: 'work-auctions-token', params: { work: workId, token: tokenId }}", :class="{'pointer-events-none': locked || !auction || !auctionIsReleased}")
     h6.flex.items-center
       slot
       svg-eye.ml-6(v-show="$route.params.token === tokenId", v-if="!hideTimers")
@@ -67,6 +67,9 @@ export default {
     },
     auctionIsActive () {
       return this.auction && Number(this.auction.firstBidTime) && !this.auctionEnded
+    },
+    auctionIsReleased () {
+      return !this.releaseTime || (this.releaseTime && this.releaseTimerEnded)
     },
     expiration () {
       const auctionDoc = this.$store.getters['prismic/auctions'].find(doc => doc.uid === this.tokenId)
