@@ -1,6 +1,6 @@
 import debounce from 'lodash/debounce'
 import { exception } from 'vue-gtag'
-const deployBlock = 12088025
+const deployBlock = process.env.NODE_ENV === 'development' ? 0 : 12088025
 
 export default {
   namespaced: true,
