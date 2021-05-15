@@ -87,9 +87,7 @@ export default {
         // maybe ended ?
         if (auction && !auction.exists) {
           const ended = await dispatch('getAuctionsEnded')
-          console.log('endedAuctions', ended)
           auction = ended.find(auc => auc._tokenId === token)
-          console.log('ended?', auction)
         }
 
         return auction
