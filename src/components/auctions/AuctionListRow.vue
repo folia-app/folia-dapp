@@ -29,7 +29,7 @@
         //- template(v-else-if="releaseTime")
 
         //- (chevron)
-        .h-4.w-4.border-t.border-r.transform.rotate-45.border-white.ml-6(v-if="!releaseTime || releaseTimerEnded")
+        .h-4.w-4.border-t.border-r.transform.rotate-45.border-white.ml-6(v-if="auctionIsReleased")
         //- (timer)
         btn.px-8.pointer-events-none.-mr-4(v-else, size="small", theme="drkgray")
           countdown(:until="releaseTime", @ended="onReleaseTimerEnded", separator=" ")

@@ -4,7 +4,7 @@ export default {
   // generative: true,
   description: 'Emily Segal, 2021, GPT-3 Poem (PDF/HTML), from the series "Code of Holes" {{no}}.',
   // release: '03-05-2021 09:00:00 pm +01:00',
-  directory: 'https://cloudflare-ipfs.com/ipfs/QmXiad6QM7GSxtCqcQa7aYJKVkbb62Qm6CCTHVhPcEA2ZS/FLA11000000__Emily-Segal__Code-of-Holes__2021/HOLES.png',
+  directory: 'https://cloudflare-ipfs.com/ipfs/QmXiad6QM7GSxtCqcQa7aYJKVkbb62Qm6CCTHVhPcEA2ZS/FLA11000000__Emily-Segal__Code-of-Holes__2021',
   assetPath: '',
   tokens: {
     11000001: {

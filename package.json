@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "serve": "yarn lambda & vue-cli-service serve",
+    "serve": "vue-cli-service serve & yarn lambda",
     "build": "vue-cli-service build",
     "postbuild": "yarn lambda:build",
     "lint": "vue-cli-service lint",

@@ -1,3 +1,5 @@
+const plugin = require('tailwindcss/plugin')
+
 module.exports = {
   future: {
     removeDeprecatedGapUtilities: true,
@@ -333,6 +335,7 @@ module.exports = {
       33: '0.33',
       50: '0.5',
       75: '0.75',
+      90: '0.9',
       100: '1'
     },
     order: {
@@ -785,7 +788,17 @@ module.exports = {
     animation: ['responsive']
   },
   corePlugins: {},
-  plugins: [],
+  plugins: [
+    plugin(function ({ addUtilities }) {
+      const newUtilities = {
+        '.blend-difference': {
+          'mix-blend-mode': 'difference'
+        }
+      }
+
+      addUtilities(newUtilities, { variants: ['responsive'] })
+    })
+  ],
   purge: {
     // Learn more on https://tailwindcss.com/docs/controlling-file-size/#removing-unused-css
     enabled: process.env.NODE_ENV === 'production',

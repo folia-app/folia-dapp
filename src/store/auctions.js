@@ -87,7 +87,9 @@ export default {
         // maybe ended ?
         if (auction && !auction.exists) {
           const ended = await dispatch('getAuctionsEnded')
+          console.log('endedAuctions', ended)
           auction = ended.find(auc => auc._tokenId === token)
+          console.log('ended?', auction)
         }
 
         return auction
@@ -164,6 +166,26 @@ export default {
         console.error('@bid:', e)
         // track
         exception({ description: `@bid: ${e.message}`, fatal: false })
+        // TODO - more elegant UX error ?
+        if (e.message?.includes('!! ')) {
+          alert(e.message.replace('!! ', ''))
+        }
+      }
+    },
+
+    async endAuction ({ getters, dispatch, rootState }, { token }) {
+      try {
+        // go!
+        await getters.contract.methods
+          .endAuction(token)
+          .send({ from: rootState.address })
+
+        // refresh auction
+        await dispatch('get', { token, flush: true })
+      } catch (e) {
+        console.error('@endAuction:', e)
+        // track
+        exception({ description: `@endAuction: ${e.message}`, fatal: false })
         // TODO - more elegant UX error ?
         if (e.message?.includes('!! ')) {
           alert(e.message.replace('!! ', ''))

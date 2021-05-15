@@ -33,16 +33,23 @@
                     //- (image)
                     resp-img(v-else-if="metadata.image", :bg="true", :image="{src: metadata.image}", fit="object-contain object-center")
                     //- eye icon
-                    .absolute.bottom-0.right-0.pr-5.pb-2
-                      svg-eye.text-black
+                    .absolute.bottom-0.right-0.pr-5.pb-2.blend-difference
+                      svg-eye.text-white
 
-            .flex-1.p-7.lg_p-8.bg-black-a15.rounded-4xl
-              //- title
-              h2.font-bold
-                router-link(:to="{name: 'work'}") {{ metadata.name }}
-              //- description
-              div.text-xs.mt-2 {{ metadata.description }}
+            .flex-1.p-7.lg_p-8.bg-black-a15.rounded-4xl.flex.flex-col.justify-between
+              header
+                //- title
+                h2.font-bold
+                  router-link(:to="{name: 'work'}") {{ metadata.name }}
+                //- description
+                div.text-xs.mt-2 {{ metadata.description }}
               //- div Reserve Price: {{ weiToETH(auction.reservePrice) }} ETH
+              small.block.mt-6.text-xxs.text-right
+                //- TODO open sea logo?
+                a.opacity-90(:href="$store.getters.openSeaLink({ token: tokenId })", target="_blank", rel="noopener noreferrer") OpenSea
+                //- template(v-if="metadata.directory && metadata.directory.length")
+                  span.mx-2 &middot;
+                  a(:href="metadata.directory", target="_blank", rel="noopener noreferrer") IPFS
 
           //- (pre-auction)
           template(v-if="auction.amount === '0'")
@@ -78,9 +85,9 @@
                   div.text-sm {{ auctionEnded ? 'Auction Ended' : 'Auction Ends' }}
                   button.text-xxs.opacity-75.focus_outline-none.hover_opacity-100.px-4.-mx-4(@click="helpText = true") ?
                 .mt-2.w-full.flex.items-end.text-xl.lg_text-2xl
-                  countdown.font-bold.w-full.text-right.leading-none(:until="auctionEndTimeMs", :separator="' '", @ended="auctionEnded = true")
+                  countdown.font-bold.w-full.text-right.leading-none(:until="auctionEndTimeMs", :separator="' '", @ended="onTimerEnded")
               .flex-1.rounded-4xl.bg-black-a15.p-7.lg_p-8.flex.flex-col.justify-between.min-h-36.lg_min-h-0(:class="{'lg_max-w-1x2': auctionEnded}")
-                div.text-sm {{ auction.winner ? 'Winner' : 'Bidder' }}
+                div.text-sm {{ auctionEnded ? 'Winner' : 'Bidder' }}
                 //- bidder link
                 div.w-full.leading-none.flex.justify-end
                   a(:href="openSeaLink({ account: auction.bidder || auction.winner })", target="_blank", rel="noopener noreferrer")
@@ -94,12 +101,13 @@
             p.w-full.rounded-4xl.bg-black-a15.p-7.lg_p-8.min-h-56.text-sm.lg_hover_bg-black-a30 Folia uses a reserve price auction contract. The first bid at the reserve price triggers a 24-hour countdown. Any bids made in the last 15 minutes of the auction will extend the clock by 15 minutes. When time runs out, the highest bidder wins. Bids are held in escrow and will be refunded if a higher bid is made. Minimum bid increase is set at .1ETH.
 
         //- (bid)
-        .lg_sticky.bottom-0.left-0.w-full.p-6.pb-56.lg_p-10.text-xl.select-none
-          //- (bid)
-          template(v-if="isActive")
-            .bg-red.backdrop-blurff.rounded-4xl
-              .bg-black-a30.rounded-4xl.p-5.lg_p-6
-                .flex.flex-wrap.w-full.group
+        .bottom-0.left-0.w-full.p-6.pb-56.lg_p-10.text-xl.select-none(:class="{'lg_sticky': isActive}", v-if="auction && !auction.winner")
+
+          .backdrop-blurff.rounded-4xl(:class="{'bg-red': isActive}")
+            .bg-black-a30.rounded-4xl.p-5.lg_p-6
+              .flex.flex-wrap.w-full.group
+                //- (bid)
+                template(v-if="isActive")
                   //- input
                   btn.flex-1.px-6.lg_px-10(size="large", theme="darken", @click="$refs.input.focus()")
                     input.w-full.text-center.focus_outline-none(ref="input", v-model="bidETH", type="number", :min="weiToETH(auction.reservePrice)", required, step="0.1", size="1", min="bidStepETH")
@@ -113,6 +121,11 @@
                   //- bid btn
                   button.w-full.block.focus_outline-none.text-xl.font-bold(@click="bid")
                     btn.tracking-wide.px-10.lg_px-16(size="large", theme="darkener") BID
+
+                //- (end/claim)
+                template(v-else-if="auction && !auction.winner")
+                  button.w-full.block.focus_outline-none.text-xl.font-bold(@click="endAuction")
+                    btn.tracking-wider.px-10.lg_px-16(size="large", theme="darkener") {{ auction.bidder === address ? 'CLAIM' : 'END' }}
 
           //- (enquire btn)
           a.w-full.sm_flex-1.block.focus_outline-none.text-xl.font-bold.rounded-full.bg-gray-800(v-if="expired", href="mailto:info@folia.app?subject=2000 Cliparts", target="_blank", rel="noopener noreferrer")
@@ -194,6 +207,11 @@ export default {
       await this.$store.dispatch('auctions/bid', { token: this.tokenId, wei: this.ethToWei(this.bidETH) })
     },
 
+    async endAuction () {
+      await this.$store.dispatch('auctions/endAuction', { token: this.tokenId })
+      this.getAuction()
+    },
+
     listenToContract () {
       if (this.reserveAuctionContract && !this.listening && !this.auctionEnded) {
         // new bid !
@@ -211,6 +229,11 @@ export default {
         this.listening = true
         console.log('listening!')
       }
+    },
+
+    onTimerEnded () {
+      this.getAuction()
+      // will determine if auction truly ended or extended in last minuted...
     },
 
     onAuctionEvent (event) {

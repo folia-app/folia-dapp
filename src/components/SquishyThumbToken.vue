@@ -43,7 +43,7 @@
         btn.lg_px-5.lg_hover_bg-black-a15(theme="none", size="small") {{ userIsOwner ? 'You' : addrShort(owner) }}
 
     //- open viewer (outer)
-    button.absolute.z-20.bottom-0.right-0.lg_py-3.lg_px-4.lg_opacity-0.lg_group-hover_opacity-100.focus_outline-none(slot="outer", v-if="!token.link", @click="openViewer", v-show="!opened", :class="{'hidden lg_block': !token.drc}", style="mix-blend-mode:difference")
+    button.absolute.z-20.bottom-0.right-0.lg_py-3.lg_px-4.lg_opacity-0.lg_group-hover_opacity-100.focus_outline-none.blend-difference(slot="outer", v-if="!token.link", @click="openViewer", v-show="!opened", :class="{'hidden md_block': !is3D}")
       btn.px-6.lg_hover_bg-gray-900.flex.items-center.text-white(size="small", theme="none")
         span.mr-3.pt-1.text-xs(v-if="is3D") 3D
         svg-eye
