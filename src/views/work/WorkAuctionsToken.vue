@@ -98,7 +98,7 @@
 
           //- (help text)
           .flex.px-6.lg_px-10(v-show="helpText", @click="helpText = false", style="cursor:n-resize")
-            p.w-full.rounded-4xl.bg-black-a15.p-7.lg_p-8.min-h-56.text-sm.lg_hover_bg-black-a30 Folia uses a reserve price auction contract. The first bid at the reserve price triggers a 24-hour countdown. Any bids made in the last 15 minutes of the auction will extend the clock by 15 minutes. When time runs out, the highest bidder wins. Bids are held in escrow and will be refunded if a higher bid is made. Minimum bid increase is set at .1ETH.
+            p.w-full.rounded-4xl.bg-black-a15.p-7.lg_p-8.min-h-56.text-sm.lg_hover_bg-black-a30 Folia uses a reserve price auction <a :href="etherscanContractUrl" class="border-b border-dashed" target="_blank" rel="noopener noreferrer">contract</a>. The first bid at the reserve price triggers a 24-hour countdown. Any bids made in the last 15 minutes of the auction will extend the clock by 15 minutes. When time runs out, the highest bidder wins. Bids are held in escrow and will be refunded if a higher bid is made. Minimum bid increase is set at .1ETH.
 
         //- (bid)
         .bottom-0.left-0.w-full.p-6.pb-56.lg_p-10.text-xl.select-none(:class="{'lg_sticky': isActive}", v-if="auction && !auction.winner")
@@ -115,9 +115,9 @@
                   btn.px-8.lg_w-48.lg_group-hover_hidden.pointer-events-none(size="large", theme="darken") ETH
                   //- (+/-)
                   .flex.lg_hidden.lg_group-hover_flex
-                    btn.w-20.lg_w-24.flex.justify-center.items-center.lg_hover_bg-gray-a30(size="large", theme="darken", @click="decreaseBid")
+                    btn.w-20.h-20.lg_h-24.lg_w-24.flex.justify-center.items-center.lg_hover_bg-gray-a30(size="none", theme="darken", @click="decreaseBid")
                       .h-px.bg-current(style="width:0.55em")
-                    btn.w-20.lg_w-24.flex.justify-center.items-center.lg_hover_bg-gray-a30(size="large", theme="darken", @click="increaseBid") +
+                    btn.w-20.h-20.lg_h-24.lg_w-24.flex.justify-center.items-center.lg_hover_bg-gray-a30(size="none", theme="darken", @click="increaseBid") +
                   //- bid btn
                   button.w-full.block.focus_outline-none.text-xl.font-bold(@click="bid")
                     btn.tracking-wide.px-10.lg_px-16(size="large", theme="darkener") BID
@@ -180,6 +180,10 @@ export default {
     },
     isActive () {
       return this.auctionEnded !== true && !this.expired
+    },
+    etherscanContractUrl () {
+      const address = this.$store.getters['auctions/contract']?._address
+      return address && `https://etherscan.io/address/${address}`
     }
   },
   methods: {
