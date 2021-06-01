@@ -4,8 +4,13 @@
     figure.absolute.overlay(:style="{background: slice.primary.slide_bg_color}")
       //- (image / video-poster)
       img.absolute.overlay(v-if="slice.primary.image && slice.primary.image.url && !videoAutoplayed", :src="slice.primary.image.url", :alt="slice.primary.image.alt", :style="slice.primary.style_inline", :class="mediaClasses")
+
+      //- (iframe)
+      template(v-if="slice.primary.iframe")
+        transition(name="fadelate")
+          iframe.absolute.overlay.pointer-events-none(v-if="isActive", :src="slice.primary.iframe")
       //- (video)
-      video.absolute.overlay(v-if="slice.primary.media && slice.primary.media.url", :src="slice.primary.media.url", muted, ref="video", playsinline, loop, :style="slice.primary.style_inline", @load="onVideoLoad", :class="mediaClasses", @playing="videoAutoplayed = true")
+      video.absolute.overlay(v-else-if="slice.primary.media && slice.primary.media.url", :src="slice.primary.media.url", muted, ref="video", playsinline, loop, :style="slice.primary.style_inline", @load="onVideoLoad", :class="mediaClasses", @playing="videoAutoplayed = true")
       //- (blur?)
       //- .absolute.overlay(:style="{backdropFilter: `blur(12px)`}")
 
@@ -36,7 +41,7 @@
       //- prismic-link.flex.flex-wrap.justify-start.group-off.mr-20(:field="slice.primary.link", :linkResolver="linkResolver", @click.native.stop)
       .-mt-px(v-for="(chunk, i) in slice.primary.title.split(' | ')", :class="{'w-full md_w-auto': i < slice.primary.title.split(' | ').length - 1, 'hidden md_block': !isNaN(chunk)}")
         prismic-link.flex(:field="slice.primary.link", :linkResolver="linkResolver", @click.native.stop)
-          btn.px-8.lg_px-10.whitespace-no-wrap.backdrop-blur {{ chunk }}
+          btn.px-8.lg_px-10.whitespace-no-wrap.backdrop-blur.bg-gray-700-a15 {{ chunk }}
           //-
             btn.px-10 {{ $store.getters.workId(doc.uid, true) }}
             .w-full.md_w-0
@@ -49,7 +54,7 @@
       //- 1. custom link
       template(v-if="slice.primary.button_link.link_type !== 'Any'")
         prismic-link.ml-auto(:field="slice.primary.button_link", :linkResolver="linkResolver", @click.stop)
-          btn.px-12.bg-black-a03.backdrop-blur {{ slice.primary.button_text || 'LINK' }}
+          btn.px-12.bg-black-a03.backdrop-blur.bg-gray-700-a15 {{ slice.primary.button_text || 'LINK' }}
       //- 2. sold out
       template(v-else-if="isSold")
         sold-out-dot.ml-auto.mr-1.md_-mr-2
@@ -61,7 +66,7 @@
       //- 4. buy btn
       template(v-else-if="work")
         button.ml-auto.focus_outline-none(@click.stop="buy")
-          btn.px-16.bg-black-a03.backdrop-blur BUY
+          btn.px-16.bg-gray-700-a15.backdrop-blur BUY
 
       //- .group
         span.group-hover_hidden.block.h-8.w-8.rounded-full.bg-red-duller
@@ -85,7 +90,8 @@ export default {
   props: {
     slice: { type: Object, default: () => ({}) },
     doc: { type: Object, default: undefined },
-    isCarousel: { type: Boolean, default: false }
+    isCarousel: { type: Boolean, default: false },
+    isActive: { type: Boolean, default: false }
   },
   data () {
     return {
@@ -197,4 +203,14 @@ export default {
 </script>
 
 <style>
+.fadelate-enter-active{
+  transition: none;
+}
+/* fade/leave after slides off */
+.fadelate-leave-active{
+  transition:  opacity 0 1000ms;
+}
+.fadelate-leave-to{
+  opacity: 0;
+}
 </style>

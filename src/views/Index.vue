@@ -43,7 +43,7 @@
             //- slides...
             transition-group(:name="carouselEnabled ? 'slide' : 'none'")
               figure.absolute.overlay(v-for="(slice, i) in home.landing", v-show="current === i", :key="i")
-                landing-slide-work(:slice="slice", @next="carouselEnabled && nextSlide(false)", :isCarousel="carouselEnabled")
+                landing-slide-work(:slice="slice", @next="carouselEnabled && nextSlide(false)", :isCarousel="carouselEnabled", :isActive="current === i")
 
           //- dots
           //- ul.absolute.bottom-0.left-0.w-full.flex.items-center.justify-center.pb-6(v-if="slides.length > 1")

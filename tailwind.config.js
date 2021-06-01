@@ -14,7 +14,7 @@ module.exports = {
     screens: {
       sm: '568px',
       md: '768px',
-      lg: '1024px',
+      lg: '1024px', // TODO - consider 960 for tiles to go 3col
       xl: '1440px'
     },
     spacing: {
@@ -90,6 +90,7 @@ module.exports = {
         900: '#171717',
         950: '#0D0D0D'
       },
+      'gray-700-a15': 'rgba(100,100,100,0.15)',
 
       yellow: 'yellow',
       red: 'red',
