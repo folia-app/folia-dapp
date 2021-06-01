@@ -17,7 +17,12 @@
     //- tap areas
     .absolute.overlay.flex
       //- open work
-      button.flex-1.block.cursor-pointer.focus_outline-none(@click.stop="$router.push(linkResolver(slice.primary.link))", aria-label="View")
+      .flex-1.block.cursor-pointer.relative(@click.stop)
+        //- (external)
+        prismic-link.absolute.overlay(v-if="slice.primary.link.url", :field="slice.primary.link", :linkResolver="linkResolver", aria-label="View")
+        //- (internal)
+        button.absolute.overlay.focus_outline-none(v-else, @click.stop="$router.push(linkResolver(slice.primary.link))", aria-label="View")
+
       //- (next slide)
       button.w-1x3.md_w-1x4.focus_outline-none(v-if="isCarousel", style="cursor:e-resize", aria-label="Next Slide", @click.stop="$emit('next')")
 
@@ -40,7 +45,7 @@
       //- title
       //- prismic-link.flex.flex-wrap.justify-start.group-off.mr-20(:field="slice.primary.link", :linkResolver="linkResolver", @click.native.stop)
       .-mt-px(v-for="(chunk, i) in slice.primary.title.split(' | ')", :class="{'w-full md_w-auto': i < slice.primary.title.split(' | ').length - 1, 'hidden md_block': !isNaN(chunk)}")
-        prismic-link.flex(:field="slice.primary.link", :linkResolver="linkResolver", @click.native.stop)
+        prismic-link.flex(:field="slice.primary.link", :linkResolver="linkResolver", @click.stop)
           btn.px-8.lg_px-10.whitespace-no-wrap.backdrop-blur.bg-gray-700-a15 {{ chunk }}
           //-
             btn.px-10 {{ $store.getters.workId(doc.uid, true) }}
@@ -177,6 +182,12 @@ export default {
     onVideoLoad ($event) {
       // custom playback rate?
       $event.target.playbackRate = this.slice.primary.video_speed || 1
+    },
+    openLink () {
+      if (this.slice.primary.link?.url) {
+        const url = linkResolver(this.slice.primary.link)
+        console.log(url)
+      }
     }
   },
 
