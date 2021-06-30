@@ -1,5 +1,8 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+// import Folia from 'folia-contracts/build/contracts/Folia.json'
+// import FoliaControllerV2 from 'folia-contracts/build/contracts/FoliaControllerV2.json'
+// import ReserveAuction from 'folia-contracts/build/contracts/ReserveAuction.json'
 import { Folia, FoliaControllerV2, ReserveAuction } from 'folia-contracts'
 import Web3 from 'web3'
 import Web3Modal from 'web3modal'
