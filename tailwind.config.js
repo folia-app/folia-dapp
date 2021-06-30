@@ -261,6 +261,7 @@ module.exports = {
     },
     lineHeight: {
       none: '1',
+      // tighter: '1.125',
       tight: '1.25',
       snug: '1.375',
       normal: '1.5',
@@ -365,6 +366,7 @@ module.exports = {
       ...theme('spacing'),
       full: '100%',
       'ar-1x1': '100%',
+      'ar-2x1': 'calc(100% * 1/2)',
       '1x4': '25%',
       '1x5': '22%'
     }),

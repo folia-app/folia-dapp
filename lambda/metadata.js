@@ -1,5 +1,5 @@
 import * as works from './works' // works.FLA1000000, ...
-import { Folia } from 'folia-contracts'
+import Folia from 'folia-contracts/build/contracts/Folia.json'
 // import Web3 from 'web3'
 import Eth from 'web3-eth'
 require('dotenv').config()
@@ -22,7 +22,8 @@ exports.handler = async function (event, context) {
     const tokenId = event.path.substr(event.path.lastIndexOf('/') + 1) // 1000005
     const workId = Math.floor(tokenId / 1000000) // 1
     const workNamespace = workId * 1000000 // 1000000
-    const ignoreIsOwned = event.queryStringParameters.viewer === '1'
+    const isViewer = event.queryStringParameters.viewer === '1'
+    const ignoreIsOwned = isViewer
 
     // find work
 
@@ -58,7 +59,7 @@ exports.handler = async function (event, context) {
       }
     }
 
-    // !! not minted (skip if site viewer mode)
+    // !! not minted (or skip if folia viewer mode)
     if (work.generative || ignoreIsOwned !== true) {
       // temp lazy disable!!
       if (ignoreIsOwned === 'imlazy') {
@@ -124,7 +125,8 @@ exports.handler = async function (event, context) {
 
       // optimized for folia site
       animation_url_optim: asset(work, tokenId, 'animation_url_optim'),
-      animation_loop: token.animation_loop,
+      animation_loop: token.animation_loop ?? work.animation_loop ?? false,
+      background: token.background ?? work.background ?? '',
 
       youtube_url: '',
 

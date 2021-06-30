@@ -67,8 +67,8 @@
             template(v-if="slice.slice_type === 'tile'")
               //- items...
               prismic-link.w-full.sm_w-1x2.md_w-1x3.xl_w-1x4.bg-yellow.lg_hover_shadow-inner-red.-shadow-md.md_shadow-lg(:field="slice.primary.link", :linkResolver="linkResolver", :class="{'md_z-10': i % 2 === 0}")
-                .pb-full.relative
-                  rich-text.absolute.overlay.p-8.lg_p-12.font-karrik.text-2xl.sm_text-lg.lg_text-2xl(:field="slice.primary.title")
+                .pb-ar-2x1.sm_pb-full.relative
+                  rich-text.absolute.overlay.p-8.lg_p-12.font-karrik.text-2xl.sm_text-lg.lg_text-2xl.leading-tight(:field="slice.primary.title")
             //- slice: works grid
             //- template(v-if="slice.slice_type === 'works_grid'")
               .slice-works-grid.w-full.flex.flex-wrap

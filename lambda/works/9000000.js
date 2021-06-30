@@ -14,6 +14,7 @@ export default {
   sha256: {
     'FLA9000001.mp4': '08a89678ec27cb063e37b20b29ab2867fbab149191949c65d21b955651e73817'
   },
+  background: '#fefefe',
   tokens: {
     9000001: asset
   }

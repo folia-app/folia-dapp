@@ -1,5 +1,5 @@
 import * as metadatas from './works' // works.FLA1000000, ...
-import { FoliaController } from 'folia-contracts'
+import FoliaControllerV2 from 'folia-contracts/build/contracts/FoliaControllerV2.json'
 // import Web3 from 'web3'
 import Eth from 'web3-eth'
 require('dotenv').config()
@@ -68,7 +68,7 @@ exports.handler = async function (event, context) {
     // tokens list
     let tokens = Object.keys(metadata.tokens) // [2000001, 2000002, ...]
 
-    // generative? >> only exposed what's been printed...
+    // generative? only exposed what's been printed...
     if (metadata.generative) {
       tokens = tokens.slice(0, Number(work.printed))
     }
@@ -107,8 +107,8 @@ async function getWorkFromContract (workId, networkId) {
   try {
     const eth = new Eth(infura[networkId])
     foliaControllerContract = new eth.Contract(
-      FoliaController.abi,
-      FoliaController.networks[networkId].address
+      FoliaControllerV2.abi,
+      FoliaControllerV2.networks[networkId].address
     )
     work = await foliaControllerContract.methods.works(workId).call()
     // work = { id: workId, ...work } // add id

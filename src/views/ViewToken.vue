@@ -1,12 +1,12 @@
 <template lang="pug">
-  .view-token.absolute.overlay.bg-black(@click="onBodyClick", :class="{'pointer-events-auto': visible}")
+  .view-token.absolute.overlay.bg-black(@click="onBodyClick", :class="{'pointer-events-auto': visible}", :style="{background: metadata && metadata.background}")
 
     //- media container
     .transition-opacity.duration-500.delay-500(:class="{'opacity-0': !visible}")
 
     //- video format
     template(v-if="videoUrl && !(metadata && metadata.iframe)")
-      figure.absolute.overlay.py-5.md_p-10.lg_p-20.xl_p-32.bg-gray-100off.bg-white.flex
+      figure.absolute.overlay.py-5.md_p-10.lg_p-20.xl_p-32.bg-gray-100off.bg-whiteff.flex
         .relative.w-full
           img.absolute.overlay.object-contain.object-center.transition.duration-500.opacity-0(:src="imageUrl", @load="$event => $event.target.style.opacity = 1")
           video.absolute.overlay.object-contain.object-center(ref="video", :src="videoUrl", playsinline, @contextmenu.prevent, @click="$event => $event.target.paused ? $event.target.play() : null", :loop="metadata && metadata.animation_loop", @playing="onVideoPlaying")

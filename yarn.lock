@@ -8182,9 +8182,9 @@ folder-walker@^3.2.0:
   dependencies:
     from2 "^2.1.0"
 
-"folia-contracts@github:folia-app/folia-contracts#e1cf5ba5d774216a56498d6082d5fc2bed5e3ba3":
+"folia-contracts@github:folia-app/folia-contracts#818cab4e9e09e24919929c104d908f03df031aa2":
   version "1.0.0"
-  resolved "https://codeload.github.com/folia-app/folia-contracts/tar.gz/e1cf5ba5d774216a56498d6082d5fc2bed5e3ba3"
+  resolved "https://codeload.github.com/folia-app/folia-contracts/tar.gz/818cab4e9e09e24919929c104d908f03df031aa2"
   dependencies:
     ethers "^5.0.19"
     openzeppelin-solidity "2.1.3"
