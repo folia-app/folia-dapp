@@ -177,6 +177,9 @@ export default {
       this.doc = await this.$store.dispatch('prismic/getWork', this.id)
       this.isReleased = this.$store.getters['prismic/isReleased']({ doc: this.doc })
       this.goToDefaultTab()
+      // TODO maybe set this globally in router.afterEach
+      // TODO ensure Info tab is always rendered for SEO
+      window.prerenderReady = true
     },
     fetchWork (flush) {
       return (!this.work || flush) && this.$store.dispatch('getWork', { id: this.id, flush })
