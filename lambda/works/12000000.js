@@ -2,7 +2,7 @@ export default {
   titlePattern: 'Chameleon {{no}}',
   editions: 256,
   generative: true,
-  description: 'Joan Heemskerk, \"Chameleon\", 2021, Video/MP4, Variable Edition of 256',
+  description: 'Joan Heemskerk, \"Chameleon\" ({{no}}), 2021, Video/MP4, Variable Edition of 256',
   // release: '03-05-2021 09:00:00 pm +01:00',
   // directory: 'https://folia.app/works/2',
   assetPath: '',
