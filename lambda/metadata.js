@@ -62,19 +62,19 @@ exports.handler = async function (event, context) {
     // !! not minted (or skip if folia viewer mode)
     if (work.generative || ignoreIsOwned !== true) {
       // temp lazy disable!!
-      if (ignoreIsOwned === 'imlazy') {
-        const owner = await getNFTOwnerByTokenId(tokenId, networkId)
-        console.log(owner)
-      }
-
-      // if (!owner) {
-      //   return {
-      //     statusCode: 200,
-      //     body: JSON.stringify({
-      //       message: 'Not yet minted'
-      //     })
-      //   }
+      // if (ignoreIsOwned === 'imlazy') {
+      const owner = await getNFTOwnerByTokenId(tokenId, networkId)
+      // console.log(owner)
       // }
+      
+      if (!owner) {
+        return {
+          statusCode: 200,
+          body: JSON.stringify({
+            message: 'Not yet minted'
+          })
+        }
+      }
     }
 
     // the sauce
