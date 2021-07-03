@@ -4,7 +4,7 @@
     //- media
     div(slot="media")
       //- loading icon
-      .absolute.overlay.pointer-events-none.flex.items-center
+      .absolute.overlay.pointer-events-none.flex.items-center.justify-center
         svg-eye.text-white.animation-flashing
       //- image
       resp-img.transition-opacity.duration-500(v-if="token.image && token.image.length",:bg="true", :image="{src: token.image}", :class="{'opacity-0ff': hover && token.drc}")
