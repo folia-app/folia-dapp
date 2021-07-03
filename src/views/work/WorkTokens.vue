@@ -136,8 +136,11 @@ export default {
     onEditionBought (event) {
       // re-fetch tokens if bought from current work
       if (event.returnValues?.workId === this.doc?.uid) {
-        this.getTokens()
-        this.$emit('newToken')
+        // delay in case media is being generated
+        setTimeout(() => {
+          this.getTokens()
+          this.$emit('newToken')
+        }, 3000)
       }
     },
     changeSort () {
