@@ -1,7 +1,7 @@
 <template lang="pug">
   .landing-slide-work.absolute.overlay.overflow-hidden.text-md.lg_text-base.xl_text-lg
-    //- media
-    figure.absolute.overlay(:style="{background: slice.primary.slide_bg_color}")
+    //- (media)
+    figure.absolute.overlay(:style="{background: slice.primary.slide_bg_color}", v-if="isActive || isActiveSibling")
       //- (image / video-poster)
       img.absolute.overlay(v-if="slice.primary.image && slice.primary.image.url && !videoAutoplayed", :src="slice.primary.image.url", :alt="slice.primary.image.alt", :style="slice.primary.style_inline", :class="mediaClasses")
 
@@ -10,21 +10,22 @@
         transition(name="fadelate")
           iframe.absolute.overlay.pointer-events-none(v-if="isActive", :src="slice.primary.iframe")
       //- (video)
-      video.absolute.overlay(v-else-if="slice.primary.media && slice.primary.media.url", :src="slice.primary.media.url", muted, ref="video", playsinline, loop, :style="slice.primary.style_inline", @load="onVideoLoad", :class="mediaClasses", @playing="videoAutoplayed = true")
+      video.absolute.overlay(v-else-if="slice.primary.media && slice.primary.media.url", :src="slice.primary.media.url", muted, ref="video", playsinline, loop, :style="slice.primary.style_inline", @load="onVideoLoad", :class="mediaClasses", @playing="videoAutoplayed = true", @timeupdate="onVideoTime", @ended="onVideoEnded")
       //- (blur?)
       //- .absolute.overlay(:style="{backdropFilter: `blur(12px)`}")
 
     //- tap areas
     .absolute.overlay.flex
       //- open work
-      .flex-1.block.cursor-pointer.relative(@click.stop)
+      //- .flex-1.block.cursor-pointer.relative(@click.stop)
         //- (external)
         prismic-link.absolute.overlay(v-if="slice.primary.link.url", :field="slice.primary.link", :linkResolver="linkResolver", aria-label="View")
         //- (internal)
         button.absolute.overlay.focus_outline-none(v-else, @click.stop="$router.push(linkResolver(slice.primary.link))", aria-label="View")
 
       //- (next slide)
-      button.w-1x3.md_w-1x4.focus_outline-none(v-if="isCarousel", style="cursor:e-resize", aria-label="Next Slide", @click.stop="$emit('next')")
+      button.w-1x2.focus_outline-none(v-if="isCarousel", style="cursor:w-resize", aria-label="Previous Slide", @click.stop="$emit('previous')")
+      button.w-1x2.focus_outline-none(v-if="isCarousel", style="cursor:e-resize", aria-label="Next Slide", @click.stop="$emit('next')")
 
     //- (play btn)
     .absolute.overlay.pointer-events-none.flex.items-center.justify-center(v-if="slice.primary.play_button")
@@ -96,7 +97,8 @@ export default {
     slice: { type: Object, default: () => ({}) },
     doc: { type: Object, default: undefined },
     isCarousel: { type: Boolean, default: false },
-    isActive: { type: Boolean, default: false }
+    isActive: { type: Boolean, default: false },
+    isActiveSibling: { type: Boolean, default: false }
   },
   data () {
     return {
@@ -183,12 +185,20 @@ export default {
       // custom playback rate?
       $event.target.playbackRate = this.slice.primary.video_speed || 1
     },
-    openLink () {
-      if (this.slice.primary.link?.url) {
-        const url = linkResolver(this.slice.primary.link)
-        console.log(url)
+    onVideoTime (e) {
+      if (this.isActive) {
+        this.$emit('progress', e.target.currentTime / e.target.duration)
       }
+    },
+    onVideoEnded () {
+      // this.$emit('ended')
     }
+    // openLink () {
+    //   if (this.slice.primary.link?.url) {
+    //     const url = linkResolver(this.slice.primary.link)
+    //     // console.log(url)
+    //   }
+    // }
   },
 
   // lifecycle
@@ -208,6 +218,11 @@ export default {
     },
     foliaControllerContract () {
       this.getWork()
+    },
+    isActive (active) {
+      if (this.$refs.video) {
+        return active ? this.play() : this.pause()
+      }
     }
   }
 }

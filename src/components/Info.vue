@@ -1,13 +1,13 @@
 <template lang="pug">
-  article#info.bg-white.text-black.flex.flex-col.justify-between
-    section.px-8.py-12.lg_px-16.lg_py-20
-      .text-red.text-2xl.md_text-3xl.lg_text-5xl.leading-normal
-        h2.text-red
-          | Folia is a space for exhibiting and collecting #[a.border-b-2.border-current.border-dotted.hover_border-solid(href="https://opensea.io/blog/guides/non-fungible-tokens/" target="_blank") NFTs]
-          | #[button.ml-3.inline-block.text-black.py-px.rounded-full.px-3.bg-gray-100.text-xs.hover_bg-gray-200.focus_outline-none(@click="more = true", v-show="!more", style="font-size:0.4em") •••]
+  article#info.bg-black.text-white.flex.flex-col.justify-between.border-t.border-gray-900
+    section.px-8.py-12.lg_px-16.lg_py-18
+      .text-red.text-5xl.md_text-6xl.leading-normal
+        h2.text-white
+          | Folia produces digital editions as #[a.border-b-2.border-gray-300.border-dotted.hover_border-solid(href="https://opensea.io/blog/guides/non-fungible-tokens/" target="_blank") NFTs]
+          | #[button.ml-3.inline-block.text-white.py-px.rounded-full.px-3.bg-gray-850.text-xs.hover_bg-gray-900.focus_outline-none(@click="more = true", v-show="!more", style="font-size:0.4em") •••]
 
         transition(name="fadeinonly")
-          ul.md_w-3x4.mt-6.text-gray-800.text-sm(v-show="more")
+          ul.md_w-3x4.mt-6.text-gray-200.text-sm(v-show="more")
             li.truncate(v-if="contractAddr")
               | Contract – #[a(:href="`https://etherscan.io/address/${contractAddr}`", target="_blank") {{ contractAddr }}]
             li proudly presented by #[a(href="https://bin.am", target="_blank", rel="noopener") Bin Studio]
@@ -18,28 +18,28 @@
               p Any Ethereum app (such as this one) can define its own token to use as currency, in place of <span class="sans">ETH</span>. These tokens conventionally have decimal values, making them <i>fungible</i>. But <i>non-fungible</i> tokens cannot be divided&mdash;and like a coin, can only have a one&nbsp;owner. Making them collectible.
             //- p.mt-1em ...
 
-    footer.flex.items-end.justify-between.mt-4
+    footer.flex.items-end.justify-between.mt-4.text-gray-200
       ul.flex.flex-wrap.w-3x4.text-xs.p-6.pb-10.lg_p-10
         li.w-full.sm_w-auto.flex
           a(href="mailto:info@folia.app", target="_blank", rel="noopener")
-            btn.px-10(theme="ltgray") info@folia.app
+            btn.px-10(theme="drkgray") email
         li
           a(href="https://twitter.com/foliafoliafolia", target="_blank", rel="noopener")
-            btn.px-10(theme="ltgray") twitter
+            btn.px-10(theme="drkgray") twitter
         li
           a(href="https://t.me/folia_app", target="_blank", rel="noopener")
-            btn.px-10(theme="ltgray") telegram
+            btn.px-10(theme="drkgray") telegram
         li
           a(href="https://discord.gg/8RA49VdraZ", target="_blank", rel="noopener")
-            btn.px-10(theme="ltgray") discord
+            btn.px-10(theme="drkgray") discord
         li
           a(href="https://folia.substack.com", target="_blank", rel="noopener")
-            btn.px-10(theme="ltgray") substack
+            btn.px-10(theme="drkgray") newsletter
         li
           a(href="https://github.com/folia-app", target="_blank", rel="noopener noreferrer")
-            btn.px-10(theme="ltgray") github
+            btn.px-10(theme="drkgray") github
 
-      svg-fleuron.text-black.h-12.m-12
+      //- svg-fleuron.text-white.h-12.m-12
 
     //- nav.info__nav.font-sans.text-right.md_m-8
       button.info__more-btn.cursor-pointer.focus_outline-none(@click="toggleMore", :class="{'info__more-btn--open': more}") {{more ? 'CLOSE' : 'INFO'}}

@@ -22,23 +22,19 @@
 
       //- MAIN
       main.index.relative.min-h-screen.transition.duration-500.transform.origin-left(:class="panelOpen ? panelWidths[1] : ''")
-        //- HEADER
-        header.absolute.top-0.left-0.w-full.z-20.text-white.pointer-events-none(style="mix-blend-mode:difference")
-          .absolute.top-0.left-0.w-full
-            .flex.w-full.justify-between.items-center
-              //- logo
-              .p-10.md_px-12.pointer-events-auto
-                button.focus_outline-none(@click="onLogoClick", aria-label="About Folia")
-                  logo.block.text-white.h-12.cursor-poiner(aria-label="Folia")
-                //- svg-fleuron.block.text-white(style="height:3rem")
-              div.pointer-events-auto
-                button.p-10.focus_outline-none(v-if="!address", @click="$store.dispatch('connect')") Connect
-                button.p-10.focus_outline-none.relative.group(v-else, @click="$store.dispatch('disconnect')")
-                  span.group-hover_opacity-0.truncate {{ address.slice(0, 6) + '...' + address.slice(-4) }}
-                  span.hidden.group-hover_block.absolute.overlay.text-right.p-10 Disconnect
 
         //- landing
         landing(ref="landing")
+
+        //- .bg-white.text-black.p-8.lg_p-12.font-karrik.text-2xl.sm_text-lg.lg_text-4xl.leading-tight(style="backgroundff: #BDECC9")
+          div
+            | Harm van den Dorpel
+            | <br>Mutant Garden
+
+        info.w-full.min-h-100vw.sm_min-h-50vw.lg_min-h-33vw(v-show="infoVisible && workDocs.length > 0")
+        //- .bg-black.text-white.p-8.lg_p-12.font-karrik.text-2xl.sm_text-lg.lg_text-4xl.leading-tight(style="backgroundff: #BDECC9; padding-bottom: 6em; font-size: 60px")
+          div
+            | Folia produces digital editions as NFTs
 
           //- dots
           //- ul.absolute.bottom-0.left-0.w-full.flex.items-center.justify-center.pb-6(v-if="slides.length > 1")
@@ -55,11 +51,11 @@
               slice-announcement.w-full(:slice="slice")
 
             //- auctions
-            template(v-if="slice.slice_type === 'auctions'")
+            //- template(v-if="slice.slice_type === 'auctions'")
               slice-auctions.w-full(:slice="slice", :active="$route.name === 'index'")
 
             //- tiles
-            template(v-if="slice.slice_type === 'tile'")
+            //- template(v-if="slice.slice_type === 'tile'")
               //- items...
               prismic-link.w-full.sm_w-1x2.md_w-1x3.xl_w-1x4.bg-yellow.lg_hover_shadow-inner-red.-shadow-md.md_shadow-lg(:field="slice.primary.link", :linkResolver="linkResolver", :class="{'md_z-10': i % 2 === 0}")
                 .pb-ar-2x1.sm_pb-full.relative
@@ -86,8 +82,55 @@
                     span.group-hover_hidden Collectors
                     span.hidden.group-hover_inline Coming Soon
 
+        div.w-full.flex.flex-col-reverse.lg_flex-row-reverse.bg-white
+
+          .w-full.lg_w-1x2.bg-white.text-black.p-8.lg_p-12.font-karrik.text-4xl.lg_text-6xl.leading-tight.flex.flex-col.justify-between(style="backgroundff: #BDECC9")
+            div
+              | Mutant Garden, Harm van den Dorpel – one 'mutant' seeded per block and changes over time
+            div.pt-64.flex.justify-between.items-end
+              .font-sans.text-4xl.lg_text-5xl 64/512
+              div.-mb-1
+                btn.font-sans.text-md.lg_text-xl.px-12(theme="darken") ADOPT
+          figure.w-full.lg_w-1x2.relative.bg-white
+            .pb-ar-1x1
+            video.absolute.overlay.object-cover(src="https://folia-dev.cdn.prismic.io/folia-dev/3f0510e2-b508-4c98-9251-94c570808920_mutant-garden-seeder-video-1-1440p.mp4", loop, playsinline, autoplay)
+
+        //- landing
+
+        div.w-full.lg_flex.flex-row-reverse
+          figure.lg_w-1x2.bg-gray-900
+            .pb-ar-1x1
+
+          .lg_w-1x2.bg-black.text-white.p-8.lg_p-12.font-karrik.text-4xl.lg_text-6xl.leading-tight.flex.flex-col.justify-between(style="backgroundff: #BDECC9")
+            div
+              | Exodus 2, David Rudnick — 19 palindrome haikus for auction on a 40 year time span
+            div.pt-64.flex.justify-between.items-center
+              .font-sans.text-4xl.lg_text-5xl 12/19
+              div.lg_-mb-2
+                btn.font-sans.text-base.lg_text-xl.px-12(theme="drkgray") WAIT
+
+        //- https://folia-dev.cdn.prismic.io/folia-dev/06b1d4e6-84e0-4c4d-8a51-cd47918b2724_go0xb113a7b59e7cd692e2cd5cc50ed14ea0b7a230e4.mp4
+        div.w-full.flex.flex-col-reverse.lg_flex-row-reverse
+
+          .w-full.lg_w-1x2.bg-yellow.text-black.p-8.lg_p-12.font-karrik.text-4xl.lg_text-6xl.leading-tight.flex.flex-col.justify-between(style="backgroundff: #BDECC9")
+            div
+              | Joan Heemskerk's Chameleon adapts to your wallet
+            div.pt-64.flex.justify-between.items-end
+              .font-sans.text-3xl.lg_text-5xl 104/256
+              div.-mb-1
+                router-link(to="/works/12")
+                  btn.font-sans.text-md.lg_text-xl.px-12(theme="darken") BUY
+
+          figure.w-full.lg_w-1x2
+            video(src="https://folia-dev.cdn.prismic.io/folia-dev/06b1d4e6-84e0-4c4d-8a51-cd47918b2724_go0xb113a7b59e7cd692e2cd5cc50ed14ea0b7a230e4.mp4", loop, playsinline, autoplay, muted)
+
+        //- landing
+
         //- info
-        info.w-full.min-h-100vw.sm_min-h-50vw.lg_min-h-33vw(v-show="infoVisible && workDocs.length > 0")
+        footer.w-full.min-h-100vw.sm_min-h-50vw.lg_min-h-33vw.flex.flex-col.justify-end.bg-white.text-black.text-sm
+          .flex.justify-between.p-6.pb-10.lg_p-10
+            div hi
+            div bye
 
 </template>
 
@@ -148,9 +191,6 @@ export default {
     linkResolver,
     next () {
       this.current = this.current + 1 === this.workDocs.length ? 0 : this.current + 1
-    },
-    onLogoClick () {
-      document.getElementById('info').scrollIntoView({ behavior: 'smooth' })
     },
     closeViewer () {
       return lastRt?.name ? this.$router.go(-1) : this.$router.push('/')
