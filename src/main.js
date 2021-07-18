@@ -38,6 +38,33 @@ Vue.use(PrismicVue, {
 
 Vue.use(VueMeta)
 
+/**
+ * Global directive to observe element visibility
+ * <div v-intersects="0.1" @visible, @hidden>
+**/
+Vue.directive('intersects', {
+  inserted: function (el, binding, vnode) {
+    const threshold = binding.value || 0.5 // v-observe="0.1"
+    const onIntersection = entries => {
+      const eventName = entries[0].isIntersecting ? 'visible' : 'hidden'
+      // emit...
+      if (vnode.componentInstance) {
+        // component ?
+        vnode.componentInstance.$emit(eventName) // , {detail: eventDetail}); // use {detail:} to be uniform
+      } else {
+        // vanilla DOM element
+        vnode.elm.dispatchEvent(new CustomEvent(eventName)) // , {detail: eventDetail}));
+      }
+    }
+    // observe!
+    el.observer = new IntersectionObserver(onIntersection, { threshold })
+    el.observer.observe(el)
+  }
+  // unbind: function (el) {
+  //   el.observer.unobserve(el)
+  // }
+})
+
 const pwd = async cb => {
   // disabled
   if (!process.env.VUE_APP_SITE_PWD_ENABLED) {
@@ -67,7 +94,7 @@ pwd(() => {
     template: '<App/>',
     mounted () {
       analytics()
-      console.log('mntd')
+      // console.log('mntd')
     }
   })
 })
