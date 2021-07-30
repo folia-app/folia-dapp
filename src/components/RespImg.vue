@@ -15,7 +15,8 @@ export default {
     fit: { type: String, default: 'object-cover object-center' },
     lazy: { type: Boolean, default: true },
     anim: { type: Boolean, default: true }, // animate lazyload
-    lazyBuffer: { type: String, default: '500' }
+    lazyBuffer: { type: String, default: '500' },
+    rawSrc: { type: Boolean, default: false }
   },
   data () {
     return {
@@ -35,10 +36,15 @@ export default {
     //   return this.image?.dimensions || { height: this.image?.height, width: this.image?.width }
     // }
   },
+  methods: {
+    setThumb () {
+      // optimized image size, based on el width (must be rendered)
+      this.thumb = this.rawSrc ? this.src : this.resize(this.src, [this.$el.offsetWidth])
+    }
+  },
   mounted () {
     this.dims = { height: this.$el.offsetHeight, width: this.$el.offsetWidth }
-    // optimized image size, based on el width (must be rendered)
-    this.thumb = this.resize(this.src, [this.$el.offsetWidth])
+    this.setThumb()
   }
 }
 
