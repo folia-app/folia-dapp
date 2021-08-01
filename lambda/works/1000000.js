@@ -14,16 +14,10 @@ export default {
       image: 'https://gateway.pinata.cloud/ipfs/QmesHGK1vaRKoGE1YXYqeQk8xPNXK9UjRp6echFyucKoam',
       animation_url: 'https://gateway.pinata.cloud/ipfs/QmSWUxcZUznyWts5GPVUMgk1GT81ymvepQozkhxuzCV18E/FLA1000000__petra-cortright-james-whipple__untitled-01__2021.mp4',
       animation_url_optim: 'https://gateway.pinata.cloud/ipfs/QmQ9hMoBhu3DEQE4gkrUJG2S7i2isRJKzgSqK7aA8p81nL',
-      attributes: [
-        {
-          trait_type: 'Series',
-          value: 'Untitled'
-        },
-        {
-          trait_type: 'Artist',
-          value: 'Petra Cortright & James Whipple'
-        }
-      ]
+      properties: {
+        series: 'Untitled',
+        artist: 'Petra Cortright & James Whipple'
+      }
     }
   }
 }
