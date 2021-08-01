@@ -1547,7 +1547,8 @@ export default {
     12000256: {
       image: '12000256.png',
       animation_url: '12000256.mp4',
-      animation_thumb: '12000256.mp4'
+      animation_thumb: '12000256.mp4',
+      properties
     }
   }
 }
