@@ -66,7 +66,7 @@ exports.handler = async function (event, context) {
       const owner = await getNFTOwnerByTokenId(tokenId, networkId)
       // console.log(owner)
       // }
-      
+
       if (!owner) {
         return {
           statusCode: 200,
@@ -102,6 +102,7 @@ exports.handler = async function (event, context) {
       image_url: asset(work, tokenId, 'image'),
 
       // opensea
+      attributes: token.attributes || [],
       // attributes: [
       //   {
       //     trait_type: 'artist',
