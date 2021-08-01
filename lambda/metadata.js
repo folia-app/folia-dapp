@@ -102,7 +102,8 @@ exports.handler = async function (event, context) {
       image_url: asset(work, tokenId, 'image'),
 
       // opensea
-      attributes: token.attributes || [],
+      // attributes: token.attributes || [],
+      properties: token.properties || [],
       // attributes: [
       //   {
       //     trait_type: 'artist',
