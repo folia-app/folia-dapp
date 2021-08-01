@@ -4,7 +4,7 @@ export default {
   directory: 'https://gateway.pinata.cloud/ipfs/QmSWUxcZUznyWts5GPVUMgk1GT81ymvepQozkhxuzCV18E',
   assetPath: '',
   release: '02-20-2021 08:00:00 pm +01:00',
-  description: 'Petra Cortright & James Whipple, "Untitled 01", 2021, Video/MP4, 1:33, 1810x1368 pixels, 56.4MB, Edition of 1',
+  description: 'Petra Cortright (b. 1986), James Whipple (b. 1985), "Untitled 01", 2021, Video/MP4, 1:33, 1810x1368 pixels, 56.4MB, Edition of 1',
   background: '#fefefe',
   sha256: {
     'FLA1000000__petra-cortright-james-whipple__untitled-01__2021.mp4': 'eb9a3867b3cc5dc3a42a8a0076ad16b06f83106fe5be643d55e118c8e4f87dfc'
