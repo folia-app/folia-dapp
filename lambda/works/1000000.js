@@ -15,8 +15,8 @@ export default {
       animation_url: 'https://gateway.pinata.cloud/ipfs/QmSWUxcZUznyWts5GPVUMgk1GT81ymvepQozkhxuzCV18E/FLA1000000__petra-cortright-james-whipple__untitled-01__2021.mp4',
       animation_url_optim: 'https://gateway.pinata.cloud/ipfs/QmQ9hMoBhu3DEQE4gkrUJG2S7i2isRJKzgSqK7aA8p81nL',
       properties: {
-        series: 'Untitled',
-        artist: 'Petra Cortright & James Whipple'
+        artist: 'Petra Cortright & James Whipple',
+        series: 'Untitled'
       }
     }
   }
