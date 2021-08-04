@@ -31,7 +31,8 @@ export default {
     10000003: {
       directory: 'https://gateway.pinata.cloud/ipfs/QmRdnwup3tbgwYodnxN9oaHoYCRYaz4jFTyN8sZbrNRM5m/10000003__Billy-Bultheel__Songs-for-the-Contract__2021',
       image: 'https://cloudflare-ipfs.com/ipfs/QmRdnwup3tbgwYodnxN9oaHoYCRYaz4jFTyN8sZbrNRM5m/10000003__Billy-Bultheel__Songs-for-the-Contract__2021/orb.jpg',
-      animation_url: 'https://gateway.pinata.cloud/ipfs/QmRdnwup3tbgwYodnxN9oaHoYCRYaz4jFTyN8sZbrNRM5m/10000003__Billy-Bultheel__Songs-for-the-Contract__2021/thumb.mp4',
+      animation_url: 'https://songs-for-the-contract.folia.app/3',
+      // animation_url: 'https://gateway.pinata.cloud/ipfs/QmRdnwup3tbgwYodnxN9oaHoYCRYaz4jFTyN8sZbrNRM5m/10000003__Billy-Bultheel__Songs-for-the-Contract__2021/thumb.mp4',
       animation_thumb: 'https://folia-bultheel.fra1.cdn.digitaloceanspaces.com/orbs/drum%20duet%203.mp4',
       iframe: 'https://songs-for-the-contract.folia.app/3',
       properties
