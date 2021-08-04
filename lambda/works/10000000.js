@@ -6,7 +6,7 @@ const properties = {
 export default {
   titlePattern: 'Songs for the Contract {{no}}',
   editions: 9,
-  generative: true,
+  generative: false,
   description: 'Billy Bultheel (b. 1987), "Songs for the Contract {{no}}", 2021, Video Sphere (.MP4), Variable Edition of 9',
   // release: '03-05-2021 09:00:00 pm +01:00',
   directory: null,
