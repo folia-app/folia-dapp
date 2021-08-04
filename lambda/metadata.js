@@ -172,15 +172,23 @@ const asset = (work, tokenId, key) => {
 
 // formating print no. in title
 const printNo = (work, tokenId) => {
+  // get work namespace
   const workNamespace = Math.floor(tokenId / 1000000) * 1000000 // 2000000
+  // get print no
   let printNo = tokenId - workNamespace // 16
+
+  // format
   if (printNo > work.editions) {
-    printNo = `(AP${printNo - work.editions})` // AP1
+    // artist proofs "(AP1)"
+    printNo = `(AP${printNo - work.editions})`
   } else if (work.generative) {
-    printNo = `#${printNo}` // #16
+    // generative "#1"
+    printNo = `#${printNo}`
   } else {
+    // default/edition "(1/9)"
     printNo = `(${printNo}/${work.editions})`
   }
+
   return printNo
 }
 
