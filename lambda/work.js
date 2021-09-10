@@ -76,11 +76,14 @@ exports.handler = async function (event, context) {
     // format...
     tokens = tokens.map(token => {
       const data = metadata.tokens[token]
+      const asset = (key) => (metadata.assetPath || '') + (data[key] || '')
       return {
         tokenId: token,
         ...data,
-        // add asset path to image (in case just filenames)
-        image: metadata.assetPath + data.image
+        // add asset path to media (in case just filenames)
+        image: asset('image'),
+        animation_url: asset('animation_url'),
+        animation_thumb: asset('animation_thumb')
       }
     })
 
