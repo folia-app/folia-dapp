@@ -9,7 +9,7 @@ const asset = {
 }
 
 export default {
-  titlePattern: 'Lasso.swf" {{no}}',
+  titlePattern: 'Lasso.swf {{no}}',
   editions: 3,
   description: 'Harm van den Dorpel (b. 1981), "Lasso.swf" {{no}}, 2007, .SWF/.GIF, 103 frames, 1270x1150 pixels, 3.1MB, Edition 3 + 1AP, Created 2007, Minted 2021',
   // release: '02-20-2021 08:00:00 pm +01:00',
