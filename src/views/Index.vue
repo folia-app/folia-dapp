@@ -66,9 +66,14 @@
             //- tiles
             template(v-if="slice.slice_type === 'tile'")
               //- items...
-              prismic-link.w-full.sm_w-1x2.md_w-1x3.xl_w-1x4.bg-yellow.lg_hover_shadow-inner-red.-shadow-md.md_shadow-lg(:field="slice.primary.link", :linkResolver="linkResolver", :class="{'md_z-10': i % 2 === 0}")
+              slice-tile.w-full.sm_w-1x2.md_w-1x3.xl_w-1x4(:slice="slice", :class="{'md_z-10': i % 2 === 0}")
+              //- prismic-link.w-full.sm_w-1x2.md_w-1x3.xl_w-1x4.bg-yellow.lg_hover_shadow-inner-red.-shadow-md.md_shadow-lg(:field="slice.primary.link", :linkResolver="linkResolver", :class="{'md_z-10': i % 2 === 0}")
                 .pb-ar-2x1.sm_pb-full.relative
                   rich-text.absolute.overlay.p-8.lg_p-12.font-karrik.text-2xl.sm_text-lg.lg_text-2xl.leading-tight(:field="slice.primary.title")
+                  //- counter...
+                  .absolute.bottom-0.right-0.p-8.lg_p-12
+                    template(v-if="slice.primary.counter === 'sold-out'")
+                      sold-out-dot
             //- slice: works grid
             //- template(v-if="slice.slice_type === 'works_grid'")
               .slice-works-grid.w-full.flex.flex-wrap
@@ -109,13 +114,14 @@ import ViewToken from '@/views/ViewToken'
 import LandingSlideWork from '@/components/LandingSlideWork'
 import RichText from '@/components/RichText'
 import linkResolver from '@/plugins/prismic/link-resolver'
+import SliceTile from '@/slices/SliceTile'
 import SliceAuctions from '@/slices/SliceAuctions'
 import SliceAnnouncement from '@/slices/SliceAnnouncement'
 import Observer from '@/components/Observer'
 let lastRt
 export default {
   name: 'Index',
-  components: { WorkView, Logo, Info, svgFleuron, Btn, LandingSlideWork, ViewToken, SetView, RichText, SliceAuctions, SliceAnnouncement, Observer },
+  components: { SliceTile, WorkView, Logo, Info, svgFleuron, Btn, LandingSlideWork, ViewToken, SetView, RichText, SliceAuctions, SliceAnnouncement, Observer },
   data () {
     return {
       squish: false,

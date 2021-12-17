@@ -3,7 +3,7 @@
     section.px-8.py-12.lg_px-16.lg_py-20
       .text-red.text-2xl.md_text-3xl.lg_text-5xl.leading-normal
         h2.text-red
-          | Folia is a space for exhibiting and collecting #[a.border-b-2.border-current.border-dotted.hover_border-solid(href="https://opensea.io/blog/guides/non-fungible-tokens/" target="_blank") NFTs]
+          | Folia publishes #[a.border-b-2.border-current.border-dotted.hover_border-solid(href="https://opensea.io/blog/guides/non-fungible-tokens/" target="_blank") NFT] editions.
           | #[button.ml-3.inline-block.text-black.py-px.rounded-full.px-3.bg-gray-100.text-xs.hover_bg-gray-200.focus_outline-none(@click="more = true", v-show="!more", style="font-size:0.4em") •••]
 
         transition(name="fadeinonly")
@@ -27,11 +27,11 @@
           a(href="https://twitter.com/foliafoliafolia", target="_blank", rel="noopener")
             btn.px-10(theme="ltgray") twitter
         li
-          a(href="https://t.me/folia_app", target="_blank", rel="noopener")
-            btn.px-10(theme="ltgray") telegram
-        li
           a(href="https://discord.gg/8RA49VdraZ", target="_blank", rel="noopener")
             btn.px-10(theme="ltgray") discord
+        li
+          a(href="https://t.me/folia_app", target="_blank", rel="noopener")
+            btn.px-10(theme="ltgray") telegram
         li
           a(href="https://folia.substack.com", target="_blank", rel="noopener")
             btn.px-10(theme="ltgray") substack
