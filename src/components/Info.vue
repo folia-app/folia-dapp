@@ -30,6 +30,9 @@
           a(href="https://discord.gg/8RA49VdraZ", target="_blank", rel="noopener")
             btn.px-10(theme="ltgray") discord
         li
+          a(href="https://opensea.io/collection/folia", target="_blank", rel="noopener")
+            btn.px-10(theme="ltgray") opensea
+        li
           a(href="https://t.me/folia_app", target="_blank", rel="noopener")
             btn.px-10(theme="ltgray") telegram
         li
