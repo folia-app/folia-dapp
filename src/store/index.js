@@ -388,6 +388,19 @@ export default new Vuex.Store({
         console.error("get owner error / token doesn't exist?", tokenId, e)
         return 0
       }
+    },
+
+    async signMessage ({ state, dispatch }, message = 'Hello world') {
+      try {
+        if (!state.address) await dispatch('connect')
+        // format
+        message = web3.utils.utf8ToHex(message)
+        // sign...
+        return web3.eth.sign(message, state.address)
+      } catch (e) {
+        console.error(e)
+        throw e
+      }
     }
   }
 })

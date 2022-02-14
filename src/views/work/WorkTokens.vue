@@ -29,7 +29,7 @@
       //- template(v-else)
 
       //- tokens...
-      squishy-thumb-token(v-for="(token, i) in tokensFiltered", :token="token", :key="token.tokenId + n", :buyBtn="doc.data.sale_type === 'buy by ID'", :isMutative="doc.data.mutative_edition === true")
+      squishy-thumb-token(v-for="(token, i) in tokensFiltered", :token="token", :key="token.tokenId", :buyBtn="doc.data.sale_type === 'buy by ID'", :isMutative="doc.data.mutative_edition === true")
 
       //- buy block
       .w-full.flex(v-if="canBuy && doc.data.sale_type === 'generative'", style="justify-self: stretch;")

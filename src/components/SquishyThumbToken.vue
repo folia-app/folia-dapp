@@ -30,7 +30,7 @@
 
     //- inner content
     .absolute.overlay.flex.items-center.justify-center.group(v-if="opened")
-      //- No. (centered) / token link
+      //- no.
       a.absolute.top-0.left-0.py-3.px-4(:href="openSeaLink({token: token.tokenId})", target="_blank", rel="noopener noreferrer", :class="{'pointer-events-none': !owner}")
         btn.lg_px-6.lg_hover_bg-black-a15(theme="none", size="small")
           | {{ token.tokenId.slice(-3) }}
@@ -44,6 +44,13 @@
       //- owner
       a.absolute.bottom-0.right-0.lg_py-3.lg_px-4(v-if="owner", :href="openSeaLink({account: owner})", target="_blank", rel="noopener noreferrer", :class="{'opacity-0ff group-hover_opacity-100': true || !userIsOwner}")
         btn.lg_px-5.lg_hover_bg-black-a15(theme="none", size="small") {{ userIsOwner ? 'You' : addrShort(owner) }}
+
+      //- (download btn)
+      template(v-if="token.download && owner")
+        .absolute.top-0.right-0.lg_py-3.lg_px-4
+          sign-and-download-button(:download="token.download", :owner="owner")
+            btn.lg_px-5.lg_hover_bg-black-a15(theme="none", size="small")
+              span(style="font-size:1.15em") &DownArrowBar;
 
     //- open viewer (outer)
     button.absolute.z-20.bottom-0.right-0.lg_py-3.lg_px-4.lg_opacity-0.lg_group-hover_opacity-100.focus_outline-none.blend-difference(slot="outer", v-if="!token.link", @click="openViewer", v-show="!opened", :class="{'hidden md_block': !is3D}")
@@ -60,6 +67,7 @@ import RespImg from '@/components/RespImg'
 import svgEye from '@/components/SVG-Eye'
 import Observer from '@/components/Observer'
 import SoldOutDot from '@/components/SoldOutDot'
+import SignAndDownloadButton from '@/components/SignAndDownloadButton'
 export default {
   name: 'SquishyThumbToken',
   props: ['token', 'buyBtn', 'isMutative'],
@@ -173,7 +181,7 @@ export default {
       }
     }
   },
-  components: { Observer, Btn, SquishyThumb, svgEye, RespImg, SoldOutDot }
+  components: { Observer, Btn, SquishyThumb, svgEye, RespImg, SoldOutDot, SignAndDownloadButton }
 }
 </script>
 
