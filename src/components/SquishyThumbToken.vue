@@ -1,14 +1,16 @@
 <template lang="pug">
-  squishy-thumb.squishy-thumb-token.transition.duration-200.group.text-xs.md_text-md(ref="thumb", @open="open", :style="{background: userIsOwner && '#ffeb00'}", @mediaClick="onMediaClick")
+  squishy-thumb.squishy-thumb-token.transition.duration-200.group.text-xs.md_text-md(ref="thumb", @open="open", :style="{background: userIsOwner && '#ffeb00'}", @mediaClick="onMediaClick", :ratio="token.display && token.display.aspectRatio")
 
     //- media
     div(slot="media")
       //- image
-      resp-img.transition-opacity.duration-500(v-if="token.image && token.image.length",:bg="true", :image="{src: token.image}", :class="{'opacity-0ff': hover && token.drc}", :rawSrc="isMutative")
-      //- (video)
+      resp-img.transition-opacity.duration-500(v-if="image && image.length",:bg="true", :image="{src: image}", :class="{'opacity-0ff': hover && token.drc}", :rawSrc="isMutative")
+
+      //- (video as overlay)
       template(v-if="token.animation_thumb")
         observer.absolute.overlay(:threshold="0.01", @visible="onVisible", @hidden="onHidden")
           video.absolute.overlay.object-cover.object-center(v-if="loadVideo", ref="video", :src="token.animation_thumb", autoplay muted loop playsinline)
+
       //- iframe ?
       //- template(v-if="token.drc && hover")
         .absolute.overlay(:class="{'cursor-wait': !iframeLoaded}")
@@ -30,7 +32,8 @@
     .absolute.overlay.flex.items-center.justify-center.group(v-if="opened")
       //- No. (centered) / token link
       a.absolute.top-0.left-0.py-3.px-4(:href="openSeaLink({token: token.tokenId})", target="_blank", rel="noopener noreferrer", :class="{'pointer-events-none': !owner}")
-        btn.lg_px-6.lg_hover_bg-black-a15(theme="none", size="small") {{ token.tokenId.slice(-3) }}
+        btn.lg_px-6.lg_hover_bg-black-a15(theme="none", size="small")
+          | {{ token.tokenId.slice(-3) }}
 
       //- open viewer (inner)
       button.focus_outline-none(@click="openViewer")
@@ -76,6 +79,9 @@ export default {
       userAddress: state => state.address
     }),
     ...mapGetters(['addrShort', 'openSeaLink']),
+    image () {
+      return this.token && (this.token.image_thumb || this.token.image)
+    },
     userIsOwner () {
       return this.userAddress === this.owner
     },
