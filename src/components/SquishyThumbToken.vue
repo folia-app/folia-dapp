@@ -48,7 +48,7 @@
       //- (download btn)
       template(v-if="token.download && owner")
         .absolute.top-0.right-0.lg_py-3.lg_px-4
-          sign-and-download-button(:download="token.download", :owner="owner")
+          sign-and-download-button(:download="token.download", :owner="owner", :tokenId="token.tokenId")
             btn.lg_px-5.lg_hover_bg-black-a15(theme="none", size="small")
               span(style="font-size:1.15em") &DownArrowBar;
 

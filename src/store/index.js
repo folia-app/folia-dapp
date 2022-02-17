@@ -390,13 +390,45 @@ export default new Vuex.Store({
       }
     },
 
-    async signMessage ({ state, dispatch }, message = 'Hello world') {
+    // method for signing typed data
+    // web3.js currently has no method (v1.7)
+    // adapted from this guide:
+    // * https://medium.com/metamask/scaling-web3-with-signtypeddata-91d6efc8b290
+    async signMessage ({ state, dispatch }, message = 'Please sign this message to continue.') {
       try {
         if (!state.address) await dispatch('connect')
-        // format
-        message = web3.utils.utf8ToHex(message)
+
+        // build msg(s)
+        const msgParams = [
+          {
+            type: 'string', // Any valid solidity type
+            name: 'Message', // Any string label you want
+            value: message // The value to sign
+          }
+          // {
+          //   type: 'uint32',
+          //      name: 'A number',
+          //      value: '1337'
+          //  }
+        ]
+
         // sign...
-        return web3.eth.sign(message, state.address)
+        return new Promise((resolve, reject) => {
+          web3.currentProvider.sendAsync({
+            method: 'eth_signTypedData',
+            params: [msgParams, state.address],
+            from: state.address
+          }, (err, result) => {
+            // errors
+            err = err || result.error
+            if (err) {
+              reject(err)
+            }
+            console.log('Signed message: ', result)
+            // return signature
+            resolve({ msgParams, signature: result.result })
+          })
+        })
       } catch (e) {
         console.error(e)
         throw e
