@@ -23,8 +23,8 @@ export default {
         }
 
         // sign...
-        // const message = 'Sign this message to verify you own this token and begin your download.'
-        const message = 'hello world'
+        const message = 'Sign this message to verify you own this token and begin your download.'
+        // const message = 'hello world'
         const { signature } = await this.$store.dispatch('signMessageEthers', message)
         console.log(signature)
 

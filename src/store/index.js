@@ -448,7 +448,7 @@ export default new Vuex.Store({
 
         const signer = provider.getSigner()
 
-        message = 'hello world'
+        // message = 'hello world'
         const signature = await signer.signMessage(message)
         console.log({ signature })
 
