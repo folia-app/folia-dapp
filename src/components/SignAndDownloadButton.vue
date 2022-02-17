@@ -25,8 +25,8 @@ export default {
         // sign...
         // const message = 'Sign this message to verify you own this token and begin your download.'
         const message = 'hello world'
-        const { signature, msgParams } = await this.$store.dispatch('signMessage', message)
-        console.log(({ signature, msgParams }))
+        const { signature } = await this.$store.dispatch('signMessageEthers', message)
+        console.log(signature)
 
         // send...
         return fetch(this.download.url, {
@@ -35,8 +35,8 @@ export default {
             message,
             signature, // : '0x11523b6e5d9370489c20f61ce424ae9cebb0c6122e58cb9899fd7f2139efda1f323db9bf56effac9967400528e40295032a5c23c3c87cac2bcd7641b010518061b',
             tokenId: this.tokenId,
-            networkId: this.$store.state.networkId,
-            msgParams
+            networkId: this.$store.state.networkId
+            // msgParams
           })
         })
           .then(async resp => {

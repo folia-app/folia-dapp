@@ -9,6 +9,8 @@ import Web3 from 'web3'
 import Web3Modal from 'web3modal'
 import WalletConnectProvider from '@walletconnect/web3-provider'
 import { exception } from 'vue-gtag'
+//
+import { ethers } from 'ethers'
 // modules
 import prismic from './prismic'
 import auctions from './auctions'
@@ -429,6 +431,28 @@ export default new Vuex.Store({
             resolve({ msgParams, signature: result.result })
           })
         })
+      } catch (e) {
+        console.error(e)
+        throw e
+      }
+    },
+
+    async signMessageEthers ({ state, dispatch }, message = 'Please sign this message to continue.') {
+      try {
+        if (!state.address) await dispatch('connect')
+
+        const provider = new ethers.providers.Web3Provider(window.ethereum)
+
+        // MetaMask requires requesting permission to connect users accounts
+        // await provider.send("eth_requestAccounts", []);
+
+        const signer = provider.getSigner()
+
+        message = 'hello world'
+        const signature = await signer.signMessage(message)
+        console.log({ signature })
+
+        return { signature }
       } catch (e) {
         console.error(e)
         throw e
