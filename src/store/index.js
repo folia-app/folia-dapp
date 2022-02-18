@@ -419,23 +419,59 @@ export default new Vuex.Store({
     // },
 
     /* buy artwork */
-    async buy ({ state, dispatch }, workId) {
+    // async buy ({ state, dispatch }, workId) {
+    //   try {
+    //     const work = await dispatch('getWork', { id: workId, flush: true })
+    //     // !! unavailable
+    //     if (!work.exists) throw new Error(`!! Work ${workId} doesn't exist`)
+    //     if (Number(work.printed) >= Number(work.editions)) throw new Error(`!! Work ${workId} is sold out`)
+    //     if (work.paused) throw new Error(`!! Work ${workId} is locked. Please wait for release or try again shortly.`)
+    //     // wallet connected ?
+    //     if (!state.address) {
+    //       await dispatch('connect')
+    //     }
+    //     // buy
+    //     await state.foliaControllerContract.methods
+    //       .buy(state.address, workId)
+    //       .send({ from: state.address, value: work.price })
+    //     // refresh work data for app
+    //     dispatch('getWork', { id: workId, flush: true })
+    //   } catch (e) {
+    //     console.error('@buy:', e)
+    //     // track
+    //     exception({ description: `@buy: ${e.message}`, fatal: false })
+    //     // TODO - more elegant UX error ?
+    //     if (e.message?.includes('!! ')) {
+    //       alert(e.message.replace('!! ', ''))
+    //     }
+    //   }
+    // },
+
+    /* buy artwork */
+    async buy ({ state, dispatch, rootGetters }, workId) {
       try {
         const work = await dispatch('getWork', { id: workId, flush: true })
         // !! unavailable
         if (!work.exists) throw new Error(`!! Work ${workId} doesn't exist`)
         if (Number(work.printed) >= Number(work.editions)) throw new Error(`!! Work ${workId} is sold out`)
         if (work.paused) throw new Error(`!! Work ${workId} is locked. Please wait for release or try again shortly.`)
+
+        // TODO insuff balance
+
         // wallet connected ?
-        if (!state.address) {
-          await dispatch('connect')
-        }
-        // buy
-        await state.foliaControllerContract.methods
-          .buy(state.address, workId)
-          .send({ from: state.address, value: work.price })
+        if (!state.address || !signer) await dispatch('connect')
+
+        // !! insufficient balance
+        const balance = await rootGetters.userBalance()
+        if (bn.from(balance).lt(work.price)) throw new Error(`!! Insufficient funds in your wallet\n${state.address}`)
+
+        // sign...
+        const contractSigner = state.foliaControllerContract2.connect(signer)
+        // tx
+        return contractSigner.buy(state.address, workId, { value: work.price })
+
         // refresh work data for app
-        dispatch('getWork', { id: workId, flush: true })
+        // dispatch('getWork', { id: workId, flush: true })
       } catch (e) {
         console.error('@buy:', e)
         // track
@@ -526,7 +562,10 @@ export default new Vuex.Store({
         console.error('@buyByID:', e)
         // track
         exception({ description: `@buyByID: ${e.message}`, fatal: false })
-        throw e
+        // TODO - more elegant UX error ?
+        if (e.message?.includes('!! ')) {
+          alert(e.message.replace('!! ', ''))
+        }
       }
     },
 

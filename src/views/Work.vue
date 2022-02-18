@@ -170,8 +170,12 @@ export default {
   },
   methods: {
     async buy () {
-      await this.$store.dispatch('buy', this.id)
-      // return this.$refs.view?.getTokens() // refresh token list
+      try {
+        await this.$store.dispatch('buy', this.id)
+        // return this.$refs.view?.getTokens() // refresh token list
+      } catch (e) {
+        console.error(e)
+      }
     },
     async fetchDoc () {
       this.doc = await this.$store.dispatch('prismic/getWork', this.id)
