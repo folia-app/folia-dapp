@@ -208,6 +208,8 @@ export default new Vuex.Store({
     disconnect ({ commit }) {
       // clear so they can re-select from scratch
       web3Modal.clearCachedProvider()
+      // manually remove WC so can choose new account
+      localStorage.removeItem('walletconnect')
       // provider.off('accountsChanged')
       // provider.off('disconnect')
       commit('SIGN_OUT')
