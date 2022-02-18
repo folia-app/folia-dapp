@@ -13,6 +13,7 @@ export default {
   },
   methods: {
     async signAndDownload () {
+      const timestamp = new Date().getTime()
       try {
         if (!this.$store.state.address) {
           await this.$store.dispatch('connect')
@@ -22,11 +23,16 @@ export default {
           throw new Error(`Sorry, you must own this token to download its content.\n\nOwner: ${this.owner}`)
         }
 
+        // show confirm overlay
+        this.$root.$emit('newMsg', { timestamp, format: 'overlay', body: 'Sign message in your wallet.' })
+
         // sign...
         const message = 'Sign this message to verify you own this token and begin your download.'
-        // const message = 'hello world'
         const { signature } = await this.$store.dispatch('signMessageEthers', message)
         console.log(signature)
+
+        // swap messages
+        this.$root.$emit('updateMsg', { timestamp, body: 'Requesting download...' })
 
         // send...
         return fetch(this.download.url, {
@@ -41,6 +47,9 @@ export default {
         })
           .then(async resp => {
             console.log(resp)
+
+            this.$root.$emit('updateMsg', { timestamp, body: 'Downloading...<br>Do not close window!' })
+
             // const reader = resp.body.getReader();
 
             // // infinite loop while the body is downloading
@@ -64,13 +73,22 @@ export default {
             var a = document.createElement('a')
             a.href = window.URL.createObjectURL(blob)
             a.download = 'example1'
+
+            this.$root.$emit('updateMsg', { timestamp, body: `Download finished!<br><a class="underline" href="${a.href}">File</a>` })
+
+            // prompt save file
             a.click()
+          })
+          .catch(e => {
+            console.error(e)
+            this.$root.$emit('updateMsg', { timestamp, body: 'Error downloading!' })
           })
 
         // console.log(resp)
         // console.log(await resp.text())
       } catch (e) {
         console.error(e)
+        this.$root.$emit('killMsg', { timestamp })
         if (!e.message.includes('User denied message signature.')) {
           alert(e.message)
         }

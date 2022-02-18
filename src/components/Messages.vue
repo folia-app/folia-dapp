@@ -6,7 +6,7 @@
       template(v-if="msg.format === 'overlay'")
         //- TODO accessibility
         div.fixed.overlay.z-50.bg-black-a90.flex.items-center.justify-center.cursor-pointer(@click.stop="deleteMsg({ index })")
-          div.text-white.text-lg.px-8.mx-auto {{ msg.body }}
+          div.text-white.text-lg.px-8.mx-auto.text-center(v-html="msg.body")
           button.absolute.top-0.right-0.p-8.focus_outline-none(@click.stop="deleteMsg({ index })")
             svg-x.w-8.h-8.text-white(strokeWidth="1")
 
@@ -44,6 +44,14 @@ export default {
         'bg-green white': type === 'success'
       }
     },
+    updateMsg ({ timestamp, body }) {
+      const msgs = JSON.parse(JSON.stringify(this.messages))
+      const msg = msgs.find(msg => msg.timestamp === timestamp)
+      if (msg) {
+        msg.body = body
+        this.messages = msgs // update
+      }
+    },
     deleteMsg ({ index, timestamp }) {
       index = index ?? this.messages.findIndex(msg => msg.timestamp === timestamp)
       return index > -1 && this.messages.splice(index, 1)
@@ -51,6 +59,7 @@ export default {
   },
   created () {
     this.$root.$on('newMsg', msg => this.messages.push(msg))
+    this.$root.$on('updateMsg', this.updateMsg)
     this.$root.$on('killMsg', ({ timestamp }) => this.deleteMsg({ timestamp }))
   }
 }
