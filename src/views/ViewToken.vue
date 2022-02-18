@@ -1,5 +1,5 @@
 <template lang="pug">
-  .view-token.absolute.overlay.bg-black(@click="onBodyClick", :class="{'pointer-events-auto': visible}", :style="{background: metadata && metadata.background}")
+  .view-token.absolute.overlay.bg-black(@click="onBodyClick", :class="{'pointer-events-auto': visible}", :style="{ background }")
 
     //- media container
     .transition-opacity.duration-500.delay-500(:class="{'opacity-0': !visible}")
@@ -51,7 +51,10 @@ export default {
     }
   },
   computed: {
-    ...mapState(['networkId'])
+    ...mapState(['networkId']),
+    background () {
+      return this.metadata?.display?.background || this.metadata?.background
+    }
   },
   methods: {
     async get (token) {

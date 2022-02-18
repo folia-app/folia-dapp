@@ -184,6 +184,8 @@ module.exports = {
     flex: {
       1: '1 1 0%',
       '1x2': '0 0 50%',
+      '1x5': '0 0 20%',
+      '1x4': '0 0 25%',
       full: '1 0 100%',
       auto: '1 1 auto',
       initial: '0 1 auto',
@@ -368,6 +370,7 @@ module.exports = {
       full: '100%',
       'ar-1x1': '100%',
       'ar-2x1': 'calc(100% * 1/2)',
+      'ar-5x7': 'calc(100% * 1697/1200)', // eastyn book cover size
       '1x4': '25%',
       '1x5': '22%'
     }),

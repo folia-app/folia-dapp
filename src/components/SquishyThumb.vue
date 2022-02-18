@@ -1,39 +1,18 @@
 <template lang="pug">
   .sliding-thumb.bg-yellow.overflow-hidden.hover_shadow-inner-red
     //- square sizer
-    .relative.pb-ar-1x1
+    .relative(:class="[aspectRatio]")
       //- image (.bg-gray-900 to prevent shadow poking through...)
       figure.absolute.overlay-px.z-10.cursor-pointer.bg-gray-900.transition-transform.duration-400.bg-cover.bg-center(:data-dir="rand", :class="{'squish': squish}", @click="$emit('mediaClick')")
         slot(name="media")
         //- img.absolute.overlay.z-10.object-cover.object-center(:src="doc.data.index_thumbnail.square.url", :alt="doc.data.index_thumbnail.alt")
 
       header.absolute.overlay.z-0.flex(:class="tableClasses")
-        slot(name="bg")
-        .relative.w-full
+        //- squish space
+        .flex-1x5.md_flex-1x4
+        //- content
+        .flex-1.relative
           slot
-        //-
-          .flex-1.flex.px-2
-            .w-1x2.flex.justify-center.items-center(v-for="artist in doc.data.artist.split(',')") {{ artist }}
-            //- .w-full.flex.items-center.justify-evenly
-              span
-            //- .w-1x2.flex.items-center.justify-center
-              span {{ doc.data.year }}
-          .flex-1.flex.px-2
-            .w-1x2.flex.items-center.justify-center {{ doc.data.year }}
-            .w-1x2.flex.items-center.justify-center
-              span
-                template(v-if="work") {{ Number(work.printed) + 1 }}/{{ work.editions }}
-                template(v-else) –
-            //- .w-1x2.flex.items-center.justify-center
-              span {{ work ? weiToETH(work.price) : doc.data.price_eth }} ETH
-          .flex-1.flex(@click.stop)
-            router-link.cursor-pointer(:to="{name: 'work', params: {work: doc.uid}}").w-1x2.flex.items-center.justify-center.btn-theme-darken View
-            button.w-1x2.flex.items-center.justify-center.btn-theme-darken.cursor-pointer(@click="buy") Buy
-
-      //- eyebll
-      //- .absolute.z-20.bottom-0.right-0.py-3.px-3.opacity-0ff.group-hover_opacity-100
-        btn.px-4.hover_bg-black-a15(size="small", theme="none", @click="$emit('view')")
-          svg-eye.text-white
 
       //- outer
       slot(name="outer")
@@ -46,7 +25,9 @@ import Btn from '@/components/Btn'
 export default {
   name: 'SquishyThumb',
   components: { svgEye, Btn },
-  // props: ['doc'],
+  props: {
+    ratio: { type: String, default: '1:1' }
+  },
   data () {
     return {
       squish: false, // Math.random() >= 0.25,
@@ -57,12 +38,26 @@ export default {
   computed: {
     // ...mapGetters(['weiToETH']),
     tableClasses () {
-      return {
-        'pl-1x4': this.rand === 0,
-        'pl-1x4 md_pl-0 md_pt-1x4': this.rand === 1,
-        'pr-1x4': this.rand === 2,
-        'pr-1x4 md_pr-0 md_pb-1x4': this.rand === 3
+      // return {
+      //   'pl-1x4': this.rand === 0,
+      //   'pl-1x4 md_pl-0 md_pt-1x4': this.rand === 1,
+      //   'pr-1x4': this.rand === 2,
+      //   'pr-1x4 md_pr-0 md_pb-1x4': this.rand === 3
+      // }
+      const classes = {
+        0: 'flex-row',
+        1: 'flex-row md_flex-col',
+        2: 'flex-row-reverse',
+        3: 'flex-row-reverse md_flex-col-reverse'
       }
+      return classes[this.rand]
+    },
+    aspectRatio () {
+      const ratios = {
+        '5:7': 'pb-ar-5x7',
+        '1:1': 'pb-ar-1x1'
+      }
+      return ratios[this.ratio]
     }
   },
   methods: {

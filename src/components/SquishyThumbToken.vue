@@ -1,14 +1,16 @@
 <template lang="pug">
-  squishy-thumb.squishy-thumb-token.transition.duration-200.group.text-xs.md_text-md(ref="thumb", @open="open", :style="{background: userIsOwner && '#ffeb00'}", @mediaClick="onMediaClick")
+  squishy-thumb.squishy-thumb-token.transition.duration-200.group.text-xs.md_text-md(ref="thumb", @open="open", :style="{background: userIsOwner && '#ffeb00'}", @mediaClick="onMediaClick", :ratio="token.display && token.display.aspectRatio")
 
     //- media
     div(slot="media")
       //- image
-      resp-img.transition-opacity.duration-500(v-if="token.image && token.image.length",:bg="true", :image="{src: token.image}", :class="{'opacity-0ff': hover && token.drc}", :rawSrc="isMutative")
-      //- (video)
+      resp-img.transition-opacity.duration-500(v-if="image && image.length",:bg="true", :image="{src: image}", :class="{'opacity-0ff': hover && token.drc}", :rawSrc="isMutative")
+
+      //- (video as overlay)
       template(v-if="token.animation_thumb")
         observer.absolute.overlay(:threshold="0.01", @visible="onVisible", @hidden="onHidden")
           video.absolute.overlay.object-cover.object-center(v-if="loadVideo", ref="video", :src="token.animation_thumb", autoplay muted loop playsinline)
+
       //- iframe ?
       //- template(v-if="token.drc && hover")
         .absolute.overlay(:class="{'cursor-wait': !iframeLoaded}")
@@ -28,9 +30,10 @@
 
     //- inner content
     .absolute.overlay.flex.items-center.justify-center.group(v-if="opened")
-      //- No. (centered) / token link
+      //- no.
       a.absolute.top-0.left-0.py-3.px-4(:href="openSeaLink({token: token.tokenId})", target="_blank", rel="noopener noreferrer", :class="{'pointer-events-none': !owner}")
-        btn.lg_px-6.lg_hover_bg-black-a15(theme="none", size="small") {{ token.tokenId.slice(-3) }}
+        btn.lg_px-6.lg_hover_bg-black-a15(theme="none", size="small")
+          | {{ token.tokenId.slice(-3) }}
 
       //- open viewer (inner)
       button.focus_outline-none(@click="openViewer")
@@ -41,6 +44,13 @@
       //- owner
       a.absolute.bottom-0.right-0.lg_py-3.lg_px-4(v-if="owner", :href="openSeaLink({account: owner})", target="_blank", rel="noopener noreferrer", :class="{'opacity-0ff group-hover_opacity-100': true || !userIsOwner}")
         btn.lg_px-5.lg_hover_bg-black-a15(theme="none", size="small") {{ userIsOwner ? 'You' : addrShort(owner) }}
+
+      //- (download btn)
+      template(v-if="token.download && owner")
+        .absolute.top-0.right-0.lg_py-3.lg_px-4
+          sign-and-download-button(:download="token.download", :owner="owner", :tokenId="token.tokenId")
+            btn.lg_px-5.lg_hover_bg-black-a15(theme="none", size="small")
+              span(style="font-size:1.15em") &DownArrowBar;
 
     //- open viewer (outer)
     button.absolute.z-20.bottom-0.right-0.lg_py-3.lg_px-4.lg_opacity-0.lg_group-hover_opacity-100.focus_outline-none.blend-difference(slot="outer", v-if="!token.link", @click="openViewer", v-show="!opened", :class="{'hidden md_block': !is3D}")
@@ -57,6 +67,7 @@ import RespImg from '@/components/RespImg'
 import svgEye from '@/components/SVG-Eye'
 import Observer from '@/components/Observer'
 import SoldOutDot from '@/components/SoldOutDot'
+import SignAndDownloadButton from '@/components/SignAndDownloadButton'
 export default {
   name: 'SquishyThumbToken',
   props: ['token', 'buyBtn', 'isMutative'],
@@ -76,6 +87,9 @@ export default {
       userAddress: state => state.address
     }),
     ...mapGetters(['addrShort', 'openSeaLink']),
+    image () {
+      return this.token && (this.token.image_thumb || this.token.image)
+    },
     userIsOwner () {
       return this.userAddress === this.owner
     },
@@ -181,7 +195,7 @@ export default {
       }
     }
   },
-  components: { Observer, Btn, SquishyThumb, svgEye, RespImg, SoldOutDot }
+  components: { Observer, Btn, SquishyThumb, svgEye, RespImg, SoldOutDot, SignAndDownloadButton }
 }
 </script>
 

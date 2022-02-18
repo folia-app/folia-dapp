@@ -5,7 +5,6 @@ import Folia from 'folia-contracts/build/contracts/Folia.json'
 import FoliaControllerV2 from 'folia-contracts/build/contracts/FoliaControllerV2.json'
 // import ReserveAuction from 'folia-contracts/build/contracts/ReserveAuction.json'
 // ethers
-// web3
 import { ethers, BigNumber as bn } from 'ethers'
 // import Web3 from 'web3'
 import Web3Modal from 'web3modal'
@@ -685,6 +684,73 @@ export default new Vuex.Store({
         // seems to error if token doesn't exist...
         console.warn(`get owner error / token doesn't exist? (${tokenId})`)
         return 0
+      }
+    },
+
+    // method for signing typed data
+    // web3.js currently has no method (v1.7)
+    // adapted from this guide:
+    // * https://medium.com/metamask/scaling-web3-with-signtypeddata-91d6efc8b290
+    async signMessage ({ state, dispatch }, message = 'Please sign this message to continue.') {
+      try {
+        if (!state.address) await dispatch('connect')
+
+        // build msg(s)
+        const msgParams = [
+          {
+            type: 'string', // Any valid solidity type
+            name: 'Message', // Any string label you want
+            value: message // The value to sign
+          }
+          // {
+          //   type: 'uint32',
+          //      name: 'A number',
+          //      value: '1337'
+          //  }
+        ]
+
+        // sign...
+        return new Promise((resolve, reject) => {
+          web3.currentProvider.sendAsync({
+            method: 'eth_signTypedData',
+            params: [msgParams, state.address],
+            from: state.address
+          }, (err, result) => {
+            // errors
+            err = err || result.error
+            if (err) {
+              reject(err)
+            }
+            console.log('Signed message: ', result)
+            // return signature
+            resolve({ msgParams, signature: result.result })
+          })
+        })
+      } catch (e) {
+        console.error(e)
+        throw e
+      }
+    },
+
+    async signMessageEthers ({ state, dispatch }, message = 'Please sign this message to continue.') {
+      try {
+        if (!signer) await dispatch('connect')
+
+        // const provider = new ethers.providers.Web3Provider(window.ethereum)
+
+        // MetaMask requires requesting permission to connect users accounts
+        // await provider.send("eth_requestAccounts", []);
+
+        // const signer = provider.getSigner()
+
+        // message = 'hello world'
+        const signature = await signer.signMessage(message)
+        console.log({ signature })
+
+        return { signature }
+      } catch (e) {
+        console.error(e)
+        throw e
       }
     }
   }

@@ -32,12 +32,12 @@
       squishy-thumb-token(v-for="(token, i) in tokensFiltered", :token="token", :key="token.tokenId", :buyBtn="doc.data.sale_type === 'buy by ID'", :isMutative="doc.data.mutative_edition === true")
 
       //- buy block
-      div(v-if="canBuy && doc.data.sale_type === 'generative'")
-        .relative.pb-full.overflow-hidden.bg-gray-900
+      .w-full.flex(v-if="canBuy && doc.data.sale_type === 'generative'", style="justify-self: stretch;")
+        .w-full.relative.overflow-hidden.bg-gray-900
           //- (teaser video as background)
           video.absolute.overlay.object-cover.object-contain.opacity-25(:src="doc.data.teaser_video.url", loop, playsinline, muted, autoplay, v-if="work.printed === '0'")
           //- buy btn
-          button.absolute.overlay.flex.items-center.justify-center.pb-6.pr-6.focus_outline-none(@click="$emit('buy')", :style="work.printed === '0' && 'mix-blend-mode:difference;backdrop-filter:blur(10px)'")
+          button.absolute.overlay.flex.items-center.justify-center.pb-6.pr-6ff.focus_outline-none(@click="$emit('buy')", :style="work.printed === '0' && 'mix-blend-mode:difference;backdrop-filter:blur(10px)'")
             <svg style="width:50%" viewBox="0 0 96 96" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio>
               <line x1="10.165" y1="10.1227" x2="94.7885" y2="94.7462" stroke="rgb(255,255,255,0.8)" stroke-width="0.75" />
               <line x1="54.9753" y1="10.8298" x2="10.165" y2="55.6401" stroke="rgb(255,255,255,0.8)" stroke-width="0.75" />
