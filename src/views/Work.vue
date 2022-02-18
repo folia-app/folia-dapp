@@ -170,11 +170,27 @@ export default {
   },
   methods: {
     async buy () {
+      const timestamp = new Date().getTime()
       try {
-        await this.$store.dispatch('buy', this.id)
+        // show confirmatation overlay
+        this.$root.$emit('newMsg', { timestamp, format: 'overlay', body: 'Confirm transaction in your wallet.' })
+
+        // buy...
+        const tx = await this.$store.dispatch('buy', this.id)
+
+        // close confirmation
+        this.$root.$emit('killMsg', { timestamp })
+
+        // wait for tx...
+        await tx.wait()
+
+        // refresh work
+        this.fetchWork(true)
         // return this.$refs.view?.getTokens() // refresh token list
       } catch (e) {
         console.error(e)
+        // close confirmation
+        this.$root.$emit('killMsg', { timestamp })
       }
     },
     async fetchDoc () {

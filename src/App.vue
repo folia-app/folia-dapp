@@ -17,14 +17,17 @@
     template(v-if="isWrongNetwork")
       .p-8 Oops
       .fixed.z-50.bottom-0.left-0.w-full.p-6.md_p-8.bg-yellow.text-black.text-center.-shadow-md.font-sans.text-sm.md_text-base.lg_text-lg(v-html="'Wrong&nbsp;Network&nbsp;🤖 Please&nbsp;switch&nbsp;to&nbsp;Mainnet'")
+
+    messages
 </template>
 
 <script>
-// import Notifications from './components/Notifications.vue'
+import Messages from './components/Messages.vue'
 // import Status from './components/Status.vue'
 import '@/style/_main.css'
 export default {
   name: 'App',
+  components: { Messages },
   metaInfo: {
     titleTemplate: (ttl) => {
       return ttl ? `${ttl} – Folia` : 'Folia'

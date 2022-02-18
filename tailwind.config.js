@@ -75,6 +75,7 @@ module.exports = {
       'black-a30': 'rgba(0,0,0,0.30)',
       // 'black-a40': 'rgba(0,0,0,0.40)',
       'black-a45': 'rgba(0,0,0,0.45)',
+      'black-a90': 'rgba(0,0,0,0.90)',
       paper: 'rgb(248,248,248)',
 
       gray: {

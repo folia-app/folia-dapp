@@ -548,13 +548,8 @@ export default new Vuex.Store({
 
         // sign...
         const contractSigner = state.foliaControllerContract2.connect(signer)
-        console.log(contractSigner)
-        debugger
-        // return tx
-        const tx = await contractSigner.buyByID(work.price, state.address, workId, editionId)
-        console.log(tx)
-        debugger
-        return tx
+        // tx
+        return contractSigner.buyByID(state.address, workId, editionId, { value: work.price })
 
         // refresh work data for app
         // dispatch('getWork', { id: workId, flush: true })
