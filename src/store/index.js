@@ -167,7 +167,7 @@ export default new Vuex.Store({
         chainId = 1
       }
       // folia
-      state.foliaContract2 = new ethers.Contract(Folia.networks[chainId].address, FoliaControllerV2.abi, provider)
+      state.foliaContract2 = new ethers.Contract(Folia.networks[chainId].address, Folia.abi, provider)
       console.log('folia:', Folia.networks[chainId].address)
       // controller
       state.foliaControllerContract2 = new ethers.Contract(FoliaControllerV2.networks[chainId].address, FoliaControllerV2.abi, provider)
@@ -576,22 +576,42 @@ export default new Vuex.Store({
       }
     },
 
-    /* get owner by token id */
-    async getNFTOwnerByTokenId ({ state, commit }, tokenId) {
+    // /* get owner by token id */
+    // async getNFTOwnerByTokenId ({ state, commit }, tokenId) {
+    //   try {
+    //     const token = state.tokens.find(token => token[0] === tokenId) || []
+    //     let owner = token && token[1]
+    //     if (owner) return owner
+    //     // get new data
+    //     if (state.foliaContract) {
+    //       owner = await state.foliaContract.methods.ownerOf(tokenId).call()
+    //       commit('SAVE_TOKEN', [tokenId, owner])
+    //       return owner
+    //     }
+    //     return null
+    //   } catch (e) {
+    //     // seems to error if token doesn't exist...
+    //     console.error("get owner error / token doesn't exist?", tokenId, e)
+    //     return 0
+    //   }
+    // }
+
+    /* read owner by token id from chain */
+    async getNFTOwnerByTokenId ({ state, commit, dispatch }, tokenId) {
       try {
+        // saved?
         const token = state.tokens.find(token => token[0] === tokenId) || []
         let owner = token && token[1]
         if (owner) return owner
-        // get new data
-        if (state.foliaContract) {
-          owner = await state.foliaContract.methods.ownerOf(tokenId).call()
-          commit('SAVE_TOKEN', [tokenId, owner])
-          return owner
-        }
-        return null
-      } catch (e) {
+        // fetch...
+        if (!state.foliaContract2) await dispatch('init')
+        owner = await state.foliaContract2.ownerOf(tokenId)
+        // save
+        commit('SAVE_TOKEN', [tokenId, owner])
+        return owner
+      } catch {
         // seems to error if token doesn't exist...
-        console.error("get owner error / token doesn't exist?", tokenId, e)
+        console.warn(`get owner error / token doesn't exist? (${tokenId})`)
         return 0
       }
     }
