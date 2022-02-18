@@ -8,6 +8,9 @@ import linkResolver from '@/plugins/prismic/link-resolver.js'
 import VueMeta from 'vue-meta'
 import analytics from './plugins/vue-gtag'
 
+// netlify pre-rendering (set to true elsewhere in app, otherwise rendered after 10s)
+window.prerenderReady = false
+
 // import { PortisProvider } from 'portis'
 // import Web3 from 'web3'
 

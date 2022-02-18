@@ -4,7 +4,7 @@
     //- media
     div(slot="media")
       //- image
-      resp-img.transition-opacity.duration-500(v-if="token.image && token.image.length",:bg="true", :image="{src: token.image}", :class="{'opacity-0ff': hover && token.drc}")
+      resp-img.transition-opacity.duration-500(v-if="token.image && token.image.length",:bg="true", :image="{src: token.image}", :class="{'opacity-0ff': hover && token.drc}", :rawSrc="isMutative")
       //- (video)
       template(v-if="token.animation_thumb")
         observer.absolute.overlay(:threshold="0.01", @visible="onVisible", @hidden="onHidden")
@@ -59,7 +59,7 @@ import Observer from '@/components/Observer'
 import SoldOutDot from '@/components/SoldOutDot'
 export default {
   name: 'SquishyThumbToken',
-  props: ['token', 'buyBtn'],
+  props: ['token', 'buyBtn', 'isMutative'],
   data () {
     return {
       owner: null,

@@ -1,9 +1,3 @@
-const asset = {
-  image: 'https://gateway.pinata.cloud/ipfs/QmbMyuXANJszqz7diafYT2717pVUbGmmBfmgeC9Yk9yiVB/FLA9000001-frame0.png',
-  animation_url: 'https://gateway.pinata.cloud/ipfs/QmZMqGrLe1cNd7cAyhrPMehb3zXHCbjsW1WDMJptcvn67z/FLA9000001__Petra-Cortright-James-Whipple__Untitled-02/FLA9000001.mp4',
-  animation_url_optim: 'https://gateway.pinata.cloud/ipfs/QmbMyuXANJszqz7diafYT2717pVUbGmmBfmgeC9Yk9yiVB/FLA9000001-web.mp4'
-}
-
 export default {
   titlePattern: 'Untitled 02',
   editions: 1,
@@ -16,6 +10,14 @@ export default {
   },
   background: '#fefefe',
   tokens: {
-    9000001: asset
+    9000001: {
+      image: 'https://gateway.pinata.cloud/ipfs/QmbMyuXANJszqz7diafYT2717pVUbGmmBfmgeC9Yk9yiVB/FLA9000001-frame0.png',
+      animation_url: 'https://gateway.pinata.cloud/ipfs/QmZMqGrLe1cNd7cAyhrPMehb3zXHCbjsW1WDMJptcvn67z/FLA9000001__Petra-Cortright-James-Whipple__Untitled-02/FLA9000001.mp4',
+      animation_url_optim: 'https://gateway.pinata.cloud/ipfs/QmbMyuXANJszqz7diafYT2717pVUbGmmBfmgeC9Yk9yiVB/FLA9000001-web.mp4',
+      properties: {
+        artist: 'Petra Cortright & James Whipple',
+        series: 'Untitled'
+      }
+    }
   }
 }
