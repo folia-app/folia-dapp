@@ -5,7 +5,7 @@ import Folia from 'folia-contracts/build/contracts/Folia.json'
 import FoliaControllerV2 from 'folia-contracts/build/contracts/FoliaControllerV2.json'
 import ReserveAuction from 'folia-contracts/build/contracts/ReserveAuction.json'
 // ethers
-import { ethers as Ethers } from 'ethers'
+import { ethers } from 'ethers'
 // web3
 import Web3 from 'web3'
 import Web3Modal from 'web3modal'
@@ -66,7 +66,8 @@ export default new Vuex.Store({
     metadatas: []
   },
   getters: {
-    weiToETH: () => (wei) => web3?.utils.fromWei(wei) ?? '-',
+    // weiToETH: () => (wei) => web3?.utils.fromWei(wei) ?? '-',
+    weiToETH: () => wei => ethers.utils.formatUnits(wei) ?? '...',
     ethToWei: () => (eth) => web3?.utils.toWei(eth) ?? '-',
     workId: () => (uid, prefix) => {
       const id = Number(uid) // / 1000000
@@ -166,13 +167,13 @@ export default new Vuex.Store({
         chainId = 1
       }
       // folia
-      state.foliaContract2 = new Ethers.Contract(Folia.networks[chainId].address, FoliaControllerV2.abi, provider)
+      state.foliaContract2 = new ethers.Contract(Folia.networks[chainId].address, FoliaControllerV2.abi, provider)
       console.log('folia:', Folia.networks[chainId].address)
       // controller
-      state.foliaControllerContract2 = new Ethers.Contract(FoliaControllerV2.networks[chainId].address, FoliaControllerV2.abi, provider)
+      state.foliaControllerContract2 = new ethers.Contract(FoliaControllerV2.networks[chainId].address, FoliaControllerV2.abi, provider)
       console.log('controller:', FoliaControllerV2.networks[chainId].address)
       // auctions
-      state.reserveAuctionContract2 = new Ethers.Contract(ReserveAuction.networks[chainId].address, ReserveAuction.abi, provider)
+      state.reserveAuctionContract2 = new ethers.Contract(ReserveAuction.networks[chainId].address, ReserveAuction.abi, provider)
       console.log('auctions:', ReserveAuction.networks[chainId].address)
     }
   },
@@ -215,11 +216,11 @@ export default new Vuex.Store({
         const givenProvider = window.ethereum || Web3.currentProvider || Web3.givenProvider
         if (givenProvider) {
           // metamask/browser
-          provider = new Ethers.providers.Web3Provider(givenProvider)
+          provider = new ethers.providers.Web3Provider(givenProvider)
         } else {
           // infura fallback
           const n = process.env.NODE_ENV === 'development' ? 4 : 1
-          provider = new Ethers.getDefaultProvider(networks[n].infura)
+          provider = new ethers.getDefaultProvider(networks[n].infura)
         }
 
         await dispatch('getNetwork', provider)
@@ -256,7 +257,7 @@ export default new Vuex.Store({
       try {
         // connect and update provider, signer
         walletProvider = await web3Modal.connect()
-        provider = new Ethers.providers.Web3Provider(walletProvider)
+        provider = new ethers.providers.Web3Provider(walletProvider)
         signer = provider.getSigner()
 
         // set user address
