@@ -5,7 +5,7 @@ import Folia from 'folia-contracts/build/contracts/Folia.json'
 import FoliaControllerV2 from 'folia-contracts/build/contracts/FoliaControllerV2.json'
 import ReserveAuction from 'folia-contracts/build/contracts/ReserveAuction.json'
 // ethers
-import { ethers } from 'ethers'
+import { ethers, BigNumber as bn } from 'ethers'
 // web3
 import Web3 from 'web3'
 import Web3Modal from 'web3modal'
@@ -75,7 +75,7 @@ export default new Vuex.Store({
         : id // 1 - for contract communication
     },
     addrShort: () => (addr) => addr ? addr.slice(0, 6) + '...' + addr.slice(-4) : '...',
-    userBalance: (state) => (addr) => web3?.eth.getBalance(addr || state.address) || 0, // wei
+    userBalance: (state) => (addr) => provider?.getBalance(addr || state.address) || '0', // wei
     contractAddr: (state) => state.foliaContract?._address,
     isSoldOut: () => (work) => {
       return work && Number(work.editions) && Number(work.printed) >= Number(work.editions)
@@ -448,43 +448,85 @@ export default new Vuex.Store({
     },
 
     /* buy by ID */
+    // async buyByID ({ state, dispatch, rootGetters }, { tokenId }) {
+    //   try {
+    //     const workId = Math.floor(tokenId / 1000000)
+    //     const workSpace = workId * 1000000
+    //     const editionId = tokenId - workSpace
+    //     const bn = mixed => new web3.utils.BN(mixed)
+
+    //     const work = await dispatch('getWork', { id: workId, flush: true })
+    //     // !! unavailable
+    //     if (!work.exists) throw new Error(`!! Work ${workId} doesn't exist`)
+    //     // !! paused
+    //     if (work.paused) throw new Error(`!! Work ${workId} is locked. Please wait for release or try again shortly.`)
+
+    //     // wallet connected ?
+    //     if (!state.address) {
+    //       await dispatch('connect')
+    //     }
+
+    //     // !! not enough ETH
+    //     const balance = await rootGetters.userBalance()
+    //     const insufficientFunds = bn(balance).lt(bn(work.price))
+    //     if (insufficientFunds) throw new Error(`!! Insufficient funds in your wallet\n${state.address}`)
+
+    //     // buy
+    //     await state.foliaControllerContract.methods
+    //       .buyByID(state.address, workId, editionId)
+    //       .send({ from: state.address, value: work.price })
+    //     // refresh work data for app
+    //     dispatch('getWork', { id: workId, flush: true })
+    //   } catch (e) {
+    //     console.error('@buyByID:', e)
+    //     // track
+    //     exception({ description: `@buyByID: ${e.message}`, fatal: false })
+    //     // TODO - more elegant UX error ?
+    //     if (e.message?.includes('!! ')) {
+    //       alert(e.message.replace('!! ', ''))
+    //     }
+    //   }
+    // },
+
+    /* buy token by id */
     async buyByID ({ state, dispatch, rootGetters }, { tokenId }) {
       try {
-        const workId = Math.floor(tokenId / 1000000)
-        const workSpace = workId * 1000000
-        const editionId = tokenId - workSpace
-        const bn = mixed => new web3.utils.BN(mixed)
+        const workId = Math.floor(tokenId / 1000000) // 12
+        const workSpace = workId * 1000000 // 12000000
+        const editionId = tokenId - workSpace // 1
 
+        // get work...
         const work = await dispatch('getWork', { id: workId, flush: true })
+
         // !! unavailable
         if (!work.exists) throw new Error(`!! Work ${workId} doesn't exist`)
         // !! paused
         if (work.paused) throw new Error(`!! Work ${workId} is locked. Please wait for release or try again shortly.`)
 
         // wallet connected ?
-        if (!state.address) {
-          await dispatch('connect')
-        }
+        if (!state.address || !signer) await dispatch('connect')
 
         // !! not enough ETH
         const balance = await rootGetters.userBalance()
-        const insufficientFunds = bn(balance).lt(bn(work.price))
-        if (insufficientFunds) throw new Error(`!! Insufficient funds in your wallet\n${state.address}`)
+        if (bn.from(balance).lt(work.price)) throw new Error(`!! Insufficient funds in your wallet\n${state.address}`)
 
-        // buy
-        await state.foliaControllerContract.methods
-          .buyByID(state.address, workId, editionId)
-          .send({ from: state.address, value: work.price })
+        // sign...
+        const contractSigner = state.foliaControllerContract2.connect(signer)
+        console.log(contractSigner)
+        debugger
+        // return tx
+        const tx = await contractSigner.buyByID(work.price, state.address, workId, editionId)
+        console.log(tx)
+        debugger
+        return tx
+
         // refresh work data for app
-        dispatch('getWork', { id: workId, flush: true })
+        // dispatch('getWork', { id: workId, flush: true })
       } catch (e) {
         console.error('@buyByID:', e)
         // track
         exception({ description: `@buyByID: ${e.message}`, fatal: false })
-        // TODO - more elegant UX error ?
-        if (e.message?.includes('!! ')) {
-          alert(e.message.replace('!! ', ''))
-        }
+        throw e
       }
     },
 

@@ -134,11 +134,25 @@ export default {
       return !this.$refs.video?.paused && this.$refs.video?.pause()
     },
     async buy ({ tokenId }) {
-      // track
-      this.$gtag.event('buyBtnClick', { event_category: 'buy', event_label: 'squishyThumbToken.vue', value: tokenId })
-      //
-      await this.$store.dispatch('buyByID', { tokenId })
-      this.fetchOwner(true)
+      try {
+        // track
+        this.$gtag.event('buyBtnClick', { event_category: 'buy', event_label: 'squishyThumbToken.vue', value: tokenId })
+
+        // confirm...
+        const tx = await this.$store.dispatch('buyByID', { tokenId })
+
+        // wait for confirmation...
+        await tx.wait()
+        // refresh work
+        this.$store.dispatch('getWork', { id: Math.floor(tokenId / 1000000), flush: true })
+        // get owner
+        this.fetchOwner(true)
+      } catch (e) {
+        // TODO - more elegant UX error ?
+        if (e.message?.includes('!! ')) {
+          alert(e.message.replace('!! ', ''))
+        }
+      }
     }
     // onMouseenter () {
     //   // cancel if opened
