@@ -68,7 +68,9 @@
               btn.px-7.md_px-12(theme="drkgray", :active="$route.name === 'work'") Tokens
             button.focus_outline-none(@click="$router.replace({name: 'work-info'})")
               btn.px-7.md_px-12(theme="drkgray", :active="$route.name === 'work-info'") Info
-            button.focus_outline-none(@click="$router.replace({name: 'work-auctions'})", v-if="isAuction")
+            //- auctions
+            //- HIDDEN until auctions.js converted to ethers
+            //- button.focus_outline-none(@click="$router.replace({name: 'work-auctions'})", v-if="isAuction")
               btn.px-7.md_px-12(theme="drkgray", :active="$route.name.includes('work-auctions')") Auctions
             button.focus_outline-none(@click="$router.replace({name: 'work-owners'})", v-if="hasTabCollectors")
               btn.px-7.md_px-12(theme="drkgray", :active="$route.name === 'work-owners'") Collectors

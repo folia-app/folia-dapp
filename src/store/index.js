@@ -3,11 +3,11 @@ import Vuex from 'vuex'
 // contracts
 import Folia from 'folia-contracts/build/contracts/Folia.json'
 import FoliaControllerV2 from 'folia-contracts/build/contracts/FoliaControllerV2.json'
-import ReserveAuction from 'folia-contracts/build/contracts/ReserveAuction.json'
+// import ReserveAuction from 'folia-contracts/build/contracts/ReserveAuction.json'
 // ethers
-import { ethers, BigNumber as bn } from 'ethers'
 // web3
-import Web3 from 'web3'
+import { ethers, BigNumber as bn } from 'ethers'
+// import Web3 from 'web3'
 import Web3Modal from 'web3modal'
 import WalletConnectProvider from '@walletconnect/web3-provider'
 import { exception } from 'vue-gtag'
@@ -63,7 +63,8 @@ export default new Vuex.Store({
   getters: {
     // weiToETH: () => (wei) => web3?.utils.fromWei(wei) ?? '-',
     weiToETH: () => wei => ethers.utils.formatUnits(wei) ?? '...',
-    ethToWei: () => (eth) => web3?.utils.toWei(eth) ?? '-',
+    // ethToWei: () => (eth) => web3?.utils.toWei(eth) ?? '-',
+    ethToWei: () => (eth) => ethers.utils.parseUnits(eth).toString() ?? '-',
     workId: () => (uid, prefix) => {
       const id = Number(uid) // / 1000000
       return prefix ? ('00' + id).slice(-3) // 001
@@ -168,8 +169,8 @@ export default new Vuex.Store({
       state.foliaControllerContract = new ethers.Contract(FoliaControllerV2.networks[chainId].address, FoliaControllerV2.abi, provider)
       console.log('controller:', FoliaControllerV2.networks[chainId].address)
       // auctions
-      state.reserveAuctionContract = new ethers.Contract(ReserveAuction.networks[chainId].address, ReserveAuction.abi, provider)
-      console.log('auctions:', ReserveAuction.networks[chainId].address)
+      // state.reserveAuctionContract = new ethers.Contract(ReserveAuction.networks[chainId].address, ReserveAuction.abi, provider)
+      // console.log('auctions:', ReserveAuction.networks[chainId].address)
     }
   },
   actions: {
@@ -208,7 +209,7 @@ export default new Vuex.Store({
 
     async setupFallbackProvider ({ dispatch }) {
       try {
-        const givenProvider = window.ethereum || Web3.currentProvider || Web3.givenProvider
+        const givenProvider = window.ethereum // || Web3.currentProvider || Web3.givenProvider
         if (givenProvider) {
           // metamask/browser
           provider = new ethers.providers.Web3Provider(givenProvider)
