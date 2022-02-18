@@ -56,11 +56,6 @@ export default new Vuex.Store({
     foliaControllerContract: null,
     reserveAuctionContract: null,
 
-    // ethers
-    foliaContract2: null,
-    foliaControllerContract2: null,
-    reserveAuctionContract2: null,
-
     works: [],
     tokens: [],
     metadatas: []
@@ -167,13 +162,13 @@ export default new Vuex.Store({
         chainId = 1
       }
       // folia
-      state.foliaContract2 = new ethers.Contract(Folia.networks[chainId].address, Folia.abi, provider)
+      state.foliaContract = new ethers.Contract(Folia.networks[chainId].address, Folia.abi, provider)
       console.log('folia:', Folia.networks[chainId].address)
       // controller
-      state.foliaControllerContract2 = new ethers.Contract(FoliaControllerV2.networks[chainId].address, FoliaControllerV2.abi, provider)
+      state.foliaControllerContract = new ethers.Contract(FoliaControllerV2.networks[chainId].address, FoliaControllerV2.abi, provider)
       console.log('controller:', FoliaControllerV2.networks[chainId].address)
       // auctions
-      state.reserveAuctionContract2 = new ethers.Contract(ReserveAuction.networks[chainId].address, ReserveAuction.abi, provider)
+      state.reserveAuctionContract = new ethers.Contract(ReserveAuction.networks[chainId].address, ReserveAuction.abi, provider)
       console.log('auctions:', ReserveAuction.networks[chainId].address)
     }
   },
@@ -466,7 +461,7 @@ export default new Vuex.Store({
         if (bn.from(balance).lt(work.price)) throw new Error(`!! Insufficient funds in your wallet\n${state.address}`)
 
         // sign...
-        const contractSigner = state.foliaControllerContract2.connect(signer)
+        const contractSigner = state.foliaControllerContract.connect(signer)
         // tx
         return contractSigner.buy(state.address, workId, { value: work.price })
 
@@ -547,7 +542,7 @@ export default new Vuex.Store({
         if (bn.from(balance).lt(work.price)) throw new Error(`!! Insufficient funds in your wallet\n${state.address}`)
 
         // sign...
-        const contractSigner = state.foliaControllerContract2.connect(signer)
+        const contractSigner = state.foliaControllerContract.connect(signer)
         // tx
         return contractSigner.buyByID(state.address, workId, editionId, { value: work.price })
 
@@ -598,12 +593,12 @@ export default new Vuex.Store({
           throw new Error(`invalid work id: ${id}`)
         }
 
-        if (!state.foliaControllerContract2) {
+        if (!state.foliaControllerContract) {
           await dispatch('init')
         }
 
         // fetch...
-        work = await state.foliaControllerContract2.works(id)
+        work = await state.foliaControllerContract.works(id)
         work = { id, ...work } // add id
         // save
         commit('SAVE_WORK', work)
@@ -680,8 +675,8 @@ export default new Vuex.Store({
         let owner = token && token[1]
         if (owner) return owner
         // fetch...
-        if (!state.foliaContract2) await dispatch('init')
-        owner = await state.foliaContract2.ownerOf(tokenId)
+        if (!state.foliaContract) await dispatch('init')
+        owner = await state.foliaContract.ownerOf(tokenId)
         // save
         commit('SAVE_TOKEN', [tokenId, owner])
         return owner

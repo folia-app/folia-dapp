@@ -69,6 +69,7 @@ export default {
     return {
       tokens: null,
       listening: false,
+      listener: null,
       limit: 12
     }
   },
@@ -123,19 +124,35 @@ export default {
         console.error('@getTokens', e)
       }
     },
-    listenToContract () {
-      if (!this.listening && this.foliaControllerContract && this.canBuy) {
-        this.foliaControllerContract.events
-          .editionBought()
-          .on('data', this.onEditionBought)
-          .on('error', (error) => console.error(error))
-        this.listening = true
-        console.log('listening!')
+    async listenToContract () {
+      // TODO use wss just for listening, use http for all infura stuff
+      try {
+        if (!this.listening) { // && this.canBuy) {
+          // wait for init...
+          if (!this.foliaControllerContract) {
+            await this.$store.dispatch('init')
+          }
+          // attach listener
+          this.foliaControllerContract.on('editionBought', this.onEditionBought)
+
+          this.listening = true
+          console.log('listening!')
+        }
+      } catch (e) {
+        console.error(e)
       }
     },
-    onEditionBought (event) {
+    unlistenToContract () {
+      if (this.foliaControllerContract) {
+        this.foliaControllerContract.off('editionBought', this.onEditionBought)
+        console.log('un-listening')
+      }
+    },
+    onEditionBought () {
+      const workId = arguments[0] && arguments[0].toString()
+      console.log('edition bought from work', workId)
       // re-fetch tokens if bought from current work
-      if (event.returnValues?.workId === this.doc?.uid) {
+      if (workId === this.doc?.uid) {
         // delay in case media is being generated
         setTimeout(() => {
           this.getTokens()
@@ -172,6 +189,9 @@ export default {
     canBuy () {
       this.listenToContract()
     }
+  },
+  destroyed () {
+    this.unlistenToContract()
   },
   components: { SquishyThumbToken, Btn, Observer, SvgFleuron }
 }
