@@ -1,3 +1,7 @@
+// WARNING !!!!
+// out of date (uses web3)
+// needs update to ethers
+
 import debounce from 'lodash/debounce'
 import { exception } from 'vue-gtag'
 const deployBlock = process.env.NODE_ENV === 'development' ? 0 : 12088025
