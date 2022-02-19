@@ -275,8 +275,9 @@ export default {
         if (
           !this.doc?.data.tokens_body.length &&
           (
-            !this.isVariableEdition ||
-            (this.isVariableEdition && this.isReleased === false)
+            !this.isVariableEdition
+            // ||
+            // (this.isVariableEdition && this.isReleased === false)
           )
         ) {
           this.$router.replace({ name: 'work-info' })

@@ -31,7 +31,7 @@ let web3
 
 // setup web3 modal
 const web3Modal = new Web3Modal({
-  // network: 'rinkeby', // optional
+  network: 'rinkeby', // optional
   cacheProvider: true, // optional
   providerOptions: { // required
     walletconnect: {
