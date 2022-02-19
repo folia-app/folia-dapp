@@ -72,9 +72,10 @@ export default {
           // window.location.assign(file)
             var a = document.createElement('a')
             a.href = window.URL.createObjectURL(blob)
-            a.download = 'example1'
+            // filename
+            a.download = (this.download.prefix || '') + (this.tokenId || 'download')
 
-            this.$root.$emit('updateMsg', { timestamp, body: `Download finished!<br><a class="underline" href="${a.href}">File</a>` })
+            this.$root.$emit('updateMsg', { timestamp, body: `Download finished!<br><a class="boder-b border-dashed" href="${a.href}">File</a>` })
 
             // prompt save file
             a.click()

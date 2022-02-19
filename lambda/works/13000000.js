@@ -2,7 +2,7 @@ const properties = {
   artist: 'Omsk Social Club',
   series: '"Heart of an Avatar" by Eastyn Agrippa'
 }
-const download = { method: 'POST', url: 'https://weak-otter-25.deno.dev', type: 'epub' }
+const download = { method: 'POST', url: 'https://eastyn.deno.dev', type: 'epub', prefix: 'HeartOfAnAvatar_' }
 
 export default {
   titlePattern: '"Heart of an Avatar" by Eastyn Agrippa {{no}}',
