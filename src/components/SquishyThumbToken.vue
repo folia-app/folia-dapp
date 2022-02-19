@@ -38,7 +38,7 @@
     //- inner content
     .absolute.overlay.flex.items-center.justify-center.group(v-if="opened")
       //- no.
-      a.absolute.top-0.left-0.py-3(:href="openSeaLink({token: token.tokenId})", target="_blank", rel="noopener noreferrer", :class="{'pointer-events-none': !owner}")
+      a.absolute.top-0.left-0.p-3.lg_px-0(:href="openSeaLink({token: token.tokenId})", target="_blank", rel="noopener noreferrer", :class="{'pointer-events-none': !owner}")
         btn.lg_px-6.lg_hover_bg-black-a15(theme="none", size="small")
           | {{ token.tokenId.slice(-3) }}
 
@@ -57,7 +57,7 @@
 
       //- (download btn)
       template(v-if="token.download && owner")
-        .absolute.top-0.right-0.lg_py-3.lg_px-4
+        .absolute.top-0.right-0.py-3.px-5.lg_py-3.lg_px-3
           sign-and-download-button(:download="token.download", :owner="owner", :tokenId="token.tokenId")
             btn.lg_px-5.lg_hover_bg-black-a15.flex.items-center.-mt-px(theme="none", size="small")
               span.uppercase.mr-3(v-if="token.download.type") {{ token.download.type }}
