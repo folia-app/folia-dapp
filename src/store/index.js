@@ -57,7 +57,8 @@ export default new Vuex.Store({
 
     works: [],
     tokens: [],
-    metadatas: []
+    metadatas: [],
+    addresses: {}
   },
   getters: {
     // weiToETH: () => (wei) => web3?.utils.fromWei(wei) ?? '-',
@@ -170,6 +171,11 @@ export default new Vuex.Store({
       // auctions
       // state.reserveAuctionContract = new ethers.Contract(ReserveAuction.networks[chainId].address, ReserveAuction.abi, provider)
       // console.log('auctions:', ReserveAuction.networks[chainId].address)
+    },
+    SAVE_ADDRESS (state, { address, ens }) {
+      const addrs = JSON.parse(JSON.stringify(state.addresses))
+      addrs[address.toLowerCase()] = { ens }
+      state.addresses = addrs
     }
   },
   actions: {
@@ -751,6 +757,41 @@ export default new Vuex.Store({
       } catch (e) {
         console.error(e)
         throw e
+      }
+    },
+
+    async resolveAddress ({ state, getters, commit, dispatch }, { address }) {
+      try {
+        // sanitize
+        address = (address || '').toLowerCase()
+        // saved?
+        const saved = state.addresses[address]
+        if (saved && saved.ens !== undefined) {
+          return saved
+        }
+
+        // fetch new...
+        if (!provider) await dispatch('init')
+        const ens = await provider.lookupAddress(address)
+        // save even if null so we don't have to lookup again
+        commit('SAVE_ADDRESS', { address, ens })
+
+        // if (ens) {
+        //   // get records async...
+        //   const resolver = await provider.getResolver(ens)
+        //   const records = ['avatar', 'url', 'com.twitter', 'vnd.twitter', 'com.github', 'vnd.github', 'com.discord', 'vnd.discord']
+        //   // records...
+        //   records.forEach(name => {
+        //     resolver.getText(name)
+        //       .then(value => commit('SAVE_ADDRESS_RECORD', { address, record: { name, value } }))
+        //       // .catch(e => console.error(`Error getting ENS text record (${name} from ${ens}): ` + e ))
+        //   })
+        // }
+
+        return { ens }
+      } catch (e) {
+        console.error(e)
+        return null
       }
     }
   }

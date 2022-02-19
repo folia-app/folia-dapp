@@ -55,7 +55,8 @@
               template(v-else)
                 template(v-if="$store.state.address")
                   btn.relative.lg_-mt-2.lg_-mb-6.pl-10.flex.items-center(theme="drkgray")
-                    | {{ $store.getters.addrShort($store.state.address) }}
+                    //- | {{ $store.getters.addrShort($store.state.address) }}
+                    addr(:address="$store.state.address")
                     button.px-5.lg_hover_text-yellow.focus_outline-none(@click="$store.dispatch('disconnect')")
                       svg-x.w-5.h-5.text-white(strokeWidth="1")
 
@@ -148,6 +149,7 @@ import ImgGif from '@/components/ImgGif'
 // import CountdownPlayBtnOverlay from '@/components/CountdownPlayBtnOverlay'
 import SoldOutDot from '@/components/SoldOutDot'
 import linkResolver from '@/plugins/prismic/link-resolver'
+import Addr from '@/components/Addr'
 export default {
   name: 'Work',
   props: ['id'],
@@ -322,7 +324,7 @@ export default {
       }
     }
   },
-  components: { RichText, svgX, Btn, svgFleuron, SoldOutDot, Countdown, ImgGif }
+  components: { Addr, RichText, svgX, Btn, svgFleuron, SoldOutDot, Countdown, ImgGif }
 }
 </script>
 

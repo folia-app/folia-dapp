@@ -50,7 +50,10 @@
 
       //- owner
       a.absolute.bottom-0.right-0.lg_py-3.lg_px-4(v-if="owner", :href="openSeaLink({account: owner})", target="_blank", rel="noopener noreferrer", :class="{'opacity-0ff group-hover_opacity-100': true || !userIsOwner}")
-        btn.lg_px-5.lg_hover_bg-black-a15(theme="none", size="small") {{ userIsOwner ? 'You' : addrShort(owner) }}
+        btn.lg_px-5.lg_hover_bg-black-a15(theme="none", size="small")
+          template(v-if="userIsOwner") You
+          //- template(v-else) {{ addrShort(owner) }}
+          addr(v-else, :address="owner")
 
       //- (download btn)
       template(v-if="token.download && owner")
@@ -76,6 +79,7 @@ import svgEye from '@/components/SVG-Eye'
 import Observer from '@/components/Observer'
 import SoldOutDot from '@/components/SoldOutDot'
 import SignAndDownloadButton from '@/components/SignAndDownloadButton'
+import Addr from '@/components/Addr'
 export default {
   name: 'SquishyThumbToken',
   props: ['token', 'buyBtn', 'isMutative'],
@@ -203,7 +207,7 @@ export default {
       }
     }
   },
-  components: { Observer, Btn, SquishyThumb, svgEye, RespImg, SoldOutDot, SignAndDownloadButton }
+  components: { Addr, Observer, Btn, SquishyThumb, svgEye, RespImg, SoldOutDot, SignAndDownloadButton }
 }
 </script>
 
