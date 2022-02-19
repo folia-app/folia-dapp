@@ -58,7 +58,10 @@
               //- (minted + price)
               template(v-if="!isAuction")
                 //- minted
-                div(v-if="work && work.editions > 1") {{ work.printed }}/{{work.editions}} Minted
+                //- template(v-if="!isReleased")
+                  div(v-if="doc.data.edition") Edition of {{ doc.data.edition }}
+                template(v-if="work && work.editions > 1")
+                  div {{ work.printed }}/{{work.editions}} Minted
                 //- price
                 div(v-if="work") {{ weiToETH(work.price) }} ETH
                 div(v-else-if="doc.data.price_eth") {{ doc.data.price_eth }} ETH
@@ -72,7 +75,7 @@
             //- HIDDEN until auctions.js converted to ethers
             //- button.focus_outline-none(@click="$router.replace({name: 'work-auctions'})", v-if="isAuction")
               btn.px-7.md_px-12(theme="drkgray", :active="$route.name.includes('work-auctions')") Auctions
-            button.focus_outline-none(@click="$router.replace({name: 'work-owners'})", v-if="hasTabCollectors")
+            button.focus_outline-none(@click="$router.replace({name: 'work-owners'})", v-if="isReleased && hasTabCollectors")
               btn.px-7.md_px-12(theme="drkgray", :active="$route.name === 'work-owners'") Collectors
             button.focus_outline-none(@click="$router.replace({name: 'work-details'})", v-if="hasDetails")
               btn.px-6.md_px-12(theme="drkgray", :active="$route.name === 'work-details'")
