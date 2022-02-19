@@ -8,7 +8,7 @@
 
       //- (video as overlay)
       template(v-if="token.animation_thumb")
-        observer.absolute.overlay(:threshold="0.01", @visible="onVisible", @hidden="onHidden")
+        observer.absolute.overlay(:threshold="0.01", @visible="onVideoVisible", @hidden="onVideoHidden")
           video.absolute.overlay.object-cover.object-center(v-if="loadVideo", ref="video", :src="token.animation_thumb", autoplay muted loop playsinline)
 
       //- iframe ?
@@ -28,10 +28,17 @@
       //- (custom link overr)
       a.absolute.overlay(v-if="token.link", :href="token.link", target="_blank", rel="noopener noreferrer", @click.stop)
 
+      //- (owner label)
+      .absolute.bottom-0.left-0.pointer-events-none(v-if="userIsOwner", v-show="!opened")
+        //- div(style="border-left:20px solid red; border-bottom:20px solid red; border-top:20px solid transparent; border-right:20px solid transparent")
+        .m-5.px-4.py-2.text-xs.text-black.rounded-full(style="background:rgba(255,255,255,0.40)") You
+      //- (owner fetcher)
+      observer.absolute.overlay.pointer-events-none(v-if="!owner", @visible="fetchOwner")
+
     //- inner content
     .absolute.overlay.flex.items-center.justify-center.group(v-if="opened")
       //- no.
-      a.absolute.top-0.left-0.py-3.px-4(:href="openSeaLink({token: token.tokenId})", target="_blank", rel="noopener noreferrer", :class="{'pointer-events-none': !owner}")
+      a.absolute.top-0.left-0.py-3(:href="openSeaLink({token: token.tokenId})", target="_blank", rel="noopener noreferrer", :class="{'pointer-events-none': !owner}")
         btn.lg_px-6.lg_hover_bg-black-a15(theme="none", size="small")
           | {{ token.tokenId.slice(-3) }}
 
@@ -130,7 +137,7 @@ export default {
       // ... else open
       this.open()
     },
-    onVisible () {
+    onVideoVisible () {
       this.visible = true
       this.loadVideo = true
       this.playVideo()
@@ -138,7 +145,7 @@ export default {
         this.fetchOwner()
       }
     },
-    onHidden () {
+    onVideoHidden () {
       this.visible = false
       this.pauseVideo()
     },

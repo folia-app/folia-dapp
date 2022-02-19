@@ -72,6 +72,7 @@ module.exports = {
       black: '#000',
       'black-a03': 'rgba(0,0,0,0.03)',
       'black-a15': 'rgba(0,0,0,0.15)',
+      'black-a20': 'rgba(0,0,0,0.20)',
       'black-a30': 'rgba(0,0,0,0.30)',
       // 'black-a40': 'rgba(0,0,0,0.40)',
       'black-a45': 'rgba(0,0,0,0.45)',
