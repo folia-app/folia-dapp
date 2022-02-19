@@ -6,7 +6,9 @@
       template(v-if="msg.format === 'overlay'")
         //- TODO accessibility
         div.fixed.overlay.z-50.bg-black-a90.flex.items-center.justify-center.cursor-pointer(@click.stop="deleteMsg({ index })")
-          div.text-white.text-lg.px-8.mx-auto.text-center(v-html="msg.body")
+          //- content
+          div.text-white.text-lg.p-8.mx-auto.text-center(v-html="msg.body", @click.stop)
+          //- close btn
           button.absolute.top-0.right-0.p-8.focus_outline-none(@click.stop="deleteMsg({ index })")
             svg-x.w-8.h-8.text-white(strokeWidth="1")
 

@@ -49,7 +49,7 @@
               //- ...buy
               template(v-else)
                 button.block.group.relative.focus_outline-none.-m-2(@click="buy", :disabled="!isReleased", :class="{'opacity-50': !isReleased}")
-                  btn.px-12.md_px-16(theme="drkgray", :disabled="!isReleased") BUY
+                  btn.px-12(theme="drkgray", :disabled="!isReleased") MINT
 
             header.text-xl.mt-12
               div {{ doc.data.title }}
