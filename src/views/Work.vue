@@ -14,10 +14,10 @@
 
             .flex.justify-between.items-center.lg_items-start
               //- no.
-              router-link.flex.items-center.text-2xl.lg_text-lg.-ml-1(to="/")
+              router-link.flex.items-center.text-lg.-ml-1(to="/")
                 //- .p-4.-m-4.-mr-2.sm_hidden
                   .h-4.w-4.border-b.border-l.transform.rotate-45.border-current
-                svg-fleuron.block.mr-2(style="width:0.96em;height:0.96em")
+                svg-fleuron.block.mr-3(style="width:1.3em;height:1.3em")
                 .hidden.md_inline.leading-none {{ workId(doc.uid, true) }}
 
               //- ... custom button
@@ -34,40 +34,86 @@
                 a.block.group.relative.focus_outline-none.-m-2(:href="`mailto:info@folia.app?subject=${doc.data.artist} - ${doc.data.title}`", target="_blank", rel="noopener noreferrer")
                   btn.px-10.text-md(theme="drkgray") ENQUIRE
 
-              //- ...not released
+              //- ...countdown (not released)
               template(v-else-if="!isReleased")
                 button.focus_outline-none(@click="onBidBtn", :disabled="!isAuction", :class="{'pointer-events-none': !isAuction}")
-                  btn.px-8.text-sm.lg_-mt-2.lg_-mr-4(theme="drkgray", size="small")
+                  btn.px-8.text-sm.lg_-mt-2.lg_-mr-4ff(theme="drkgray", size="small")
                     countdown.text-white(:until="doc.data.release_link.data.release_time", @ended="isReleased = true", separator=" ")
 
               //- ...bid
-              template(v-else-if="isAuction")
+              //- template(v-else-if="isAuction")
                 template(v-if="doc.data.auction.length")
                   button.block.group.relative.focus_outline-none.-m-2(@click="onBidBtn")
                     btn.px-16(theme="drkgray") BID
 
               //- ...buy
-              template(v-else)
-                button.block.group.relative.focus_outline-none.-m-2(@click="buy", :disabled="!isReleased", :class="{'opacity-50': !isReleased}")
+              //- template(v-else)
+                button.block.group.relative.focus_outline-none.lg_-mt-2(@click="buy", :disabled="!isReleased", :class="{'opacity-50': !isReleased}")
                   btn.px-12(theme="drkgray", :disabled="!isReleased") MINT
 
-            header.text-xl.mt-12
-              div {{ doc.data.title }}
-              div.font-bold {{ doc.data.artist }}
-              rich-text(:field="doc.data.medium")
-              //- (minted + price)
-              template(v-if="!isAuction")
-                //- minted
-                //- template(v-if="!isReleased")
-                  div(v-if="doc.data.edition") Edition of {{ doc.data.edition }}
-                template(v-if="work && work.editions > 1")
-                  div {{ work.printed }}/{{work.editions}} Minted
-                //- price
-                div(v-if="work") {{ weiToETH(work.price) }} ETH
-                div(v-else-if="doc.data.price_eth") {{ doc.data.price_eth }} ETH
+              //- connect
+              template(v-else)
+                template(v-if="$store.state.address")
+                  btn.relative.lg_-mt-2.lg_-mb-6.pl-10.flex.items-center(theme="drkgray")
+                    | {{ $store.getters.addrShort($store.state.address) }}
+                    button.px-5.lg_hover_text-yellow.focus_outline-none(@click="$store.dispatch('disconnect')")
+                      svg-x.w-5.h-5.text-white(strokeWidth="1")
+
+                template(v-else)
+                  button.block.group.relative.focus_outline-none.lg_-mt-2.lg_-mb-6(@click="$store.dispatch('connect')")
+                    btn.px-10(theme="drkgray") CONNECT
+
+              //- button.block.group.relative.focus_outline-none.lg_-mt-2(@click="buy", :disabled="!isReleased", :class="{'opacity-50': !isReleased}")
+                btn.px-12(theme="drkgray", :disabled="!isReleased") CONNECT
+
+            //- header
+            .pt-10.flex.justify-between.items-start
+              .flex-1.text-xl.mr-12
+                //- title
+                div {{ doc.data.title }}
+                //- artist
+                div.font-bold {{ doc.data.artist }}
+                //- medium
+                rich-text(:field="doc.data.medium")
+                //- (minted + price)
+                template(v-if="!isAuction")
+                  .flex.items-center.flex-wrap.-mb-6
+                    div.mr-10.mb-6
+                      //- minted
+                      //- template(v-if="!isReleased")
+                        div(v-if="doc.data.edition") Edition of {{ doc.data.edition }}
+                      template(v-if="work && work.editions > 1")
+                        div {{ work.printed }}/{{work.editions}} Minted
+                      //- price
+                      div(v-if="work") {{ weiToETH(work.price) }} ETH
+                      div(v-else-if="doc.data.price_eth") {{ doc.data.price_eth }} ETH
+
+                    //- action
+                    div.mb-6
+                      template(v-if="isAuction")
+                        template(v-if="doc.data.auction.length")
+                          button.block.group.relative.focus_outline-none(@click="onBidBtn")
+                            btn.px-16(theme="drkgray") BID
+
+                      //- (buy button)
+                      template(v-else-if="!isSold && !customCTABtn")
+                        button.block.group.relative.focus_outline-none(@click="buy", :disabled="!isReleased", :class="{'opacity-50': !isReleased}")
+                          btn.text-md.px-8.tracking-wide(theme="drkgray", size="small", :disabled="!isReleased") MINT
+
+              //- actions
+                //- (bid button)
+                template(v-if="isAuction")
+                  template(v-if="doc.data.auction.length")
+                    button.block.group.relative.focus_outline-none(@click="onBidBtn")
+                      btn.px-16(theme="drkgray") BID
+
+                //- (buy button)
+                template(v-else)
+                  button.block.group.relative.focus_outline-none(@click="buy", :disabled="!isReleased", :class="{'opacity-50': !isReleased}")
+                    btn.px-12.tracking-wide(theme="drkgray", :disabled="!isReleased") MINT
 
           nav.px-8.lg_px-12.flex.justify-start.mt-4.mb-12.-ml-2.text-md.sm_text-base
-            button.focus_outline-none(@click="$router.replace({name: 'work'})", v-if="hasTabTokens")
+            button.focus_outline-none(@click="$router.replace({name: 'work'})", v-if="hasTabTokens", :disabled="!isReleased", :class="{'opacity-50': !isReleased}")
               btn.px-7.md_px-12(theme="drkgray", :active="$route.name === 'work'") Tokens
             button.focus_outline-none(@click="$router.replace({name: 'work-info'})")
               btn.px-7.md_px-12(theme="drkgray", :active="$route.name === 'work-info'") Info
@@ -75,7 +121,7 @@
             //- HIDDEN until auctions.js converted to ethers
             //- button.focus_outline-none(@click="$router.replace({name: 'work-auctions'})", v-if="isAuction")
               btn.px-7.md_px-12(theme="drkgray", :active="$route.name.includes('work-auctions')") Auctions
-            button.focus_outline-none(@click="$router.replace({name: 'work-owners'})", v-if="isReleased && hasTabCollectors")
+            button.focus_outline-none(@click="$router.replace({name: 'work-owners'})", v-if="hasTabCollectors")
               btn.px-7.md_px-12(theme="drkgray", :active="$route.name === 'work-owners'") Collectors
             button.focus_outline-none(@click="$router.replace({name: 'work-details'})", v-if="hasDetails")
               btn.px-6.md_px-12(theme="drkgray", :active="$route.name === 'work-details'")
@@ -156,7 +202,7 @@ export default {
       return this.doc.data.auction?.length
     },
     hasTabTokens () {
-      return (this.isReleased && this.isVariableEdition) || this.doc?.data.tokens_body?.length
+      return this.work?.printed > 0 || (this.isReleased && this.isVariableEdition) || this.doc?.data.tokens_body?.length
     },
     hasTabCollectors () {
       const isTokenGrid = this.isVariableEdition || this.doc.data.page_layout === 'wide'
@@ -165,6 +211,11 @@ export default {
     },
     hasDetails () {
       return this.doc && this.$prismic.asText(this.doc.data.details).length > 0
+    },
+    customCTABtn () {
+      const hasCustomLink = this.doc?.data.cta_link.link_type !== 'Any'
+      const hasEnquireBtn = this.doc.data.enquire_button || this.doc.data.status === 'enquire'
+      return hasCustomLink || hasEnquireBtn
     }
   },
   created () {
@@ -177,6 +228,10 @@ export default {
     async buy () {
       const timestamp = new Date().getTime()
       try {
+        if (!this.$store.state.address) {
+          await this.$store.dispatch('connect')
+        }
+
         // show confirmatation overlay
         this.$root.$emit('newMsg', { timestamp, format: 'overlay', body: 'Confirm transaction in your wallet.' })
 
