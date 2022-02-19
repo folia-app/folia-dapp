@@ -49,8 +49,9 @@
       template(v-if="token.download && owner")
         .absolute.top-0.right-0.lg_py-3.lg_px-4
           sign-and-download-button(:download="token.download", :owner="owner", :tokenId="token.tokenId")
-            btn.lg_px-5.lg_hover_bg-black-a15(theme="none", size="small")
-              span(style="font-size:1.15em") &DownArrowBar;
+            btn.lg_px-5.lg_hover_bg-black-a15.flex.items-center.-mt-px(theme="none", size="small")
+              span.uppercase.mr-3(v-if="token.download.type") {{ token.download.type }}
+              span.pt-1(style="font-size:1em") &DownArrowBar;
 
     //- open viewer (outer)
     button.absolute.z-20.bottom-0.right-0.lg_py-3.lg_px-4.lg_opacity-0.lg_group-hover_opacity-100.focus_outline-none.blend-difference(slot="outer", v-if="!token.link", @click="openViewer", v-show="!opened", :class="{'hidden md_block': !is3D}")
