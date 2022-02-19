@@ -71,7 +71,7 @@ export default new Vuex.Store({
     },
     addrShort: () => (addr) => addr ? addr.slice(0, 6) + '...' + addr.slice(-4) : '...',
     userBalance: (state) => (addr) => provider?.getBalance(addr || state.address) || '0', // wei
-    contractAddr: (state) => state.foliaContract?._address,
+    contractAddr: (state) => state.foliaContract?.address,
     isSoldOut: () => (work) => {
       return work && Number(work.editions) && Number(work.printed) >= Number(work.editions)
     },

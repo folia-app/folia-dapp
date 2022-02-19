@@ -76,7 +76,11 @@ exports.handler = async function (event, context) {
     // format...
     tokens = tokens.map(token => {
       const data = metadata.tokens[token]
-      const asset = (key) => data[key] && (metadata.assetPath || '') + (data[key] || '')
+      const asset = (key) => {
+        if (!data[key]) return null
+        if (data[key].startsWith('http')) return data[key]
+        return (metadata.assetPath || '') + (data[key] || '')
+      }
       return {
         tokenId: token,
         ...data,
