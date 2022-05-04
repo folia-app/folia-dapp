@@ -18,7 +18,7 @@
                 //- .p-4.-m-4.-mr-2.sm_hidden
                   .h-4.w-4.border-b.border-l.transform.rotate-45.border-current
                 svg-fleuron.block.mr-3(style="width:1.3em;height:1.3em")
-                .hidden.md_inline.leading-none {{ workId(doc.uid, true) }}
+                .hidden.md_inline.leading-none {{ isNaN(doc.uid) ? '' : workId(doc.uid, true) }}
 
               //- ... custom button
               template(v-if="doc.data.cta_link.link_type !== 'Any'")
