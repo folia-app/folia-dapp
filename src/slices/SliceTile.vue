@@ -7,7 +7,7 @@
         template(v-if="slice.primary.counter_custom && slice.primary.counter_custom.length")
           | {{ slice.primary.counter_custom }}
         template(v-else-if="isSoldOut")
-          sold-out-dot
+          sold-out-dot.text-white
         template(v-else-if="slice.primary.counter === 'query'")
           div
             observer(v-if="!work", @visible="getWork")

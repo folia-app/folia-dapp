@@ -20,6 +20,7 @@
                   .h-4.w-4.border-b.border-l.transform.rotate-45.border-current
                 svg-fleuron.block.mr-3(style="width:1.3em;height:1.3em")
                 .hidden.md_inline.leading-none {{ isNaN(doc.uid) ? '' : workId(doc.uid, true) }}
+                sold-out-dot.ml-1(v-if="isSold")
 
               //- RIGHT SIDE
               //- ...countdown (not released)
@@ -86,9 +87,9 @@
                       //- minted
                       //- template(v-if="!isReleased")
                         div(v-if="doc.data.edition") Edition of {{ doc.data.edition }}
-                      .flex.items-center(v-if="work && work.editions > 1")
+                      template(v-if="work && work.editions > 1")
                         | {{ work.printed }}/{{work.editions}} Minted
-                        sold-out-dot.ml-1(v-if="isSold")
+                        //- sold-out-dot.ml-1(v-if="isSold")
 
                       //- price
                       div(v-if="work") {{ weiToETH(work.price) }} ETH
