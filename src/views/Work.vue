@@ -13,6 +13,7 @@
           header.p-8.lg_p-12
 
             .flex.justify-between.items-center.lg_items-start
+              //- LEFT SIDE
               //- no.
               router-link.flex.items-center.text-lg.-ml-1(to="/")
                 //- .p-4.-m-4.-mr-2.sm_hidden
@@ -20,25 +21,26 @@
                 svg-fleuron.block.mr-3(style="width:1.3em;height:1.3em")
                 .hidden.md_inline.leading-none {{ isNaN(doc.uid) ? '' : workId(doc.uid, true) }}
 
+              //- RIGHT SIDE
+              //- ...countdown (not released)
+              template(v-if="!isReleased")
+                button.focus_outline-none(@click="onBidBtn", :disabled="!isAuction", :class="{'pointer-events-none': !isAuction}")
+                  btn.px-8.text-sm.lg_-mt-2.lg_-mr-4ff(theme="drkgray", size="small")
+                    countdown.text-white(:until="doc.data.release_link.data.release_time", @ended="isReleased = true", separator=" ")
+
               //- ... custom button
-              template(v-if="doc.data.cta_link.link_type !== 'Any'")
+              template(v-else-if="doc.data.cta_link.link_type !== 'Any'")
                 prismic-link(:field="doc.data.cta_link", :linkResolver="linkResolver")
                   btn.px-12(theme="drkgray") {{ doc.data.cta_text || 'LINK' }}
 
               //- ...sold-out
-              template(v-else-if="isSold")
+              //- template(v-else-if="isSold")
                 sold-out-dot
 
               //- ...enquire btn
               template(v-else-if="doc.data.enquire_button || doc.data.status === 'enquire'")
                 a.block.group.relative.focus_outline-none.-m-2(:href="`mailto:info@folia.app?subject=${doc.data.artist} - ${doc.data.title}`", target="_blank", rel="noopener noreferrer")
                   btn.px-10.text-md(theme="drkgray") ENQUIRE
-
-              //- ...countdown (not released)
-              template(v-else-if="!isReleased")
-                button.focus_outline-none(@click="onBidBtn", :disabled="!isAuction", :class="{'pointer-events-none': !isAuction}")
-                  btn.px-8.text-sm.lg_-mt-2.lg_-mr-4ff(theme="drkgray", size="small")
-                    countdown.text-white(:until="doc.data.release_link.data.release_time", @ended="isReleased = true", separator=" ")
 
               //- ...bid
               //- template(v-else-if="isAuction")
@@ -79,16 +81,20 @@
                 //- (minted + price)
                 template(v-if="!isAuction")
                   .flex.items-center.flex-wrap.-mb-6
+                    //- LEFT
                     div.mr-10.mb-6
                       //- minted
                       //- template(v-if="!isReleased")
                         div(v-if="doc.data.edition") Edition of {{ doc.data.edition }}
-                      template(v-if="work && work.editions > 1")
-                        div {{ work.printed }}/{{work.editions}} Minted
+                      .flex.items-center(v-if="work && work.editions > 1")
+                        | {{ work.printed }}/{{work.editions}} Minted
+                        sold-out-dot.ml-1(v-if="isSold")
+
                       //- price
                       div(v-if="work") {{ weiToETH(work.price) }} ETH
                       div(v-else-if="doc.data.price_eth") {{ doc.data.price_eth }} ETH
 
+                    //-
                     //- action
                     div.mb-6
                       template(v-if="isAuction")
