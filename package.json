@@ -13,8 +13,8 @@
   "dependencies": {
     "@fingerprintjs/fingerprintjs": "^3.1.2",
     "@prismicio/vue": "^2.0.7",
-    "@walletconnect/web3-provider": "^1.7.1",
-    "ethers": "^5.5.4",
+    "@walletconnect/web3-provider": "^1.3.3",
+    "ethers": "^5.6.4",
     "folia-contracts": "github:folia-app/folia-contracts#818cab4e9e09e24919929c104d908f03df031aa2",
     "global": "^4.4.0",
     "lazysizes": "^5.3.0",
