@@ -27,7 +27,7 @@
           a(href="https://twitter.com/foliafoliafolia", target="_blank", rel="noopener")
             btn.px-10(theme="ltgray") twitter
         li
-          a(href="https://discord.gg/8RA49VdraZ", target="_blank", rel="noopener")
+          a(href="https://discord.gg/peNJx6SxfS", target="_blank", rel="noopener")
             btn.px-10(theme="ltgray") discord
         li
           a(href="https://opensea.io/collection/folia", target="_blank", rel="noopener")
