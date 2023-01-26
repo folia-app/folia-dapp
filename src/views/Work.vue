@@ -92,8 +92,8 @@
                         //- sold-out-dot.ml-1(v-if="isSold")
 
                       //- price
-                      div(v-if="work") {{ weiToETH(work.price) }} ETH
-                      div(v-else-if="doc.data.price_eth") {{ doc.data.price_eth }} ETH
+                      div(v-if="doc.data.price_eth") {{ doc.data.price_eth }} ETH
+                      div(v-else-if="work") {{ weiToETH(work.price) }} ETH
 
                     //-
                     //- action
