@@ -22,20 +22,20 @@
       ul.flex.flex-wrap.w-3x4.text-xs.p-6.pb-10.lg_p-10
         li.w-full.sm_w-auto.flex
           a(href="mailto:info@folia.app", target="_blank", rel="noopener")
-            btn.px-10(theme="ltgray") info@folia.app
+            btn.px-10(theme="ltgray") email
         li
           a(href="https://twitter.com/foliafoliafolia", target="_blank", rel="noopener")
             btn.px-10(theme="ltgray") twitter
-        li
-          a(href="https://discord.gg/peNJx6SxfS", target="_blank", rel="noopener")
+        li(v-if="discordLink")
+          a(:href="discordLink", target="_blank", rel="noopener")
             btn.px-10(theme="ltgray") discord
-        li
-          a(href="https://opensea.io/collection/folia", target="_blank", rel="noopener")
-            btn.px-10(theme="ltgray") opensea
         li
           a(href="https://t.me/folia_app", target="_blank", rel="noopener")
             btn.px-10(theme="ltgray") telegram
         li
+          a(href="https://opensea.io/collection/folia", target="_blank", rel="noopener")
+            btn.px-10(theme="ltgray") opensea
+        //- li
           a(href="https://folia.substack.com", target="_blank", rel="noopener")
             btn.px-10(theme="ltgray") substack
         li
@@ -56,7 +56,8 @@ export default {
   name: 'Info',
   data () {
     return {
-      more: false
+      more: false,
+      discordLink: process.env.VUE_APP_DISCORD_LINK
     }
   },
   computed: {
