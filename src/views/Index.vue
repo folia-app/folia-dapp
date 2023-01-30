@@ -23,8 +23,8 @@
       //- MAIN
       main.index.relative.min-h-screen.transition.duration-500.transform.origin-left(:class="panelOpen ? panelWidths[1] : ''")
         //- HEADER
-        header.absolute.top-0.left-0.w-full.z-20.text-white.pointer-events-none(style="mix-blend-mode:difference")
-          .absolute.top-0.left-0.w-full
+        header.absolute.top-0.left-0.w-full.z-20.text-white.pointer-events-none
+          .absolute.top-0.left-0.w-full(style="mix-blend-mode:difference")
             .flex.w-full.justify-between.items-center
               //- logo
               .p-10.md_px-12.pointer-events-auto
