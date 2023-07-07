@@ -25,10 +25,26 @@ export default {
           }
         })
       }
+    },
+    removeGIFCompression () {
+      const imgs = this.$el.querySelectorAll('img')
+      for (var i = imgs.length - 1; i >= 0; i--) {
+        const src = imgs[i].getAttribute('src')
+        try {
+          const url = new URL(src)
+          url.search = ''
+          if (url.href.endsWith('.gif')) {
+            imgs[i].setAttribute('src', url.href)
+          }
+        } catch (e) {
+          console.error(e)
+        }
+      }
     }
   },
   mounted () {
     this.bindLinks()
+    this.removeGIFCompression()
   }
 }
 </script>
