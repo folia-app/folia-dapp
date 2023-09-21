@@ -6,6 +6,10 @@
   to = "/.netlify/functions/metadata/:splat"
 
 [[redirects]]
+  from = "/works/chameleon"
+  to = "/works/12"
+
+[[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
