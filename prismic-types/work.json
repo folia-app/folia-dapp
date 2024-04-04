@@ -1,0 +1,302 @@
+{
+  "Main" : {
+    "title" : {
+      "type" : "Text",
+      "config" : {
+        "label" : "Title"
+      }
+    },
+    "artist" : {
+      "type" : "Text",
+      "config" : {
+        "label" : "Artist"
+      }
+    },
+    "uid" : {
+      "type" : "UID",
+      "config" : {
+        "label" : "Work ID",
+        "placeholder" : "2000000"
+      }
+    },
+    "release_link" : {
+      "type" : "Link",
+      "config" : {
+        "select" : "document",
+        "customtypes" : [ "release" ],
+        "label" : "Release",
+        "placeholder" : "Select a Release"
+      }
+    },
+    "status" : {
+      "type" : "Select",
+      "config" : {
+        "options" : [ "available", "enquire", "sold", "external-mint" ],
+        "label" : "Status"
+      }
+    },
+    "cta_link" : {
+      "type" : "Link",
+      "config" : {
+        "allowTargetBlank" : true,
+        "label" : "Custom Button Link",
+        "select" : null
+      }
+    },
+    "cta_text" : {
+      "type" : "Text",
+      "config" : {
+        "label" : "Custom Button Text",
+        "placeholder" : "JOIN | LAUNCH | ..."
+      }
+    },
+    "enquire_button" : {
+      "type" : "Boolean",
+      "config" : {
+        "default_value" : false,
+        "label" : "Enquire Button"
+      }
+    },
+    "set" : {
+      "type" : "Link",
+      "config" : {
+        "select" : "document",
+        "customtypes" : [ "set" ],
+        "label" : "(Set/Series)",
+        "placeholder" : "Link a Set"
+      }
+    },
+    "year" : {
+      "type" : "Number",
+      "config" : {
+        "label" : "Year"
+      }
+    },
+    "price_eth" : {
+      "type" : "Number",
+      "config" : {
+        "label" : "Price (ETH)",
+        "placeholder" : "0.01"
+      }
+    },
+    "edition" : {
+      "type" : "Number",
+      "config" : {
+        "label" : "Edition",
+        "placeholder" : "100"
+      }
+    },
+    "variable_edition" : {
+      "type" : "Boolean",
+      "config" : {
+        "default_value" : false,
+        "label" : "Variable Edition"
+      }
+    },
+    "arist_proof_qty" : {
+      "type" : "Number",
+      "config" : {
+        "label" : "Aritst Proofs (AP)"
+      }
+    },
+    "medium" : {
+      "type" : "StructuredText",
+      "config" : {
+        "multi" : "paragraph,hyperlink",
+        "allowTargetBlank" : true,
+        "label" : "Medium Details"
+      }
+    },
+    "page_layout" : {
+      "type" : "Select",
+      "config" : {
+        "options" : [ "panel", "generative", "token-unit-sale", "wide" ],
+        "label" : "Page Layout"
+      }
+    },
+    "sale_type" : {
+      "type" : "Select",
+      "config" : {
+        "options" : [ "generative", "buy by ID", "auction" ],
+        "label" : "Sale Type"
+      }
+    },
+    "teaser_video" : {
+      "type" : "Link",
+      "config" : {
+        "label" : "Teaser Video",
+        "select" : null
+      }
+    },
+    "teaser_image" : {
+      "type" : "Link",
+      "config" : {
+        "label" : "Teaser Image",
+        "select" : null
+      }
+    },
+    "description" : {
+      "type" : "StructuredText",
+      "config" : {
+        "multi" : "paragraph,preformatted,heading1,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl",
+        "allowTargetBlank" : true,
+        "label" : "Description"
+      }
+    },
+    "details" : {
+      "type" : "StructuredText",
+      "config" : {
+        "multi" : "paragraph,hyperlink",
+        "allowTargetBlank" : true,
+        "label" : "Details"
+      }
+    }
+  },
+  "Tokens" : {
+    "grid" : {
+      "type" : "Select",
+      "config" : {
+        "options" : [ "5 cols", "4 cols", "3 cols", "2 cols" ],
+        "label" : "Default Grid"
+      }
+    },
+    "grid_classes_custom" : {
+      "type" : "Text",
+      "config" : {
+        "label" : "Custom Grid Classes (Tailwind V1)",
+        "placeholder" : "grid-cols-1 sm_grid-cols-2 md_grid-cols-3"
+      }
+    },
+    "tokens_endpoint" : {
+      "type" : "Text",
+      "config" : {
+        "label" : "(Custom Tokens Endpoint)",
+        "placeholder" : "https://virus.folia.app/api/tokens"
+      }
+    },
+    "mutative_edition" : {
+      "type" : "Boolean",
+      "config" : {
+        "default_value" : false,
+        "label" : "Mutative Edition (No Caching)"
+      }
+    },
+    "tokens_body" : {
+      "type" : "Slices",
+      "fieldset" : "Slice zone",
+      "config" : {
+        "labels" : {
+          "token_grid" : [ {
+            "display" : "columns 1-2-3",
+            "name" : "columns_1-2-3"
+          }, {
+            "display" : "columns 2-3-4",
+            "name" : "columns_2-3-4"
+          }, {
+            "display" : "columns 3-4-5",
+            "name" : "columns_3-4-5"
+          }, {
+            "name" : "",
+            "display" : ""
+          } ]
+        },
+        "choices" : {
+          "token_grid" : {
+            "type" : "Slice",
+            "fieldset" : "Token Grid",
+            "description" : "Grid of Tokens",
+            "icon" : "apps",
+            "display" : "grid",
+            "non-repeat" : { },
+            "repeat" : {
+              "token_id" : {
+                "type" : "Text",
+                "config" : {
+                  "label" : "Token ID"
+                }
+              },
+              "link" : {
+                "type" : "Link",
+                "config" : {
+                  "allowTargetBlank" : true,
+                  "label" : "Button Link",
+                  "select" : null
+                }
+              },
+              "button_text" : {
+                "type" : "Text",
+                "config" : {
+                  "label" : "Button Text",
+                  "placeholder" : "BID"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "Meta" : {
+    "meta_description" : {
+      "type" : "Text",
+      "config" : {
+        "label" : "Meta Description"
+      }
+    },
+    "meta_image" : {
+      "type" : "Image",
+      "config" : {
+        "constraint" : {
+          "width" : 1200
+        },
+        "thumbnails" : [ ],
+        "label" : "Meta Image"
+      }
+    }
+  },
+  "Auction" : {
+    "auction" : {
+      "type" : "Slices",
+      "fieldset" : "Slice zone",
+      "config" : {
+        "labels" : {
+          "token" : [ ]
+        },
+        "choices" : {
+          "token" : {
+            "type" : "Slice",
+            "fieldset" : "Token",
+            "description" : "–",
+            "icon" : "art_track",
+            "display" : "list",
+            "non-repeat" : {
+              "token_id" : {
+                "type" : "Text",
+                "config" : {
+                  "label" : "Token ID",
+                  "placeholder" : "3000001"
+                }
+              },
+              "release_link1" : {
+                "type" : "Link",
+                "config" : {
+                  "select" : "document",
+                  "customtypes" : [ "release" ],
+                  "label" : "Release"
+                }
+              },
+              "lock_label" : {
+                "type" : "Text",
+                "config" : {
+                  "label" : "Lock + Label as:",
+                  "placeholder" : "TBA"
+                }
+              }
+            },
+            "repeat" : { }
+          }
+        }
+      }
+    }
+  }
+}

@@ -104,7 +104,7 @@
                             btn.px-16(theme="drkgray") BID
 
                       //- (buy button)
-                      template(v-else-if="!isSold && !customCTABtn")
+                      template(v-else-if="!isSold && !customCTABtn && doc.data.status === 'available'")
                         button.block.group.relative.focus_outline-none(@click="buy", :disabled="!isReleased", :class="{'opacity-50': !isReleased}")
                           btn.text-md.px-8.tracking-wide(theme="drkgray", size="small", :disabled="!isReleased") MINT
 
