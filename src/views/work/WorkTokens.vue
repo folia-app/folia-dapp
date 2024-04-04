@@ -117,7 +117,7 @@ export default {
       let endpoint = `/.netlify/functions/work/${this.doc.uid}` // default
       endpoint = this.doc.data.tokens_endpoint || endpoint // custom ?
       try {
-        let resp = await fetch(`${endpoint}?network=${this.networkId}`)
+        let resp = await fetch(`${endpoint}`)
         resp = await resp.json()
         this.tokens = resp.tokens // ?.reverse()
       } catch (e) {
