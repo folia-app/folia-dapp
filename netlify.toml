@@ -1,15 +1,20 @@
 [build]
-  functions = "functions"
+functions = "functions"
 
 [[redirects]]
-  from = "/v1/metadata/*"
-  to = "/.netlify/functions/metadata/:splat"
+from = "/v1/metadata/*"
+to = "/.netlify/functions/metadata/:splat"
 
 [[redirects]]
-  from = "/works/chameleon"
-  to = "/works/12"
+from = "/works/chameleon"
+to = "/works/12"
 
 [[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
+from = "/*"
+to = "/index.html"
+status = 200
+
+[[headers]]
+for = "/*" # you can configure the correct paths here
+[headers.values]
+access-control-allow-origin = "*" # see a list of allowed values here: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Origin
