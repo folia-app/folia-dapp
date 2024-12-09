@@ -1,16 +1,16 @@
 <template lang="pug">
-  article#info.bg-white.text-black.flex.flex-col.justify-between
+  article#info.bg-gray-400.text-white.flex.flex-col.justify-between
     section.px-8.py-12.lg_px-16.lg_py-20
-      .text-red.text-2xl.md_text-3xl.lg_text-5xl.leading-normal
-        h2.text-red
-          | Folia publishes #[a.border-b-2.border-current.border-dotted.hover_border-solid(href="https://opensea.io/blog/guides/non-fungible-tokens/" target="_blank") NFT] editions.
-          | #[button.ml-3.inline-block.text-black.py-px.rounded-full.px-3.bg-gray-100.text-xs.hover_bg-gray-200.focus_outline-none(@click="more = true", v-show="!more", style="font-size:0.4em") •••]
+      .text-2xl.md_text-3xl.lg_text-5xl.leading-normal
+        h2.text-black
+          | Seeding NFT collections since #[a.border-b-2.border-current.border-dotted.hover_border-solid(href="https://etherscan.io/tx/0x0fe877cd741cd57400949826a6d0d21b7709bdb91ebac531e97863c818addce6", target="_blank", rel="noopener noreferer") 11860832]
+          //- | #[button.ml-3.inline-block.text-black.py-px.rounded-full.px-3.bg-gray-100.text-xs.hover_bg-gray-200.focus_outline-none(@click="more = true", v-show="!more", style="font-size:0.4em") •••]
 
-        transition(name="fadeinonly")
+        //- transition(name="fadeinonly")
           ul.md_w-3x4.mt-6.text-gray-800.text-sm(v-show="more")
             li.truncate(v-if="contractAddr")
               | Contract – #[a(:href="`https://etherscan.io/address/${contractAddr}`", target="_blank") {{ contractAddr }}]
-            li proudly presented by #[a(href="https://bin.am", target="_blank", rel="noopener") Bin Studio]
+            //- li proudly presented by #[a(href="https://bin.am", target="_blank", rel="noopener") Bin Studio]
             //-
               h2.font-sans.font-bold What are these?
               p Each &ldquo;patch&rdquo; here is a &ldquo;Non-Fungible Token&rdquo; (NFT) on the Ethereum blockchain.
@@ -22,25 +22,25 @@
       ul.flex.flex-wrap.w-3x4.text-xs.p-6.pb-10.lg_p-10
         li.w-full.sm_w-auto.flex
           a(href="mailto:info@folia.app", target="_blank", rel="noopener")
-            btn.px-10(theme="ltgray") email
+            btn.px-10(theme="drkgray") email
         li
           a(href="https://twitter.com/foliafoliafolia", target="_blank", rel="noopener")
-            btn.px-10(theme="ltgray") twitter
+            btn.px-10(theme="drkgray") twitter
         li(v-if="discordLink")
           a(:href="discordLink", target="_blank", rel="noopener")
-            btn.px-10(theme="ltgray") discord
+            btn.px-10(theme="drkgray") discord
         li
           a(href="https://t.me/folia_app", target="_blank", rel="noopener")
-            btn.px-10(theme="ltgray") telegram
+            btn.px-10(theme="drkgray") telegram
         li
           a(href="https://opensea.io/collection/folia", target="_blank", rel="noopener")
-            btn.px-10(theme="ltgray") opensea
+            btn.px-10(theme="drkgray") opensea
         //- li
           a(href="https://folia.substack.com", target="_blank", rel="noopener")
-            btn.px-10(theme="ltgray") substack
+            btn.px-10(theme="drkgray") substack
         li
           a(href="https://github.com/folia-app", target="_blank", rel="noopener noreferrer")
-            btn.px-10(theme="ltgray") github
+            btn.px-10(theme="drkgray") github
 
       svg-fleuron.text-black.h-12.m-12
 
