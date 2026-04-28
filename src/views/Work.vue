@@ -282,7 +282,7 @@ export default {
 
         // fwd to /info ?
         if (
-          !this.doc?.data.tokens_body.length &&
+          !this.doc?.data.tokens_body?.length &&
           (
             !this.isVariableEdition ||
             (this.isVariableEdition && this.isReleased === false)

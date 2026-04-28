@@ -15,7 +15,7 @@ export default {
       return state.docs.filter(doc => doc.type === 'auction')
     },
     isReleased: (state) => ({ uid, doc }) => {
-      doc = doc || state.docs.find(doc => doc.uid === uid)
+      doc = doc || state.docs.find(doc => doc.uid === uid && doc.type === 'work')
       const time = doc?.data?.release_link?.data?.release_time
       return !time ? true
         : new Date(time).getTime() < new Date().getTime()
@@ -36,7 +36,7 @@ export default {
     },
 
     async getWork ({ state }, uid) {
-      const saved = state.docs.find(doc => doc.uid === uid)
+      const saved = state.docs.find(doc => doc.uid === uid && doc.type === 'work')
       return saved || (await prismic(vue.$prismic.Predicates.at('my.work.uid', uid), { fetchLinks: ['set.title', 'release.release_time'] }))?.results[0]
     }
   }
