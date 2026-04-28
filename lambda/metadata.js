@@ -2,6 +2,7 @@ import * as works from './works' // works.FLA1000000, ...
 import Folia from 'folia-contracts/build/contracts/Folia.json'
 // import Web3 from 'web3'
 import Eth from 'web3-eth'
+import https from 'https'
 require('dotenv').config()
 require('encoding') // netlify build error / missing package??
 const ignoreRelease = process.env.VUE_APP_DEV_IGNORE_RELEASES === 'true'
@@ -32,6 +33,17 @@ exports.handler = async function (event, context) {
     const work = works[prefix + workNamespace] || works['FLA' + workNamespace]
     // find token
     const token = work && work.tokens[tokenId]
+
+    // Fallback for externally hosted works like Kudzu.
+    if (!token) {
+      const externalMetadata = await getExternalMetadata(tokenId, networkId, isViewer)
+      if (externalMetadata) {
+        return {
+          statusCode: 200,
+          body: JSON.stringify(externalMetadata)
+        }
+      }
+    }
 
     // !! token must exist in work.tokens list
     if (!token) {
@@ -209,4 +221,30 @@ async function getNFTOwnerByTokenId (tokenId, networkId = 1) {
     // console.error(e)
   }
   return owner
+}
+
+function getExternalMetadata (tokenId, networkId = 1, isViewer = false) {
+  return new Promise((resolve) => {
+    const viewer = isViewer ? '&viewer=1' : ''
+    const url = `https://virus.folia.app/.netlify/functions/metadata/${tokenId}?network=${networkId}${viewer}`
+
+    https.get(url, (resp) => {
+      let body = ''
+
+      resp.on('data', chunk => {
+        body += chunk
+      })
+
+      resp.on('end', () => {
+        if (resp.statusCode !== 200) return resolve(null)
+
+        try {
+          const json = JSON.parse(body)
+          resolve(json?.name ? json : null)
+        } catch {
+          resolve(null)
+        }
+      })
+    }).on('error', () => resolve(null))
+  })
 }

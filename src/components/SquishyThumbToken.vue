@@ -85,7 +85,7 @@ export default {
   props: ['token', 'buyBtn', 'isMutative'],
   data () {
     return {
-      owner: null,
+      owner: this.token?.owner || null,
       opened: false,
       hover: false,
       iframeLoaded: false,

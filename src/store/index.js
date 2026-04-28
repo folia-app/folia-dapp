@@ -596,7 +596,7 @@ export default new Vuex.Store({
 
         // !! invalid id
         if (!id || isNaN(id)) {
-          throw new Error(`invalid work id: ${id}`)
+          return null
         }
 
         if (!state.foliaControllerContract) {
@@ -618,8 +618,14 @@ export default new Vuex.Store({
     /* get metadata of work (if released) */
     async getMetadata ({ state, commit }, { token, work, isViewer = false }) {
       try {
-        token = token || Number(work) * 1000000
+        const numericWork = Number(work)
+        if (!token && isNaN(numericWork)) {
+          return null
+        }
+
+        token = token || (numericWork * 1000000)
         work = work || Math.floor(Number(token) / 1000000)
+        token = Number(token)
 
         // !! is not a number
         if (isNaN(token)) throw new Error(`Token ID is not a number: ${token}`)
