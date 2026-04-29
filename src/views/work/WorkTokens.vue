@@ -117,9 +117,14 @@ export default {
       let endpoint = `/.netlify/functions/work/${this.doc.uid}` // default
       endpoint = this.doc.data.tokens_endpoint || endpoint // custom ?
       try {
-        let resp = await fetch(`${endpoint}`)
+        let resp = await fetch(endpoint)
         resp = await resp.json()
-        this.tokens = resp.tokens // ?.reverse()
+        // derive image URL from endpoint origin if external endpoint omits it
+        const origin = /^https?:/.test(endpoint) ? new URL(endpoint).origin : null
+        const tokens = resp.tokens || []
+        this.tokens = tokens.map(t => Object.assign({}, t, {
+          image: t.image || (origin ? origin + '/img/' + t.tokenId : null)
+        }))
       } catch (e) {
         console.error('@getTokens', e)
       }

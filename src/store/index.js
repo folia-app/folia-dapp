@@ -778,12 +778,7 @@ export default new Vuex.Store({
 
         // fetch new...
         if (!provider) await dispatch('init')
-        let ens = await provider.lookupAddress(address)
-
-        // fetch from opensea...
-        if (!ens) {
-          ens = await dispatch('getAddressOpenSeaName', address)
-        }
+        const ens = await provider.lookupAddress(address)
 
         // save even if null so we don't have to lookup again
         commit('SAVE_ADDRESS', { address, ens })
@@ -801,29 +796,6 @@ export default new Vuex.Store({
         // }
 
         return { ens }
-      } catch (e) {
-        console.error(e)
-        return null
-      }
-    },
-
-    async getAddressOpenSeaName ({ state, dispatch }, address) {
-      try {
-        if (!state.networkId) await dispatch('init')
-
-        const prefix = state.networkId === 4 ? 'testnets-' : ''
-        let resp = await fetch(`https://${prefix}api.opensea.io/api/v1/account/${address}`)
-
-        // throttled? retry in 1sec
-        if (resp.status === 429) {
-          setTimeout(() => {
-            return dispatch('getAddressOpenSeaName', address)
-          }, 1000)
-        }
-
-        resp = await resp.json()
-
-        return resp.data?.user?.username
       } catch (e) {
         console.error(e)
         return null
