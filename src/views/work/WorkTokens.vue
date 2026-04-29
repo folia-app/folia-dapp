@@ -120,10 +120,13 @@ export default {
         let resp = await fetch(endpoint)
         resp = await resp.json()
         // derive image URL from endpoint origin if external endpoint omits it
-        const origin = /^https?:/.test(endpoint) ? new URL(endpoint).origin : null
+        const url = /^https?:/.test(endpoint) ? new URL(endpoint) : null
+        const origin = url ? url.origin : null
+        const isBase = url && url.searchParams.get('network') === '8453'
+        const pathPrefix = isBase ? '/img/base/' : '/img/'
         const tokens = resp.tokens || []
         this.tokens = tokens.map(t => Object.assign({}, t, {
-          image: t.image || (origin ? origin + '/img/' + t.tokenId : null)
+          image: t.image || (origin ? origin + pathPrefix + t.tokenId : null)
         }))
       } catch (e) {
         console.error('@getTokens', e)
