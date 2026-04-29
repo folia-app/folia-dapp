@@ -76,12 +76,18 @@ export default new Vuex.Store({
     isSoldOut: () => (work) => {
       return work && Number(work.editions) && Number(work.printed) >= Number(work.editions)
     },
-    openSeaLink: (state, getters) => ({ token, account }) => {
-      const isTestnet = [4].includes(state.networkId)
-      const path = token ? `/assets/${getters.contractAddr}/${token}`
-        : account ? `/accounts/${account}`
+    openSeaLink: (state, getters) => ({ token, account, chainId }) => {
+      const chains = {
+        1: 'ethereum',
+        8453: 'base',
+        11155111: 'sepolia',
+        84532: 'base-sepolia'
+      }
+      const chain = chains[chainId ?? state.networkId] || 'ethereum'
+      const path = token ? `/item/${chain}/${getters.contractAddr}/${token}`
+        : account ? `/${account}`
           : ''
-      return `https://${isTestnet ? 'testnets.' : ''}opensea.io` + path
+      return 'https://opensea.io' + path
     },
     meta: state => ({ title, descrip, img }) => {
       const meta = []
