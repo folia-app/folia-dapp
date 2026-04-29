@@ -122,12 +122,14 @@ export default {
         // derive image URL from endpoint origin if external endpoint omits it
         const url = /^https?:/.test(endpoint) ? new URL(endpoint) : null
         const origin = url ? url.origin : null
-        const chainId = url ? parseInt(url.searchParams.get('network') || '1', 10) : null
+        const chainId = resp.chainId ?? (url ? parseInt(url.searchParams.get('network') || '1', 10) : null)
+        const contract = resp.contract || null
         const pathPrefix = chainId === 8453 ? '/img/base/' : '/img/'
         const tokens = resp.tokens || []
         this.tokens = tokens.map(t => Object.assign({}, t, {
           image: t.image || (origin ? origin + pathPrefix + t.tokenId : null),
-          chainId
+          chainId,
+          contract
         }))
       } catch (e) {
         console.error('@getTokens', e)

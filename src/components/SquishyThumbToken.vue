@@ -38,7 +38,7 @@
     //- inner content
     .absolute.overlay.flex.items-center.justify-center.group(v-if="opened")
       //- no.
-      a.absolute.top-0.left-0.p-3.lg_px-0(:href="openSeaLink({token: token.tokenId, chainId: token.chainId})", target="_blank", rel="noopener noreferrer", :class="{'pointer-events-none': !owner}")
+      a.absolute.top-0.left-0.p-3.lg_px-0(:href="openSeaLink({token: token.tokenId, chainId: token.chainId, contract: token.contract})", target="_blank", rel="noopener noreferrer", :class="{'pointer-events-none': !owner}")
         btn.lg_px-6.lg_hover_bg-black-a15(theme="none", size="small")
           | {{ token.tokenId.slice(-3) }}
 
@@ -49,7 +49,7 @@
           svg-eye
 
       //- owner
-      a.absolute.bottom-0.right-0.lg_py-3.lg_px-4(v-if="owner", :href="openSeaLink({account: owner, chainId: token.chainId})", target="_blank", rel="noopener noreferrer", :class="{'opacity-0ff group-hover_opacity-100': true || !userIsOwner}")
+      a.absolute.bottom-0.right-0.lg_py-3.lg_px-4(v-if="owner", :href="openSeaLink({account: owner, chainId: token.chainId, contract: token.contract})", target="_blank", rel="noopener noreferrer", :class="{'opacity-0ff group-hover_opacity-100': true || !userIsOwner}")
         btn.lg_px-5.lg_hover_bg-black-a15(theme="none", size="small")
           template(v-if="userIsOwner") You
           //- template(v-else) {{ addrShort(owner) }}

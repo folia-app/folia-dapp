@@ -76,7 +76,7 @@ export default new Vuex.Store({
     isSoldOut: () => (work) => {
       return work && Number(work.editions) && Number(work.printed) >= Number(work.editions)
     },
-    openSeaLink: (state, getters) => ({ token, account, chainId }) => {
+    openSeaLink: (state, getters) => ({ token, account, chainId, contract }) => {
       const chains = {
         1: 'ethereum',
         8453: 'base',
@@ -84,7 +84,8 @@ export default new Vuex.Store({
         84532: 'base-sepolia'
       }
       const chain = chains[chainId ?? state.networkId] || 'ethereum'
-      const path = token ? `/item/${chain}/${getters.contractAddr}/${token}`
+      const addr = contract || getters.contractAddr
+      const path = token ? `/item/${chain}/${addr}/${token}`
         : account ? `/${account}`
           : ''
       return 'https://opensea.io' + path
