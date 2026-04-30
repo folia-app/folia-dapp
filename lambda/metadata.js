@@ -1,3 +1,4 @@
+import './loadEnv'
 import * as works from './works' // works.FLA1000000, ...
 import Folia from 'folia-contracts/build/contracts/Folia.json'
 // import Web3 from 'web3'

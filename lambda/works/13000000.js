@@ -11,7 +11,7 @@ export default {
   description: 'Omsk Social Club, "Heart of an Avatar: A Preliminary Document of the Internet" by Eastyn Agrippa {{no}}, 2022, Memoir/EPUB, Edition of 58.\n\nOwner can download EPUB at [folia.app](https://folia.app/works/13).',
   // release: '03-05-2021 09:00:00 pm +01:00',
   // directory: 'https://folia.app/works/2',
-  assetPath: 'https://gateway.lighthouse.storage/ipfs/QmNs7KemQh4zpyU5UUawbAKgPq3cgzAoVKv8ZLDZgBM5xa/',
+  assetPath: `${process.env.VUE_APP_IPFS_ORIGIN}/ipfs/QmNs7KemQh4zpyU5UUawbAKgPq3cgzAoVKv8ZLDZgBM5xa/`,
   // animation_loop: true,
   // background: 'black',
   display: { background: 'black', aspectRatio: '5:7' },

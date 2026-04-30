@@ -1,7 +1,7 @@
 export default {
   titlePattern: 'Untitled 01',
   editions: 1,
-  directory: 'https://gateway.lighthouse.storage/ipfs/QmSWUxcZUznyWts5GPVUMgk1GT81ymvepQozkhxuzCV18E',
+  directory: `${process.env.VUE_APP_IPFS_ORIGIN}/ipfs/QmSWUxcZUznyWts5GPVUMgk1GT81ymvepQozkhxuzCV18E`,
   assetPath: '',
   release: '02-20-2021 08:00:00 pm +01:00',
   description: 'Petra Cortright (b. 1986), James Whipple (b. 1985), "Untitled 01", 2021, Video/MP4, 1:33, 1810x1368 pixels, 56.4MB, Edition of 1',
@@ -11,9 +11,9 @@ export default {
   },
   tokens: {
     1000001: {
-      image: 'https://gateway.lighthouse.storage/ipfs/QmesHGK1vaRKoGE1YXYqeQk8xPNXK9UjRp6echFyucKoam',
-      animation_url: 'https://gateway.lighthouse.storage/ipfs/QmSWUxcZUznyWts5GPVUMgk1GT81ymvepQozkhxuzCV18E/FLA1000000__petra-cortright-james-whipple__untitled-01__2021.mp4',
-      animation_url_optim: 'https://gateway.lighthouse.storage/ipfs/QmQ9hMoBhu3DEQE4gkrUJG2S7i2isRJKzgSqK7aA8p81nL',
+      image: `${process.env.VUE_APP_IPFS_ORIGIN}/ipfs/QmesHGK1vaRKoGE1YXYqeQk8xPNXK9UjRp6echFyucKoam`,
+      animation_url: `${process.env.VUE_APP_IPFS_ORIGIN}/ipfs/QmSWUxcZUznyWts5GPVUMgk1GT81ymvepQozkhxuzCV18E/FLA1000000__petra-cortright-james-whipple__untitled-01__2021.mp4`,
+      animation_url_optim: `${process.env.VUE_APP_IPFS_ORIGIN}/ipfs/QmQ9hMoBhu3DEQE4gkrUJG2S7i2isRJKzgSqK7aA8p81nL`,
       properties: {
         artist: 'Petra Cortright & James Whipple',
         series: 'Untitled'
