@@ -3,6 +3,9 @@
 
     //- media
     div(slot="media")
+      //- loading icon
+      .absolute.overlay.pointer-events-none.flex.items-center.justify-center
+        svg-eye.text-white.animation-flashing
       //- image
       resp-img.transition-opacity.duration-500(v-if="image && image.length",:bg="true", :image="{src: image}", :class="{'opacity-0ff': hover && token.drc}", :rawSrc="isMutative")
 
@@ -212,4 +215,13 @@ export default {
 </script>
 
 <style>
+.animation-flashing{
+  animation: flashing 2s infinite linear;
+}
+
+@keyframes flashing {
+  0% { opacity:0 }
+  50% { opacity:1 }
+  100% { opacity: 0 }
+}
 </style>
