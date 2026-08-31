@@ -26,6 +26,32 @@ const networks = {
   4: { name: 'rinkeby', layer: 'ethereum', infura: 'wss://rinkeby.infura.io/ws/v3/1363143c08464562ba87cc807ac77020', explorer: { name: 'Etherscan', domain: 'https://rinkeby.etherscan.io' } }
 }
 
+/**
+ * Reads go through this, never through the visitor's wallet.
+ *
+ * Every page that shows a work reads ownerOf() and works() from chain. Those
+ * reads used to run on whatever provider the wallet handed over, so a visitor
+ * whose wallet sat on Base or a testnet got mainnet contract *addresses*
+ * queried against the wrong chain — every call failed and the page rendered
+ * nothing. Worse, it failed in the confusing direction: a visitor with no
+ * wallet at all fell through to the Infura fallback below and saw the page
+ * fine, while a visitor with a wallet on the wrong network saw a blank one.
+ *
+ * A work's page is public. It should not depend on having a wallet, on that
+ * wallet being unlocked, or on which network it happens to be pointed at.
+ * The wallet is still used for transactions — those call .connect(signer)
+ * explicitly — and the wrong-network banner still tells someone to switch
+ * before they try to mint.
+ *
+ * VUE_APP_RPC overrides the endpoint without a code change. The default is the
+ * key that was already hardcoded here, so this changes which provider is used
+ * for reads, not which credentials the bundle carries.
+ */
+const READ_RPC =
+  process.env.VUE_APP_RPC ||
+  'https://mainnet.infura.io/v3/1363143c08464562ba87cc807ac77020'
+const readProvider = new ethers.providers.JsonRpcProvider(READ_RPC)
+
 let web3
 // let provider = window.ethereum || Web3.currentProvider || Web3.givenProvider
 
@@ -169,11 +195,16 @@ export default new Vuex.Store({
         console.warn(`Unsupported network: (id: ${chainId}). Default will be used for contracts (id: 1)`)
         chainId = 1
       }
+      // Bind to readProvider, not the wallet's provider. The addresses already
+      // fell back to mainnet for an unrecognised chain, but the provider did
+      // not, which left mainnet addresses being queried on the wrong network.
+      // Transactions are unaffected: they call .connect(signer) themselves.
+      const readAt = networks[chainId] && chainId !== 1 ? provider : readProvider
       // folia
-      state.foliaContract = new ethers.Contract(Folia.networks[chainId].address, Folia.abi, provider)
+      state.foliaContract = new ethers.Contract(Folia.networks[chainId].address, Folia.abi, readAt)
       console.log('folia:', Folia.networks[chainId].address)
       // controller
-      state.foliaControllerContract = new ethers.Contract(FoliaControllerV2.networks[chainId].address, FoliaControllerV2.abi, provider)
+      state.foliaControllerContract = new ethers.Contract(FoliaControllerV2.networks[chainId].address, FoliaControllerV2.abi, readAt)
       console.log('controller:', FoliaControllerV2.networks[chainId].address)
       // auctions
       // state.reserveAuctionContract = new ethers.Contract(ReserveAuction.networks[chainId].address, ReserveAuction.abi, provider)
