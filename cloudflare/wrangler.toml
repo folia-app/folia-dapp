@@ -1,0 +1,25 @@
+name = "folia-cf-www"
+main = "src/index.js"
+compatibility_date = "2026-09-01"
+compatibility_flags = ["nodejs_compat"]
+
+[assets]
+directory = "../dist"
+binding = "ASSETS"
+# The worker resolves paths itself so that Cloudflare and Netlify agree on
+# what /foo and /foo.html each mean. See the header comment in src/index.js.
+html_handling = "none"
+not_found_handling = "none"
+
+[alias]
+# Both are node-host concerns the lambda pulls in but does not depend on.
+dotenv = "./src/shims/dotenv.js"
+encoding = "./src/shims/encoding.js"
+
+[vars]
+# The lambda reads these off process.env; nodejs_compat populates it from here.
+# Both are public values that already appear in every metadata document served,
+# and both must match Netlify exactly -- they are the base of every image and
+# external_url that consumers have stored against these tokens.
+VUE_APP_CANONICAL_DOMAIN = "https://www.folia.app"
+VUE_APP_IPFS_ORIGIN = "https://following-quelea-awffk.lighthouseweb3.xyz"
