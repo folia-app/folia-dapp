@@ -4,7 +4,6 @@ import Folia from 'folia-contracts/build/contracts/Folia.json'
 // import Web3 from 'web3'
 import Eth from 'web3-eth'
 import { withEth } from './rpc'
-import https from 'https'
 require('dotenv').config()
 require('encoding') // netlify build error / missing package??
 const ignoreRelease = process.env.VUE_APP_DEV_IGNORE_RELEASES === 'true'
@@ -219,28 +218,24 @@ async function getNFTOwnerByTokenId (tokenId, networkId = 1) {
   return owner
 }
 
-function getExternalMetadata (tokenId, networkId = 1, isViewer = false) {
-  return new Promise((resolve) => {
-    const viewer = isViewer ? '&viewer=1' : ''
-    const url = `https://virus.folia.app/.netlify/functions/metadata/${tokenId}?network=${networkId}${viewer}`
-
-    https.get(url, (resp) => {
-      let body = ''
-
-      resp.on('data', chunk => {
-        body += chunk
-      })
-
-      resp.on('end', () => {
-        if (resp.statusCode !== 200) return resolve(null)
-
-        try {
-          const json = JSON.parse(body)
-          resolve(json?.name ? json : null)
-        } catch {
-          resolve(null)
-        }
-      })
-    }).on('error', () => resolve(null))
-  })
+/**
+ * Kudzu and anything else whose metadata is served by another folia site.
+ *
+ * This used node's https.get, which only exists on a node host. fetch is
+ * available both on the lambda runtime and in a Worker, so the same source now
+ * runs on either without a shim. A failure resolves null rather than throwing,
+ * as before: the caller reads null as "not one of ours" and falls through to
+ * its own 404.
+ */
+async function getExternalMetadata (tokenId, networkId = 1, isViewer = false) {
+  const viewer = isViewer ? '&viewer=1' : ''
+  const url = `https://virus.folia.app/.netlify/functions/metadata/${tokenId}?network=${networkId}${viewer}`
+  try {
+    const resp = await fetch(url)
+    if (resp.status !== 200) return null
+    const json = await resp.json()
+    return json?.name ? json : null
+  } catch {
+    return null
+  }
 }
