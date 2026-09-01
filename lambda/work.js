@@ -3,17 +3,12 @@ import * as metadatas from './works' // works.FLA1000000, ...
 import FoliaControllerV2 from 'folia-contracts/build/contracts/FoliaControllerV2.json'
 // import Web3 from 'web3'
 import Eth from 'web3-eth'
+import { withEth } from './rpc'
 require('dotenv').config()
 require('encoding') // netlify build error / missing package??
 // const ignoreRelease = process.env.VUE_APP_DEV_IGNORE_RELEASES === 'true'
 
 let foliaControllerContract
-
-// infura endpoints
-const infura = {
-  1: 'wss://mainnet.infura.io/ws/v3/21b72335f32c40eb8f48a7ee7d9beebb', // https://mainnet.infura.io/v3/21b72335f32c40eb8f48a7ee7d9beebb',
-  4: 'wss://rinkeby.infura.io/ws/v3/21b72335f32c40eb8f48a7ee7d9beebb' // https://rinkeby.infura.io/v3/21b72335f32c40eb8f48a7ee7d9beebb'
-}
 
 // handler
 exports.handler = async function (event, context) {
@@ -116,12 +111,13 @@ exports.handler = async function (event, context) {
 async function getWorkFromContract (workId, networkId) {
   let work
   try {
-    const eth = new Eth(infura[networkId])
-    foliaControllerContract = new eth.Contract(
-      FoliaControllerV2.abi,
-      FoliaControllerV2.networks[networkId].address
-    )
-    work = await foliaControllerContract.methods.works(workId).call()
+    work = await withEth(Eth, async (eth) => {
+      foliaControllerContract = new eth.Contract(
+        FoliaControllerV2.abi,
+        FoliaControllerV2.networks[networkId].address
+      )
+      return foliaControllerContract.methods.works(workId).call()
+    })
     // work = { id: workId, ...work } // add id
   } catch (e) {
     console.error(e)

@@ -3,6 +3,7 @@ import * as works from './works' // works.FLA1000000, ...
 import Folia from 'folia-contracts/build/contracts/Folia.json'
 // import Web3 from 'web3'
 import Eth from 'web3-eth'
+import { withEth } from './rpc'
 import https from 'https'
 require('dotenv').config()
 require('encoding') // netlify build error / missing package??
@@ -10,12 +11,6 @@ const ignoreRelease = process.env.VUE_APP_DEV_IGNORE_RELEASES === 'true'
 // const ignoreIsOwned = process.env.VUE_APP_DEV_IGNORE_IS_OWNED === 'true'
 
 let foliaContract
-
-// infura endpoints
-const infura = {
-  1: 'wss://mainnet.infura.io/ws/v3/21b72335f32c40eb8f48a7ee7d9beebb', // https://mainnet.infura.io/v3/21b72335f32c40eb8f48a7ee7d9beebb',
-  4: 'wss://rinkeby.infura.io/ws/v3/21b72335f32c40eb8f48a7ee7d9beebb' // https://rinkeby.infura.io/v3/21b72335f32c40eb8f48a7ee7d9beebb'
-}
 
 // handler
 exports.handler = async function (event, context) {
@@ -210,13 +205,13 @@ async function getNFTOwnerByTokenId (tokenId, networkId = 1) {
   let owner
   try {
     // setup contract
-    // const web3 = new Web3(new Web3.providers.HttpProvider(infura[networkId]))
-    const eth = new Eth(infura[networkId])
-    foliaContract = new eth.Contract(
-      Folia.abi,
-      Folia.networks[networkId].address
-    )
-    owner = await foliaContract.methods.ownerOf(tokenId).call()
+    owner = await withEth(Eth, async (eth) => {
+      foliaContract = new eth.Contract(
+        Folia.abi,
+        Folia.networks[networkId].address
+      )
+      return foliaContract.methods.ownerOf(tokenId).call()
+    })
   } catch (e) {
     // will throw error if no owner...
     // console.error(e)
