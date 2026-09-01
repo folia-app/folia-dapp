@@ -6,6 +6,7 @@ import FoliaControllerV2 from 'folia-contracts/build/contracts/FoliaControllerV2
 // import ReserveAuction from 'folia-contracts/build/contracts/ReserveAuction.json'
 // ethers
 import { ethers, BigNumber as bn } from 'ethers'
+import { readProvider as poolReadProvider, RPCS } from './rpc'
 // import Web3 from 'web3'
 import Web3Modal from 'web3modal'
 import WalletConnectProvider from '@walletconnect/web3-provider'
@@ -16,14 +17,12 @@ import auctions from './auctions'
 
 let provider, signer, walletProvider, initializing
 
-// const networks = {
-//   mainnet: { id: 1, infura: 'wss://mainnet.infura.io/ws/v3/1363143c08464562ba87cc807ac77020' },
-//   rinkeby: { id: 4, infura: 'wss://rinkeby.infura.io/ws/v3/1363143c08464562ba87cc807ac77020' }
-// }
-
 const networks = {
-  1: { name: 'mainnet', layer: 'ethereum', infura: 'wss://mainnet.infura.io/ws/v3/1363143c08464562ba87cc807ac77020', explorer: { name: 'Etherscan', domain: 'https://etherscan.io' } },
-  4: { name: 'rinkeby', layer: 'ethereum', infura: 'wss://rinkeby.infura.io/ws/v3/1363143c08464562ba87cc807ac77020', explorer: { name: 'Etherscan', domain: 'https://rinkeby.etherscan.io' } }
+  // No rpc url here any more. Reads come from the redundant keyless pool in
+  // ./rpc; the Infura key that used to sit in this object shipped in the public
+  // bundle for as long as this file has existed.
+  1: { name: 'mainnet', layer: 'ethereum', explorer: { name: 'Etherscan', domain: 'https://etherscan.io' } },
+  4: { name: 'rinkeby', layer: 'ethereum', explorer: { name: 'Etherscan', domain: 'https://rinkeby.etherscan.io' } }
 }
 
 /**
@@ -43,14 +42,11 @@ const networks = {
  * explicitly — and the wrong-network banner still tells someone to switch
  * before they try to mint.
  *
- * VUE_APP_RPC overrides the endpoint without a code change. The default is the
- * key that was already hardcoded here, so this changes which provider is used
- * for reads, not which credentials the bundle carries.
+ * The endpoints come from ./rpc — free, keyless, and redundant. The hardcoded
+ * Infura key that used to serve these reads is gone; VUE_APP_RPCS overrides the
+ * list.
  */
-const READ_RPC =
-  process.env.VUE_APP_RPC ||
-  'https://mainnet.infura.io/v3/1363143c08464562ba87cc807ac77020'
-const readProvider = new ethers.providers.JsonRpcProvider(READ_RPC)
+const readProvider = poolReadProvider()
 
 let web3
 // let provider = window.ethereum || Web3.currentProvider || Web3.givenProvider
@@ -63,7 +59,9 @@ const web3Modal = new Web3Modal({
     walletconnect: {
       package: WalletConnectProvider, // required
       options: {
-        infuraId: '1363143c08464562ba87cc807ac77020' // required
+        // WalletConnect v1 accepts an rpc map instead of an infuraId, which
+        // keeps this off a keyed provider like everything else here.
+        rpc: { 1: RPCS[0] }
       }
     }
   }
@@ -257,9 +255,8 @@ export default new Vuex.Store({
           // metamask/browser
           provider = new ethers.providers.Web3Provider(givenProvider)
         } else {
-          // infura fallback
-          const n = process.env.NODE_ENV === 'development' ? 4 : 1
-          provider = new ethers.getDefaultProvider(networks[n].infura)
+          // no wallet: read through the redundant keyless pool
+          provider = poolReadProvider()
         }
 
         await dispatch('getNetwork', provider)
