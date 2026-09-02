@@ -1,6 +1,6 @@
 import './loadEnv'
 import * as metadatas from './works' // works.FLA1000000, ...
-import FoliaControllerV2 from 'folia-contracts/build/contracts/FoliaControllerV2.json'
+import FoliaControllerV2 from '../src/contracts/FoliaControllerV2.json'
 // import Web3 from 'web3'
 import Eth from 'web3-eth'
 import { withEth } from './rpc'

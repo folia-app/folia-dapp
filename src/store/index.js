@@ -1,9 +1,9 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 // contracts
-import Folia from 'folia-contracts/build/contracts/Folia.json'
-import FoliaControllerV2 from 'folia-contracts/build/contracts/FoliaControllerV2.json'
-// import ReserveAuction from 'folia-contracts/build/contracts/ReserveAuction.json'
+import Folia from '../contracts/Folia.json'
+import FoliaControllerV2 from '../contracts/FoliaControllerV2.json'
+// import ReserveAuction from '../contracts/ReserveAuction.json'
 // ethers
 import { ethers, BigNumber as bn } from 'ethers'
 import { readProvider as poolReadProvider, RPCS } from './rpc'
