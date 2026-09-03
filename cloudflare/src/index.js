@@ -21,6 +21,17 @@ export default {
   async fetch (request, env) {
     const url = new URL(request.url)
 
+    // The bare domain has always been a redirect to www, served by Netlify's
+    // load balancer rather than by this site -- so it was the one folia.app
+    // hostname that would have broken when Netlify was switched off.
+    //
+    // Replicated from the live behaviour rather than reinvented: 301, and the
+    // path and query survive (folia.app/works/12?foo=bar -> the same on www).
+    if (url.hostname === 'folia.app') {
+      const to = new URL(url.pathname + url.search, 'https://www.folia.app')
+      return Response.redirect(to.toString(), 301)
+    }
+
     if (url.pathname.startsWith('/v1/metadata/')) {
       // The function reads the token id off the tail of event.path, so the
       // path is passed through with the prefix intact, exactly as Netlify
