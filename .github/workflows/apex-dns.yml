@@ -61,6 +61,20 @@ jobs:
               [ -n "$ID" ] || { echo "no matching A record; refusing to guess"; exit 1; }
               cf DELETE "/zones/$ZONE/dns_records/$ID" | jq -r '"delete success=\(.success)"'
               ;;
+            cutover)
+              # delete and attach in one run: between the two the apex has no
+              # record at all, so the gap is kept to a single API round trip
+              # rather than the minutes between two manual dispatches.
+              ID=$(echo "$RECORDS" | jq -r '.result[] | select(.type=="A" and .content=="75.2.60.5") | .id')
+              [ -n "$ID" ] || { echo "no matching A record; refusing to guess"; exit 1; }
+              cf DELETE "/zones/$ZONE/dns_records/$ID" | jq -r '"delete success=\(.success)"'
+              cf PUT "/accounts/$CF_ACCOUNT/workers/domains" \
+                '{"environment":"production","hostname":"folia.app","service":"folia-cf-www","zone_id":"'"$ZONE"'"}' \
+                | jq -r '"attach success=\(.success) \(.errors // [] | tostring)"'
+              echo "resulting records:"
+              cf GET "/zones/$ZONE/dns_records?name=folia.app" \
+                | jq -r '.result[]? | "  \(.type) \(.name) -> \(.content) proxied=\(.proxied)"'
+              ;;
             attach)
               cf PUT "/accounts/$CF_ACCOUNT/workers/domains" \
                 '{"environment":"production","hostname":"folia.app","service":"folia-cf-www","zone_id":"'"$ZONE"'"}' \
