@@ -14,6 +14,11 @@ workers_dev = true
 # the worker ever is.
 routes = [
   { pattern = "www.folia.app", custom_domain = true },
+  # The bare domain, which only ever 301s to www (see src/index.js). It has to
+  # be listed here and not just attached: wrangler reconciles custom domains
+  # against this array on every deploy, so a domain attached out of band is
+  # removed by the next one -- which is exactly what happened to this one.
+  { pattern = "folia.app", custom_domain = true },
 ]
 
 [assets]
