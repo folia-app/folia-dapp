@@ -13,7 +13,17 @@
  * tokens, so "close enough" is not a category that exists here.
  */
 import { handler as metadata } from '../../lambda/metadata'
+import { handler as work } from '../../lambda/work'
+import { handler as pwd } from '../../lambda/pwd'
 import { runNetlifyFunction } from './netlify'
+
+// Netlify serves every file in the functions directory at
+// /.netlify/functions/<name>, without any rule in netlify.toml saying so. Only
+// the declared redirects were ported when this moved to a Worker, so these
+// three had no route at all and fell through to the SPA fallback -- which
+// answers 200 with index.html. The app then ran JSON.parse over a page of
+// HTML, which is the "Unexpected token '<'" every work page was throwing.
+const FUNCTIONS = { metadata, work, pwd }
 
 const CORS = { 'access-control-allow-origin': '*' }
 
@@ -30,6 +40,14 @@ export default {
     if (url.hostname === 'folia.app') {
       const to = new URL(url.pathname + url.search, 'https://www.folia.app')
       return Response.redirect(to.toString(), 301)
+    }
+
+    const fn = url.pathname.match(/^\/\.netlify\/functions\/([^/]+)/)
+    if (fn && FUNCTIONS[fn[1]]) {
+      // Path passed through whole: metadata and work both read their id off
+      // the tail of event.path, so the prefix is harmless and the behaviour
+      // matches what Netlify delivered.
+      return decorate(await runNetlifyFunction(FUNCTIONS[fn[1]], request, { path: url.pathname }))
     }
 
     if (url.pathname.startsWith('/v1/metadata/')) {
