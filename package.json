@@ -19,7 +19,6 @@
     "folia-contracts": "github:folia-app/folia-contracts#818cab4e9e09e24919929c104d908f03df031aa2",
     "global": "^4.4.0",
     "lazysizes": "^5.3.0",
-    "netlify-cli": "^3.10.1",
     "prismic-dom": "^2.2.4",
     "prismic-javascript": "^3.0.2",
     "tailwindcss": "1",
