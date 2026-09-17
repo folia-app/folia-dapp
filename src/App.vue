@@ -41,7 +41,7 @@ export default {
   },
   created () {
     this.$store.dispatch('init')
-    this.$store.dispatch('prismic/getDocs')
+    this.$store.dispatch('prismic/getDocsResilient')
   },
   mounted () {
     return document.getElementById('loading')?.remove()

@@ -19,9 +19,9 @@
  * fetched when it is actually needed. Bundled statically it cost 47 KB gzipped
  * on the initial load of every visit, to cover a case almost nobody hits.
  *
- * NOT wired into the boot path. App.vue still dispatches prismic/getDocs, which
- * behaves exactly as before. Switching over is a one-line change in App.vue once
- * this has been watched for a while.
+ * App.vue dispatches prismic/getDocsResilient, so this is the path the site
+ * boots through. The live API is still tried first on every load; the cache and
+ * the snapshot only answer when it does not.
  */
 
 const CACHE_KEY = 'folia.prismic.docs'

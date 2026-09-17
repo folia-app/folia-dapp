@@ -43,9 +43,9 @@ export default {
     /**
      * getDocs, but backed by the cache and the build-time snapshot.
      *
-     * Not dispatched anywhere yet -- App.vue still calls getDocs. This is here
-     * to be exercised and watched before it takes over; swapping them is a
-     * one-line change once there is confidence in it.
+     * This is what App.vue dispatches. getDocs is kept because getWork and the
+     * prismic() helper still use the same client directly, and because it is
+     * the plain unguarded path to fall back to if this ever misbehaves.
      */
     async getDocsResilient ({ commit }) {
       const { results, source } = await loadDocs(() =>
