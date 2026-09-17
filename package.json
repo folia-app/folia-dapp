@@ -5,6 +5,7 @@
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve & yarn lambda",
+    "prebuild": "node scripts/snapshot-prismic.js",
     "build": "vue-cli-service build",
     "postbuild": "yarn lambda:build",
     "lint": "vue-cli-service lint",
